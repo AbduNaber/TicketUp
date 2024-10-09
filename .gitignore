@@ -23,7 +23,7 @@ buildSrc/build
 /spring-*/build
 /framework-*/build
 /integration-tests/build
-/src/asciidoc/build
+/ticketup-backend/asciidoc/build
 spring-test/test-output/
 
 # Maven artifacts
