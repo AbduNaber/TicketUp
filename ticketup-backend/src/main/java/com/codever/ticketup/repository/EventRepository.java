@@ -1,6 +1,7 @@
 package com.codever.ticketup.repository;
 
-import jdk.jfr.Event;
+
+import com.codever.ticketup.model.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
