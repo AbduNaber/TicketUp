@@ -3,17 +3,13 @@ package com.codever.ticketup.controller;
 import com.codever.ticketup.model.Organizator;
 import com.codever.ticketup.service.OrganizatorService;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @AllArgsConstructor
-@Getter
-@Setter
 @RestController
-@RequestMapping("TicketUp/organizators")
+@RequestMapping("ticketup/organizators")
 public class OrganizatorController {
 
     private final OrganizatorService organizatorService;
@@ -25,6 +21,7 @@ public class OrganizatorController {
 
     @GetMapping(path = "/list")
     public List<Organizator> getAllOrganizators() {
+
         return organizatorService.getAllOrganizators();
     }
 
@@ -40,6 +37,7 @@ public class OrganizatorController {
 
     @DeleteMapping(path = "/delete/{id}")
     public void deleteOrganizator(@PathVariable(name = "id") Long id) {
+
         organizatorService.deleteOrganizator(id);
     }
 }
