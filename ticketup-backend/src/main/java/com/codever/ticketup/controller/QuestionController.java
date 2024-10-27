@@ -24,9 +24,9 @@ public class QuestionController {
         return questionService.getQuestionById(id);
     }
 
-    @PutMapping(path = "/update/{id}")
-    public Question updateQuestion(@PathVariable Long id, @RequestBody Question question) {
-        return questionService.updateQuestion(id, question);
+    @PutMapping(path = "/update")
+    public Question updateQuestion(@RequestBody Question question) {
+        return questionService.updateQuestion(question);
     }
 
     @PostMapping(path = "/create")

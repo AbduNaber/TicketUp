@@ -24,9 +24,9 @@ public class AnswerController {
         return answerService.getAnswerById(id);
     }
 
-    @PutMapping(path = "/update/{id}")
-    public Answer updateAnswer(@RequestBody Answer answer, @PathVariable(name = "id") Long id) {
-        return answerService.updateAnswer(id,answer);
+    @PutMapping(path = "/update")
+    public Answer updateAnswer(@RequestBody Answer answer) {
+        return answerService.updateAnswer(answer);
     }
 
     @PostMapping(path = "/create")
