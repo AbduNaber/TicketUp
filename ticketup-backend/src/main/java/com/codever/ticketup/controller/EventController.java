@@ -25,7 +25,7 @@ public class EventController {
         return eventService.getEventById(id);
     }
 
-    @PutMapping(path = "/update/{id}")
+    @PutMapping(path = "/update")
     public Event updateEvent(@RequestBody Event event) {
         return eventService.updateEvent(event);
     }
