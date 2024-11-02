@@ -1,0 +1,12 @@
+:root {
+  --primarybg-color: #fff7ea;
+  --appbar-color: #14B8A6;
+  --highlight-color: #a2783a;
+  --button-color-blue: #3b82f6;
+  --font-size-xs: 20px;
+  --font-size-s: 24px;
+  --font-size-m: 25px;
+  --font-size-l: 30px;
+  --font-size-xl: 40px;
+  --border-radius: 8px;
+}
