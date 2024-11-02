@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In</title>
+  <link rel="stylesheet" href="../css/constants.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/base_elements/appbar.css">
+  <link rel="stylesheet" href="../css/image_elements/icons_images.css">
+  <link rel="stylesheet" href="../css/input_elements/inputs.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+  <div class="container-background">
+    <div class="appbar">
+      <div class="appbar-sides">
+        <a href="#">TicketUp</a>
+      </div>
+      <div class="appbar-center">
+        <a href="#">X</a>
+        <a href="#">Y</a>
+        <a href="#">Z</a>
+      </div>
+      <div class="appbar-sides">
+        <img class="profile-icon" src="../assets/icons/account.png">
+        <img class="more-icon" src="../assets/icons/menu-bar.png">
+      </div>
+    </div>
+    <div class="main-content">
+      <img class="event-image-homepage" src="../assets/images/white background.jpg">
+      <div class="login-container">
+        <div class="login-outer">
+          <div class=id-pw-container>
+            <form>
+              <label for="username">Username</label>
+              <input type="text" id="username" name="username" placeholder="Username">
+
+              <label for="password">Password</label>
+              <input type="password" id="password" name="password" placeholder="Password">
+            </form>
+          </div>
+          <div class="login-bottom-buttons">
+            <button type="button" class="login-button" onclick="getInputValues()">Sign In</button>
+            <a href="#">Forgot Password?</a>
+        </div>
+      </div>
+    </div>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>
+
