@@ -8,7 +8,7 @@ html {
 }
 
 .background {
-  background-image: url(../assets/images/login_bg.png);
+  background-image: url(./assets/images/login_bg.png);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -46,7 +46,7 @@ label {
 input {
   padding: 3.3vh;
   font-size: 16px;
-  border: 1px solid #ccc;
+  border: 1px solid #b40000;
   border-radius: 10px;
 }
 
