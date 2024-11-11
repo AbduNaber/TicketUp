@@ -1,0 +1,65 @@
+.qr-code{
+  width: 35%;
+}
+
+.header-text {
+  align-self: center;
+  font-size: 3.5vh;
+  font-family: "Roboto", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+  margin-top: 6vh;
+  color: black;
+}
+
+.header-bold {
+  font-size: 4vh;
+  font-family: "Roboto", sans-serif;
+  font-weight: 900;
+  font-style: normal;
+  margin-top: 2vh;
+  color: black;
+}
+
+.info-box {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2vh;
+  width: 60%;
+}
+
+.info-textbox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 45%;
+  padding: 1vh;
+  text-align: center;
+}
+
+.info-text-top {
+  font-size: 2vh;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  color: black;
+  margin-bottom: 1vh;
+}
+
+.info-text-bottom {
+  font-size: 2vh;
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  color: black;
+}
+
+.about {
+  font-size: 2vh;
+  font-family: 'Poppins', sans-serif;
+  color: black;
+  width: 50%;
+  line-height: 3vh;
+  text-align: center;
+}

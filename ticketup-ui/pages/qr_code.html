@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Etkinlik Bilgileri</title>
+  <link rel="stylesheet" href="../css/form.css">
+  <link rel="stylesheet" href="../css/login.css">
+  <link rel="stylesheet" href="../css/qr_code.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+    rel="stylesheet">
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+</head>
+
+<body>
+  <img class="event-icon" src="../assets/images/form_bg.png">
+  <div class="form-container">
+    <div id="qrcode" style="margin-top: 4vh;"></div>
+    <a class="header-text">Etkinlik Bilgileri</a>
+    <a class="header-bold">T-Soft ile Anadolu'dan Dünya'ya</a>
+    <div class="info-box">
+      <div class="info-textbox">
+        <a class="info-text-top">TARİH</a>
+        <a class="info-text-bottom">4.11.2024</a>
+      </div>
+      <div class="info-textbox">
+        <a class="info-text-top">SAAT</a>
+        <a class="info-text-bottom">17.00</a>
+      </div>
+      <div class="info-textbox">
+        <a class="info-text-top">KONUM</a>
+        <a class="info-text-bottom">Tüyap Etkinlik Fuarı
+          İstanbul</a>
+      </div>
+    </div>
+    <a class="header-text">Katılımcı Bilgileri</a>
+    <div class="info-box">
+      <div class="info-textbox">
+        <a class="info-text-top">Ad-Soyad</a>
+        <a class="info-text-bottom">Sinan Eryiğit</a>
+      </div>
+      <div class="info-textbox">
+        <a class="info-text-top">Ünvan</a>
+        <a class="info-text-bottom">Organizatör</a>
+      </div>
+      <div class="info-textbox">
+        <a class="info-text-top">Katılınılan İl</a>
+        <a class="info-text-bottom">İstanbul</a>
+      </div>
+    </div>
+    <a class="info-text-top" style="margin-top: 7vh;">KATILIMCI ID</a>
+    <a class="info-text-bottom" style="margin-bottom: 4vh;">1f479181-d0ce-43d8-9742-48c26530c865</a>
+    <a class="header-text">Bilmeniz Gerekenler</a>
+    <a class="about">Etkinlik girişinde <strong>karekodunuzu</strong> gösterek giriş yapabilirsiniz.
+      Etkinlik biletiniz ayrıca mail adresinize ve SMS olarak gönderilecektir.
+      Organizator ile iletişim için : info@upista.com</a>
+  </div>
+  <div class="bottom-bar">
+    <div class="copyright-text-form">© 2024 TicketUp. All rights reserved.</div>
+    <img class="ticketup-icon" src="../assets/icons/ticketup_icon.png">
+    <div class="bottom-bar-icons">
+      <img class="social-media-icon" src="../assets/icons/facebook_icon.png">
+      <img class="social-media-icon" src="../assets/icons/twitter_icon.png">
+      <img class="social-media-icon" src="../assets/icons/figma_icon.png">
+      <img class="social-media-icon" src="../assets/icons/linkedin_icon.png">
+    </div>
+  </div>
+  <script src="../js/form.js"></script>
+  <script>
+    var qrCode = new QRCode(document.getElementById("qrcode"), {
+      text: "https://www.ticketup.com",
+      width: 192,
+      height: 192,
+      colorDark : "#000000",
+      colorLight : "#ffffff",
+      correctLevel : QRCode.CorrectLevel.L
+    });
+  </script>
+</body>
+
+</html>
