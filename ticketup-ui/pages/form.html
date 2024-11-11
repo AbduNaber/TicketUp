@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Etkinlik Formu</title>
+  <link rel="stylesheet" href="../css/form.css">
+  <link rel="stylesheet" href="../css/login.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+
+<body>
+  <img class="event-icon" src="../assets/images/form_bg.png">
+  <div class="form-container">
+    <form class="form">
+      <div class="form-input-container-row">
+        <div class="form-input-container">
+          <label for="username" class="form">İsim:</label>
+          <input type="text" class="form" id="name" name="name" required placeholder="İsim Giriniz">
+        </div>
+        <div class="form-input-container">
+          <label for="username" class="form">Soyisim:</label>
+          <input type="text" class="form" id="surname" name="surname" required placeholder="Soyisim Giriniz">
+        </div>
+      </div>
+      <div class="form-input-container-row">
+        <div class="form-input-container">
+          <label for="username" class="form">E-Posta:</label>
+          <input type="text" class="form" id="mail-address" name="mail-address" required
+            placeholder="örnekmail@ticketup.net">
+        </div>
+        <div class="form-input-container">
+          <label for="username" class="form">Telefon No:</label>
+          <input type="text" class="form" id="phone-number" name="phone-number" required placeholder="05XXXXXXXX">
+        </div>
+      </div>
+      <div class="form-input-container-row">
+        <div class="form-input-container">
+          <label for="username" class="form">Firma:</label>
+          <input type="text" class="form" id="organization" name="organization" required placeholder="X Firması">
+        </div>
+        <div class="form-input-container">
+          <label for="username" class="form">Ünvan:</label>
+          <input type="text" class="form" id="title" name="title" required placeholder="Ünvan Giriniz">
+        </div>
+      </div>
+      <div class="form-input-container-row">
+        <div class="form-input-container">
+          <label for="username" class="form">Firma Websitesi:</label>
+          <input type="text" class="form" id="website" name="website" required placeholder="www.örneksite.com">
+        </div>
+        <div class="form-input-container">
+          <label for="username" class="form">Hangi İlden Katılıyorsunuz:</label>
+          <input type="text" class="form" id="city" name="city" required placeholder="Şehir Giriniz">
+        </div>
+      </div>
+      <div class="question-container">
+        <p class="question">Daha önce e-ticaret & e-ihracat odaklı bir etkinliğe katıldınız mı?</p>
+        <div class="answer-options">
+          <label>
+            <input type="checkbox" name="answer" value="yes">
+            <span class="checkbox-text">Evet</span>
+          </label>
+          <label>
+            <input type="checkbox" name="answer" value="no">
+            <span class="checkbox-text">Hayır</span>
+          </label>
+        </div>
+      </div>
+      <div class="checkbox-container">
+        <input type="checkbox" name="terms" value="accepted">
+        <label class="custom-checkbox-label">
+          6698 Sayılı KVKK uyarınca, gerçekleşecek olan etkinlikte, OTT / Canlı kayıt - yayın yapılmasına, katılımcı
+          bilgilerimin ticari bilgi kapsamında Tekrom Teknoloji A.Ş. ve paydaşları ile paylaşılmasını kabul / beyan
+          ederim. *
+        </label>
+      </div>
+      <div class="submit-buttons">
+        <button type="button" class="clear-button" onclick="getFormValues()">TERCİHLERİ TEMİZLE</button>
+        <button type="button" class="submit-button" onclick="resetForm()">GÖNDER</button>
+      </div>
+    </form>
+  </div>
+  <div class = "bottom-bar">
+    <div class="copyright-text-form">© 2024 TicketUp. All rights reserved.</div>
+    <img class="ticketup-icon" src="../assets/icons/ticketup_icon.png">
+    <div class="bottom-bar-icons">
+      <img class="social-media-icon" src="../assets/icons/facebook_icon.png">
+      <img class="social-media-icon" src="../assets/icons/twitter_icon.png">
+      <img class="social-media-icon" src="../assets/icons/figma_icon.png">
+      <img class="social-media-icon" src="../assets/icons/linkedin_icon.png">
+    </div>
+  </div>
+  <script src="../js/script.js"></script>
+</body>
+
+</html>

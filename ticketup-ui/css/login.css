@@ -1,6 +1,5 @@
 body,
 html {
-  height: 100%;
   margin: 0;
   display: flexbox;
   justify-content: center;
@@ -38,7 +37,7 @@ form {
   width: 28vw;
 }
 
-label {
+label.signin {
   margin-top: 5.5vh;
   font-size: 17.8vh;
 }
@@ -50,8 +49,8 @@ input {
   border-radius: 10px;
 }
 
-button {
-  background: linear-gradient(to right, #12FFF7, #B3FFAB);
+.login-button {
+  background: linear-gradient(to right, #D6155F, #FE7931);
   color: black;
   border: none;
   border-radius: 25px;
@@ -74,6 +73,28 @@ button:hover {
   margin-bottom: -2vh;
 }
 
+.name-container-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.name-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.name-container input {
+  width: 100%;
+}
+
+.password-container-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
 .password-container {
   position: relative;
   display: flex;
@@ -82,7 +103,6 @@ button:hover {
 
 .password-container input {
   width: 100%;
-  padding-right: 40px;
 }
 
 .eye-icon {
@@ -103,14 +123,22 @@ button:hover {
   cursor: pointer;
 }
 
-.register-text {
+.login-text {
   align-self: self-end;
   margin-top: 1.5vh;
   margin-bottom: 1.5vh;
   font-size: 2vh;
-  color: black;
   font-family: 'Poppins', sans-serif;
   cursor: pointer;
+  color: black;
+}
+
+.text-normal {
+  color: black;
+}
+
+.text-highlight {
+  color: #20DC49;
 }
 
 .header-text {
@@ -119,4 +147,13 @@ button:hover {
   font-family: 'Poppins', sans-serif;
   margin-top: 3vh;
   color: black;
+}
+
+.copyright-text {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 1.5vh;
+  color: white;
+  font-family: 'Poppins', sans-serif;
 }

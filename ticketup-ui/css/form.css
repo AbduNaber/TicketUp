@@ -1,0 +1,178 @@
+body,
+html {
+  width: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #F0F2F5;
+}
+
+.event-icon {
+  margin-top: 5vh;  /* Sayfa üstünden biraz boşluk bırak */
+  margin-bottom: 2.5vh; /* İkon ile form arasındaki boşluk */
+  height: 40vh;
+  width: auto;
+}
+
+.form-container {
+  width: 50vw;
+  height: 140vh;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Formu üstten hizala */
+  align-items: center;
+  padding-top: 2.5vh; /* Formun üst kısmından biraz boşluk bırak */
+  margin-bottom: 50vh;
+}
+
+.form-input-container-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.form-input-container {
+  flex-direction: column;
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 40%;
+}
+
+label.form {
+  font-family: "Noto Sans", serif;
+  font-size: 1.75vh;
+  align-self: flex-start;
+  margin-top: 3vh;
+  margin-bottom: 0.2vh;
+}
+
+form.form {
+  display: flex;
+  flex-direction: column;
+  width: 40vw;
+  padding-top: 7.5vh;
+}
+
+.question-container {
+  margin-top: 7.5vh;
+  font-size: 2vh;
+  color: black;
+}
+
+.answer-options {
+  display: flex;
+  gap: 20px;
+  margin-top: 1vh;
+}
+
+.answer-options label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-items: center;
+}
+
+.checkbox-text {
+  padding: 5px 10px;
+  border: 1px solid #CCCCCC;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+
+input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.checkbox-container {
+  margin-top: 7.5vh;
+  font-size: 2vh;
+  color: black;
+  display: flex;
+}
+
+.custom-checkbox-label {
+  padding: 10px;
+  border: 1px solid #CCCCCC;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+input.form {
+  padding: 3.3vh;
+  font-size: 1.5vh;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  width: 90%;
+}
+
+.submit-buttons {
+  margin-top: 10vh;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.clear-button {
+  background-color: #20DC4921;
+  color: black;
+  border-radius: 10px;
+  border:none;
+  font-size: 1.5vh;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  cursor: pointer;
+  height: 5vh;
+  min-width: 15vw;
+}
+
+.submit-button {
+  background-color: #20DC49;
+  color: black;
+  border-radius: 10px;
+  font-size: 1.5vh;
+  border:none;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  cursor: pointer;
+  height: 5vh;
+  min-width: 15vw;
+}
+
+.bottom-bar {
+  background-color: #22242A;
+  width: 100%;
+  height: 15vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.copyright-text-form {
+  margin-left: 1.5vw;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+}
+
+.ticketup-icon {
+  height: 5vh;
+  width: auto;
+  cursor: pointer;
+}
+
+.bottom-bar-icons {
+  margin-right: 1.5vw;
+  display: flex;
+  gap: 20px; /* İkonlar arasına boşluk ekler */
+}
+
+.social-media-icon {
+  height: 3vh;
+  width: auto;
+  cursor: pointer;
+}

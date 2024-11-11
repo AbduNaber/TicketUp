@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Giriş Yap</title>
-  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/login.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -19,18 +19,22 @@
       <h2 class="header-text">TicketUp! Boost Your Event</h2>
       <p class="organizer-text">Sadece Organizatör Girişine açıktır.</p>
       <form>
-        <label for="username"></label>
+        <label for="username" class="signin"></label>
         <input type="text" id="username" name="username" required placeholder="E-posta">
-        <label for="password"></label>
+        <label for="password" class="signin"></label>
         <div class="password-container">
           <input type="password" id="password" name="password" required placeholder="Şifre">
           <img id="toggle-password" class="eye-icon" src="../assets/icons/eye_opened.png" alt="Show Password">
         </div>
         <a class="forgot-pw-text">Şifremi unuttum</a>
-        <a class="register-text">Hesabın yok mu? Kayıt ol</a>
+        <a class="login-text">
+          <span class="text-normal">Hesabın yok mu?</span>
+          <span class="text-highlight"> Kayıt ol</span>
+        </a>
         <button type="button" class="login-button" onclick="getInputValues()">Giriş Yap</button>
       </form>
     </div>
+    <div class="copyright-text">© 2024 TicketUp. All rights reserved.</div>
   </div>
   <script src="../js/script.js"></script>
 </body>
