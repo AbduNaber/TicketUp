@@ -9,8 +9,8 @@ html {
 }
 
 .event-icon {
-  margin-top: 5vh;  /* Sayfa üstünden biraz boşluk bırak */
-  margin-bottom: 2.5vh; /* İkon ile form arasındaki boşluk */
+  margin-top: 5vh;
+  margin-bottom: 2.5vh;
   height: 40vh;
   width: auto;
 }
@@ -22,9 +22,9 @@ html {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Formu üstten hizala */
+  justify-content: flex-start;
   align-items: center;
-  padding-top: 2.5vh; /* Formun üst kısmından biraz boşluk bırak */
+  padding-top: 2.5vh;
   margin-bottom: 50vh;
 }
 
@@ -153,9 +153,10 @@ input.form {
 }
 
 .copyright-text-form {
-  margin-left: 1.5vw;
+  margin-left: 1vw;
   color: white;
   font-family: 'Poppins', sans-serif;
+  font-size: 1.75vh;
   cursor: pointer;
 }
 
@@ -166,9 +167,9 @@ input.form {
 }
 
 .bottom-bar-icons {
-  margin-right: 1.5vw;
+  margin-right: 1vw;
   display: flex;
-  gap: 20px; /* İkonlar arasına boşluk ekler */
+  gap: 20px;
 }
 
 .social-media-icon {
