@@ -34,6 +34,10 @@ function Login() {
       console.error('Error during login:', error);
       alert('Login failed.');
     }
+
+    if (username) {
+      navigate(`/pages/${username}`);
+    }
   };
 
   const validateEmail = (email) => {
