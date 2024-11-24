@@ -22,7 +22,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // CSRF korumasını devre dışı bırakma
                 .authorizeRequests()
                 .requestMatchers("/ticketup/organizators/register", "/ticketup/organizators/login", "/ticketup/organizators/delete/**",
-                        "ticketup/organizators/list").permitAll()
+                        "ticketup/organizators/list","ticketup/organizators/list/{id}","ticketup/pages/{pageName}", "/ticketup/organizators/get/email/{email}").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic(httpBasic -> httpBasic.disable()) // Basic auth özelliğini devre dışı bırakma
