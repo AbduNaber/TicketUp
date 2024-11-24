@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -26,17 +25,16 @@ public class OrganizatorService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public void register(@NotNull Organizator organizator) {
-
-        if(organizatorRepository.findByEmail(organizator.getEmail()).isPresent()) {
-           throw new RuntimeException("Email already in use");
-        }
         organizator.setPasswordHash(passwordEncoder.encode(organizator.getPasswordHash()));
-
         organizatorRepository.save(organizator);
     }
 
     public String login(String email, String password) {
         Optional<Organizator> organizator = organizatorRepository.findByEmail(email);
+
+        System.out.println("Email: " + email);
+        System.out.println("Password: " + password);
+
         if (organizator.isPresent() && passwordEncoder.matches(password, organizator.get().getPasswordHash())) {
             return jwtTokenProvider.createToken(email);
         } else {
@@ -49,19 +47,9 @@ public class OrganizatorService {
         return organizatorRepository.findAll();
     }
 
-    public Organizator getOrganizatorById(UUID id) {
-        Organizator organizator = organizatorRepository.getOrganizatorsById(id);
-        if(organizator == null) {
-            throw new RuntimeException("Organizator not found");
-        }
-        return organizator;
+    public Organizator getOrganizatorById(Long id) {
+        return organizatorRepository.getReferenceById(id);
     }
-
-    public Organizator getOrganizatorByEmail(String email) {
-        return organizatorRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("No organizator found with email: " + email));
-    }
-
     public Organizator updateOrganizator(Organizator organizator) {
         return organizatorRepository.findById(organizator.getId()).map(
                 organizator1 -> {
@@ -70,14 +58,13 @@ public class OrganizatorService {
                     organizator1.setEmail(organizator.getEmail());
                     organizator1.setPasswordHash(organizator.getPasswordHash());
                     organizator1.setCreatedAt(organizator.getCreatedAt());
-                    // todo add new variable in model
                     return organizatorRepository.save(organizator1);
 
                 }
         ).orElseThrow( () -> new RuntimeException(" Organizator not found with id: " + organizator.getId()));
     }
 
-    public void deleteOrganizator(UUID id) {
+    public void deleteOrganizator(Long id) {
         organizatorRepository.deleteById(id);
     }
 
