@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Repository
 public interface OrganizatorRepository extends JpaRepository<Organizator, UUID> {
-    Optional<Organizator> findByEmail(String email);
+    Organizator findByEmail(String email);
 
     Organizator getOrganizatorsById(UUID id);
 }

@@ -27,7 +27,7 @@ public class OrganizatorService {
 
     public void register(@NotNull Organizator organizator) {
 
-        if(organizatorRepository.findByEmail(organizator.getEmail()).isPresent()) {
+        if(organizatorRepository.findByEmail(organizator.getEmail()) != null) {
            throw new RuntimeException("Email already in use");
         }
         organizator.setPasswordHash(passwordEncoder.encode(organizator.getPasswordHash()));
@@ -36,9 +36,9 @@ public class OrganizatorService {
     }
 
     public String login(String email, String password) {
-        Optional<Organizator> organizator = organizatorRepository.findByEmail(email);
-        if (organizator.isPresent() && passwordEncoder.matches(password, organizator.get().getPasswordHash())) {
-            return jwtTokenProvider.createToken(email);
+        Organizator organizator = organizatorRepository.findByEmail(email);
+        if (organizator != null && passwordEncoder.matches(password, organizator.getPasswordHash())) {
+            return jwtTokenProvider.createToken(organizator.getId());
         } else {
             throw new RuntimeException("Invalid email or password");
         }
@@ -58,15 +58,18 @@ public class OrganizatorService {
     }
 
     public Organizator getOrganizatorByEmail(String email) {
-        return organizatorRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("No organizator found with email: " + email));
+        if(organizatorRepository.findByEmail(email) == null) {
+            throw new RuntimeException("Organizator not found");
+        }
+
+        return organizatorRepository.findByEmail(email);
+
     }
 
     public Organizator updateOrganizator(Organizator organizator) {
         return organizatorRepository.findById(organizator.getId()).map(
                 organizator1 -> {
                     organizator1.setId(organizator.getId());
-                    organizator1.setUsername(organizator.getUsername());
                     organizator1.setEmail(organizator.getEmail());
                     organizator1.setPasswordHash(organizator.getPasswordHash());
                     organizator1.setCreatedAt(organizator.getCreatedAt());

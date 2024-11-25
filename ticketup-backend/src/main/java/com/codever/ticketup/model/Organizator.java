@@ -21,10 +21,7 @@ public class Organizator {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", columnDefinition = "UUID")
     private UUID id;
-
-    @Column(name = "username")
-    private String username;
-
+    
     @Column(name = "name")
     private String name;
 

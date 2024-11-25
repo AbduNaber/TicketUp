@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import {jwtDecode} from 'jwt-decode';
 import './login.css'; // Import the CSS
 import axios from 'axios'; 
 function Login() {
@@ -29,7 +30,10 @@ function Login() {
 
       const token = response.data;
       localStorage.setItem('token', token); 
-      alert('Login successful!');
+      
+      const decodedToken = jwtDecode(token);
+      alert('Login successful!' + decodedToken);
+      console.log(decodedToken);
     } catch (error) {
       console.error('Error during login:', error);
       alert('Login failed.');
