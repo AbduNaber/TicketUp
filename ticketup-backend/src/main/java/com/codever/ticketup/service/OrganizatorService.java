@@ -3,16 +3,18 @@ package com.codever.ticketup.service;
 
 import com.codever.ticketup.model.Organizator;
 import com.codever.ticketup.repository.OrganizatorRepository;
-import com.codever.ticketup.security.JwtTokenProvider;
+import com.codever.ticketup.security.JwtService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,23 +24,28 @@ import java.util.UUID;
 public class OrganizatorService {
 
     private final OrganizatorRepository organizatorRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
+
+    private final JwtService jwtService;
+
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+    private final AuthenticationManager authenticationManager;
 
     public void register(@NotNull Organizator organizator) {
 
         if(organizatorRepository.findByEmail(organizator.getEmail()) != null) {
            throw new RuntimeException("Email already in use");
         }
-        organizator.setPasswordHash(passwordEncoder.encode(organizator.getPasswordHash()));
+        organizator.setPasswordHash(encoder.encode(organizator.getPasswordHash()));
 
         organizatorRepository.save(organizator);
     }
 
     public String login(String email, String password) {
         Organizator organizator = organizatorRepository.findByEmail(email);
-        if (organizator != null && passwordEncoder.matches(password, organizator.getPasswordHash())) {
-            return jwtTokenProvider.createToken(organizator.getId());
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+        if (organizator != null && authentication.isAuthenticated()) {
+            return jwtService.generateToken(organizator.getEmail(), organizator.getId());
         } else {
             throw new RuntimeException("Invalid email or password");
         }

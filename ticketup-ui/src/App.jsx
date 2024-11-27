@@ -9,9 +9,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/signin" />} />
-        <Route path="/pages/{pageName}" element={<ExamplePage />} />
-        <Route path="/signin" element={<Login />} />
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/organizator" element={<ExamplePage />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/form" element={<Form />} />
       </Routes>

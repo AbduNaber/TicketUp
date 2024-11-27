@@ -4,13 +4,10 @@ import com.codever.ticketup.dto.LoginRequestDto;
 import com.codever.ticketup.model.Organizator;
 import com.codever.ticketup.service.OrganizatorService;
 import lombok.AllArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -35,8 +32,9 @@ public class OrganizatorController {
 
     @GetMapping(path = "/list")
     public List<Organizator> getAllOrganizators() {
-
-        return organizatorService.getAllOrganizators();
+        List<Organizator> organizators = organizatorService.getAllOrganizators();
+        System.out.println(organizators);
+        return organizators;
 
     }
 
