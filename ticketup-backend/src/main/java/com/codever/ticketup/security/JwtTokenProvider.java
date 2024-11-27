@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class JwtTokenProvider {
@@ -16,12 +17,12 @@ public class JwtTokenProvider {
     @Value("${jwt.expiration}")
     private Long expirationTime;
 
-    public String createToken(String email) {
+    public String createToken(UUID id) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expirationTime);
 
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(id.toString())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS256, secretKey.getBytes()) // 0.9.1 sürümünde Key yerine byte[] kullanılır

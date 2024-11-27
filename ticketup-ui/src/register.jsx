@@ -202,7 +202,7 @@ const SignupForm = () => {
             </div>
           </div>
 
-          <Link to="/signin" className="login-text">
+          <Link to="/login" className="login-text">
             <span className="text-normal">Hesabın var mı?</span>
             <span className="text-highlight"> Giriş yap</span>
           </Link>

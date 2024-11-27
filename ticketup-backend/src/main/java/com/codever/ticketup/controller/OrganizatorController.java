@@ -6,9 +6,9 @@ import com.codever.ticketup.service.OrganizatorService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
@@ -22,10 +22,9 @@ public class OrganizatorController {
         organizatorService.register(organizator);
         return ResponseEntity.ok("Organizator registered");
     }
+
     @PostMapping(path = "/login")
     public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto) {
-        System.out.println("Controller email " + loginRequestDto.getEmail());
-        System.out.println("Controller password " + loginRequestDto.getPassword());
         String token = organizatorService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
         System.out.println("Login called");
         return ResponseEntity.ok(token);
@@ -33,14 +32,20 @@ public class OrganizatorController {
 
     @GetMapping(path = "/list")
     public List<Organizator> getAllOrganizators() {
-        System.out.println("List called");
-        return organizatorService.getAllOrganizators();
+        List<Organizator> organizators = organizatorService.getAllOrganizators();
+        System.out.println(organizators);
+        return organizators;
 
     }
 
     @GetMapping(path = "/list/{id}")
-    public Organizator getOrganizatorById(@PathVariable(name = "id") Long id) {
+    public Organizator getOrganizatorById(@PathVariable(name = "id") UUID id) {
         return organizatorService.getOrganizatorById(id);
+    }
+
+    @GetMapping(path = "/get/email/{email}")
+    public Organizator getOrganizatorByEmail(@PathVariable(name = "email") String id) {
+        return organizatorService.getOrganizatorByEmail(id);
     }
 
     @PutMapping(path = "/update")
@@ -49,7 +54,7 @@ public class OrganizatorController {
     }
 
     @DeleteMapping(path = "/delete/{id}")
-    public void deleteOrganizator(@PathVariable(name = "id") Long id) {
+    public void deleteOrganizator(@PathVariable(name = "id") UUID id) {
 
         organizatorService.deleteOrganizator(id);
         System.out.println("Delete called");

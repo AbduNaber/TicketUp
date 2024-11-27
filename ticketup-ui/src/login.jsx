@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import {jwtDecode} from 'jwt-decode';
 import './login.css'; // Import the CSS
 import axios from 'axios'; 
+
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const navigate = useNavigate();
 
   const handleUsernameChange = (event) => setUsername(event.target.value);
   const handlePasswordChange = (event) => setPassword(event.target.value);
@@ -28,12 +31,18 @@ function Login() {
       });
 
       const token = response.data;
-      localStorage.setItem('token', token); 
-      alert('Login successful!');
+      sessionStorage.setItem('token', token); 
+      
+      const decodedToken = jwtDecode(token);
+      alert('Login successful!' + decodedToken);
+      console.log(decodedToken);
+      navigate(`/organizator`);
     } catch (error) {
       console.error('Error during login:', error);
       alert('Login failed.');
     }
+
+
   };
 
   const validateEmail = (email) => {
