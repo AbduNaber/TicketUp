@@ -1,0 +1,368 @@
+/* Genel düzenlemeler */
+.event-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #ffffff;
+  overflow-y: auto;
+}
+
+/* Gradient Button Stili */
+.gradient-button {
+  background: linear-gradient(90deg, #ff007a, #ff975e);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.gradient-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+.gradient-button:active {
+  transform: scale(0.95);
+}
+
+/* footer 
+==============================================================*/
+
+.footer {
+  display: flex; /* Flexbox ile düzenleme */
+  justify-content: space-between; /* Elemanları yatayda yay */
+  align-items: center; /* Dikeyde ortala */
+  background-color: #222; /* Arka plan rengi */
+  color: #fff; /* Yazı rengi */
+  padding: 10px 20px; /* İç boşluklar */
+  width: 100%;
+  height: 4vw; /* Tam genişlik */
+  bottom: 0; /* Alt sınır */
+  z-index: 1000; /* Önde görünmesi için */
+}
+
+.footer-left {
+  display: flex; /* Flexbox etkinleştirme */
+  align-items: center; /* Dikeyde ortalama */
+  justify-content: center; /* Yatayda ortalama (isteğe bağlı) */
+  height: 100%; /* Div'in yüksekliğini kapsaması için */
+}
+
+.footer-left p{
+  margin: 0;
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5vh;
+  text-align: center;
+}
+
+.footer-center {
+  text-align: center; /* Ortada */
+}
+
+.footer-logo {
+  height: 44px; /* Logonun yüksekliği */
+}
+
+.footer-right {
+  display: flex; /* Simgeleri yatay diz */
+  list-style: none; /* Noktaları kaldır */
+  gap: 15px; /* Aralarına boşluk koy */
+  margin: 0; /* Margin sıfırla */
+  padding: 0; /* Padding sıfırla */
+}
+
+.footer-right li a {
+  color: #fff; /* İkon rengi */
+  font-size: 18px; /* İkon boyutu */
+  text-decoration: none; /* Alt çizgi kaldır */
+}
+
+.footer-right li a:hover {
+  color: #F8BE12; /* Hover için ikon rengi */
+} 
+
+/* ============================================== */
+
+/* üst kısımdaki bar */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  color: #fff;
+  height: 10vh;
+}
+
+/* üst kısımdaki bardaki ticketup icon */
+.top-bar-left {
+  flex: 1;
+}
+
+/* ticketup icon boyutu */
+.logo-image {
+  width: 200px;
+}
+
+/* üst barın orta kısmı */
+.top-bar-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* üst kısımdaki orta barın içindeki yazılar */
+.top-bar-center a {
+  text-decoration: none;
+  color: black;
+  padding: 0 50px;
+}
+
+/* yazıların tıklanabilir olması */
+.clickable-text {
+  text-decoration: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* barın içindeki yazıları ayıran çizgiler */
+.top-bar-center a:not(:last-child) {
+  border-right: 2px solid black;
+  padding-right: 50px;
+}
+
+/* üst barın en sağındaki icon ve buton alanı */
+.top-bar-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
+
+/* profil iconu boyutları */
+.logo-profile-events {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+/* sayfanın geri kalanını içine alan container */
+.content-container {
+  margin-top: 7.5vh;
+  flex-grow: 1;
+  margin-left: 6vw;
+  margin-right: 6vw;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ilk event resminin containerı */
+.image-container {
+  width: 100%;
+  height: 50vh;
+  overflow: hidden;
+  margin-bottom: 2vh;
+}
+
+/* ilk event resmi */
+.event-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* event resmi altındaki alan */
+.event-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* event başlığı */
+.event-title {
+  color: black;
+  font-size: 2.5rem;
+}
+
+/* event açıklaması ve detaylarının bulunduğu alan */
+.event-details-container {
+}
+
+/* event açıklaması başlığı */
+.event-subtitle {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* event açıklaması */
+.event-description {
+}
+
+/* tarih-konum alanı */
+.properties-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3vh;
+}
+
+/* tarih konum alanındaki her bir bölüm */
+.property-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 20px;
+}
+
+/* her bölümün içindeki elemanların aralarındaki boşluklar */
+.property-section p {
+  margin: 0;
+}
+
+/* her bölümün başlıkları */
+.property-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+/* tarih-konum alanının sol kısmı */
+.properties-left {
+  width: 48%;
+  padding-top: 15px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* takvime ekle yazısı */
+.add-to-calendar {
+  text-decoration: none;
+  color: #0073e6;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* takvime ekle yazısı üstüne mouse getirince çıkan animasyon */
+.add-to-calendar:hover {
+  text-decoration: underline;
+}
+
+/* organizatör info kısmı özellikleri */
+.organizer-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* organizatör resmi */
+.organizer-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+/* organizatör detayları */
+.organizer-details {
+  display: flex;
+  flex-direction: column;
+}
+
+/* organizatör detayları arasındaki boşluklar */
+.organizer-details p {
+  margin: 5px;
+}
+
+/* organizatör iletişime geç butonu */
+.button-white-border {
+  background-color: white;
+  color: black;
+  border: 2px solid black;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* organizatör iletişime geç butonu */
+.button-white-border:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* organizatör iletişime geç butonu */
+.button-white-border:active {
+  transform: scale(0.95);
+} 
+
+/* upista gururla sunar yazısının containerı */
+.upista-container {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* upista gururla sunar yazısının yanındaki icon */
+.upista-icon {
+  height: 1.75rem;
+  width: 1.75rem;
+}
+
+/* upista gururla sunar yazısı */
+.upista-subtitle {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+/* tarih konum alanının sağ kısmı (konum) */
+.properties-right {
+  width: 48%;
+  padding-top: 15px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* konum yerine geçici duran resim containerı */
+.properties-right .location-image-container {
+  margin-top: 25px;
+  width: 100%;
+  height: 275px;
+  background-color: #e0e0e0;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* konum yerine geçici duran resim */
+.properties-right .location-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+
