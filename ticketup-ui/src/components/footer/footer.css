@@ -1,0 +1,55 @@
+.footer {
+    display: flex; /* Flexbox ile düzenleme */
+    justify-content: space-between; /* Elemanları yatayda yay */
+    align-items: center; /* Dikeyde ortala */
+    background-color: #222; /* Arka plan rengi */
+    color: #fff; /* Yazı rengi */
+    padding: 10px 20px; /* İç boşluklar */
+    width: 100%;
+    height: 4vw; /* Tam genişlik */
+    bottom: 0; /* Alt sınır */
+    z-index: 1000; /* Önde görünmesi için */
+  }
+  
+  .footer-left {
+    display: flex; /* Flexbox etkinleştirme */
+    align-items: center; /* Dikeyde ortalama */
+    justify-content: center; /* Yatayda ortalama (isteğe bağlı) */
+    height: 100%; /* Div'in yüksekliğini kapsaması için */
+  }
+
+  .footer-left p{
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5vh;
+    text-align: center;
+  }
+  
+  .footer-center {
+    text-align: center; /* Ortada */
+  }
+  
+  .footer-logo {
+    height: 44px; /* Logonun yüksekliği */
+  }
+  
+  .footer-right {
+    display: flex; /* Simgeleri yatay diz */
+    list-style: none; /* Noktaları kaldır */
+    gap: 15px; /* Aralarına boşluk koy */
+    margin: 0; /* Margin sıfırla */
+    padding: 0; /* Padding sıfırla */
+  }
+  
+  .footer-right li a {
+    color: #fff; /* İkon rengi */
+    font-size: 18px; /* İkon boyutu */
+    text-decoration: none; /* Alt çizgi kaldır */
+  }
+  
+  .footer-right li a:hover {
+    color: #F8BE12; /* Hover için ikon rengi */
+  }
+  
