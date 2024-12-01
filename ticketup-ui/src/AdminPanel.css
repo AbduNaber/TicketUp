@@ -1,0 +1,138 @@
+/* General layout */
+.AdminPanel {
+  display: flex;
+  background: #E7E7E3;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  position: fixed;
+  background-color: #FAFAFA;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+/* Sidebar Logo */
+.logo-container {
+  margin-bottom: 40px;
+}
+
+/* Menu */
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Adds spacing between menu items */
+}
+
+.menu-item {
+  position: relative;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333333;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.menu-item.active {
+  background-color: rgba(173, 216, 230, 0.5);
+  font-weight: bold;
+}
+
+.menu-item:hover {
+  background-color: rgb(255, 0, 0);
+}
+
+.active-icon img {
+  width: 25px;
+  height: 25px;
+  position: absolute;
+  top: 20%;
+  right: 5px;
+}
+
+/* Main Content */
+.main-content {
+  margin-left: 260px; /* Aligns main content next to the sidebar */
+  margin-top: 60px; /* Pushes content below the top bar */
+  padding: 20px; /* Adds padding inside the main content */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top Bar */
+.top-bar {
+  height: 60px; /* Adjust height as needed */
+  width: calc(100% - 260px); /* Full width minus sidebar width */
+  position: fixed;
+  top: 0;
+  left: 260px; /* Aligns next to the sidebar */
+  background-color: #fff; /* Background color */
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
+  align-items: center; /* Vertically center buttons */
+  padding: 0 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+  z-index: 100; /* Ensures the top bar stays above content */
+}
+
+.top-bar button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+/* Event List */
+.event-list {
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Event List Header */
+.event-list-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.event-list-header span {
+  flex: 1;
+  text-align: left;
+}
+
+/* Event Items */
+.event-item {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.event-item span {
+  flex: 1;
+  text-align: left;
+}
+
+.event-actions button {
+  margin-left: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
