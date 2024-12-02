@@ -4,6 +4,8 @@ import Login from './login';
 import SignupForm from './register'; 
 import Form from './form';
 import ExamplePage from './ExamplePage';
+import EventPage from './event';
+import AdminPanel from './AdminPanel';
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/form" element={<Form />} />
+        <Route path="/event" element={<EventPage />} />
+        <Route path="/adminpanel" element={<AdminPanel />} />
       </Routes>
     </Router>
   );
