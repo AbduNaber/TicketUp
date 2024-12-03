@@ -1,6 +1,7 @@
 import React from "react";
 import "./event.css";
 import GradientButton from "./components/gradientButton/gradientButton";
+import Footer from "./components/footer/footer";
 
 const Event = () => {
   return (
@@ -83,7 +84,7 @@ const Event = () => {
           </div>
         </div>
       </div>
-      {/* Footer bu araya eklenecek */}
+      <Footer></Footer>
     </div>
   );
 };
