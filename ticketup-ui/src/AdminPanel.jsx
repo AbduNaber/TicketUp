@@ -1,8 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./AdminPanel.css";
+import Footer from "./components/footer/footer";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 
 const AdminPanel = () => {
+    const [events, setEvents] = useState([]);
+
+
+    const token = sessionStorage.getItem('token');
+    const parsedToken = token ? jwtDecode(token) : null;
+
+    useEffect(() => {
+        if(!token) {
+            console.error('No token found. Redirecting to login.');
+            window.location.href = '/login';
+            return;
+        }
+
+        const fetchOrganizers = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/ticketup/events/list-organizer-events/${parsedToken.id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setEvents(response.data);
+                console.log('Events fetched')
+            } catch(error) {
+                console.error('Error fetching events:', error.response?.data || error.message);
+                if(error.response?.status === 401) {
+                    window.location.href = '/login';
+                }
+            }
+        };
+
+        fetchOrganizers();
+    }, [token]);
+
+
     const [activeItem, setActiveItem] = useState(1);
 
     const menuItems = [
@@ -12,39 +49,6 @@ const AdminPanel = () => {
 
     ];
 
-
-    const [events, setEvents] = useState([
-
-      { name: "Event 2", date: "2024-12-05",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01" ,isselected: false},
-      { name: "Event 1", date: "2024-11-30",   type: "Seminar" , status: "Active" , createdDate: "2024-11-01" ,isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01"  ,isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "pasive" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 1", date: "2024-11-30",   type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 2", date: "2024-12-05",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
-        { name: "Event 3", date: "2024-12-15",  type: "Seminar" , status: "Active" , createdDate: "2024-11-01",isselected: false},
- 
-    ]);
-    
-
-   
       
     const handleToggle = (clickedEvent) => {
       setEvents(events.map(event =>
@@ -66,6 +70,44 @@ const AdminPanel = () => {
     }
     setIsAllSelected(!isAllSelected);
     }
+
+    const handleDelete = async (eventId) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this event ?");
+        if(!confirmDelete) return;
+
+        try{
+            const response = await axios.delete(`http://localhost:8080/ticketup/events/delete/${eventId}` , {
+                headers: {
+                    Authorization: `Bearer ${token}` ,
+                },
+            });
+            console.log(response.data);
+            setEvents(events.filter(event => event.id !== eventId));
+        } catch(error) {
+            console.log("Error deleting event:", error.response?.data || error.message);
+            if(error.response?.status === 401) {
+                window.location.href = '/login';
+            }
+        }
+    };
+
+    const handleView = (event) => {
+        console.log("Event", event.id, event.name);
+
+    }
+
+    const handleLogout = () => {
+        sessionStorage.removeItem('token');
+        window.location.href = '/login';
+    }
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
    
 
     return (
@@ -112,7 +154,7 @@ const AdminPanel = () => {
             <div className="main-content">
                 {/* Top Bar */}
                 <div className="top-bar">
-                    <button>Logout</button>
+                    <button onClick={handleLogout}>Logout</button>
                     <button>Profile</button>
                 </div>
 
@@ -155,13 +197,13 @@ const AdminPanel = () => {
                         />
                             <span className="event-name">{event.name}</span>
                             <span className="event-type">{event.type}</span>
-                            <span className="event-date">{event.date}</span>
+                            <span className="event-date">{formatDate(event.eventDate)}</span>
                             <span className="event-status">{event.status}</span>
-                            <span className="event-created-date">{event.createdDate}</span>
+                            <span className="event-created-date">{formatDate(event.createdDate)}</span>
                             <span className="event-actions">
-                                <button>View</button>
+                                <button onClick={() => handleView(event)}>View</button>
                                 <button>Edit</button>
-                                <button>Delete</button>
+                                <button onClick={() => handleDelete(event.id)}>Delete</button>
                             </span>
                         </div>
                     ))}

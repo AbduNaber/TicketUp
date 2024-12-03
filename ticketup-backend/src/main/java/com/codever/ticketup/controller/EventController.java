@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
@@ -21,8 +22,13 @@ public class EventController {
     }
 
     @GetMapping(path = "/list/{id}")
-    public Event getEventById(@PathVariable Long id) {
+    public Event getEventById(@PathVariable UUID id) {
         return eventService.getEventById(id);
+    }
+
+    @GetMapping(path = "/list-organizer-events/{id}")
+    public List<Event> getEventsByOrganizerId(@PathVariable UUID id) {
+        return eventService.getEventsByOrganizerId(id);
     }
 
     @PutMapping(path = "/update")
@@ -36,7 +42,7 @@ public class EventController {
     }
 
     @DeleteMapping(path = "/delete/{id}")
-    public void deleteEvent(@PathVariable Long id) {
+    public void deleteEvent(@PathVariable UUID id) {
         eventService.deleteEvent(id);
     }
 }
