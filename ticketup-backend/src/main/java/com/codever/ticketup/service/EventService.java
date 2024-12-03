@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -22,7 +23,7 @@ public class EventService {
         return eventRepository.findAll();
     }
 
-    public Event getEventById(Long id) {
+    public Event getEventById(UUID id) {
         return eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event with id " + id + " not found"));
     }
@@ -39,11 +40,15 @@ public class EventService {
         ).orElseThrow(() -> new RuntimeException("Event with id " + event.getId() + " not found"));
     }
 
-    public void deleteEvent(Long id) {
+    public void deleteEvent(UUID id) {
         eventRepository.deleteById(id);
     }
 
     public Event createEvent(Event event) {
         return eventRepository.save(event);
+    }
+
+    public List<Event> getEventsByOrganizerId(UUID id) {
+       return eventRepository.findByOrganizatorId(id);
     }
 }
