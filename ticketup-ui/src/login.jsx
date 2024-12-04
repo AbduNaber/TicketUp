@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import './login.css'; // Import the CSS
 import axios from 'axios'; 
 
@@ -18,7 +19,7 @@ function Login() {
     try {
 
       if (!validateEmail(username)) {
-        alert('Invalid email address!');
+        toast.error('Invalid email address!');
         return;
       }
       const response = await axios.post('http://localhost:8080/ticketup/organizators/login', {
@@ -33,13 +34,11 @@ function Login() {
       const token = response.data;
       sessionStorage.setItem('token', token); 
       
-      const decodedToken = jwtDecode(token);
-      alert('Login successful!' + decodedToken);
-      console.log(decodedToken);
+    
+      
       navigate(`/organizator`);
     } catch (error) {
-      console.error('Error during login:', error);
-      alert('Login failed.');
+      toast.error("Incorrect password. Please try again.");
     }
 
 
@@ -54,6 +53,15 @@ function Login() {
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
+
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("loggedOut") === "true") {
+      toast.info("You have been logged out successfully.");
+    }
+  }, [location.search]);
+
 
   return (
     <div className="background">
@@ -102,9 +110,11 @@ function Login() {
           <button type="submit" className="login-button">
             Giriş Yap
           </button>
+          
         </form>
       </div>
       <div className="copyright-text">© 2024 TicketUp. All rights reserved.</div>
+      <ToastContainer />
     </div>
   );
 }
