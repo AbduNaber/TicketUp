@@ -1,17 +1,31 @@
 import React, { useEffect, useState } from "react";
-import "./AdminPanel.css";
-import Footer from "./components/footer/footer";
+import { ToastContainer, toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import "./AdminPanel.css";
 
 
 const AdminPanel = () => {
     const [events, setEvents] = useState([]);
-
-
+    const [popupVisible, setPopupVisible] = useState(false); 
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [isDropdownVisible, setIsDropdownVisible] = useState(false);
     const token = sessionStorage.getItem('token');
     const parsedToken = token ? jwtDecode(token) : null;
 
+    const handleView = (event) => {
+        setSelectedEvent(event); // Set the selected event details
+        setPopupVisible(true); // Show the popup
+    };
+
+    const closePopup = () => {
+        setPopupVisible(false); // Hide the popup
+        setSelectedEvent(null); // Clear selected event details
+    };
+
+    const toggleDropdown = () => {
+        setIsDropdownVisible(!isDropdownVisible);
+      };
     useEffect(() => {
         if(!token) {
             console.error('No token found. Redirecting to login.');
@@ -91,14 +105,12 @@ const AdminPanel = () => {
         }
     };
 
-    const handleView = (event) => {
-        console.log("Event", event.id, event.name);
-
-    }
-
+    
+    
     const handleLogout = () => {
+        
         sessionStorage.removeItem('token');
-        window.location.href = '/login';
+        window.location.href = '/login?loggedOut=true';
     }
 
     const formatDate = (dateString) => {
@@ -150,12 +162,23 @@ const AdminPanel = () => {
                 </ul>
             </div>
 
-            {/* Main Content */}
+            
             <div className="main-content">
-                {/* Top Bar */}
-                <div className="top-bar">
-                    <button onClick={handleLogout}>Logout</button>
-                    <button>Profile</button>
+               
+                <div className="admin-top-bar">
+                <div className="dropdown-container">
+            <button onClick={toggleDropdown} className="dropdown-toggle">
+              Organizator
+            </button>
+            {isDropdownVisible && (
+              <div className="dropdown-menu column">
+                
+                <button>View Profile</button>
+                <button onClick={handleLogout} >Logout</button>
+              </div>
+            )}
+          </div>
+        
                 </div>
 
                 {/* Event List */}
@@ -209,7 +232,28 @@ const AdminPanel = () => {
                     ))}
                     </div>
                 </div>
+
+                {popupVisible && selectedEvent && (
+                    <div className="popup-overlay">
+                        <div className="popup-content">
+                            <h3>Event Details</h3>
+                            {selectedEvent ? (
+                                <>
+                                    <p><strong>Name:</strong> {selectedEvent.name}</p>
+                                    <p><strong>Type:</strong> {selectedEvent.type}</p>
+                                    <p><strong>Date:</strong> {formatDate(selectedEvent.eventDate)}</p>
+                                    <p><strong>Status:</strong> {selectedEvent.status}</p>
+                                    <p><strong>Created Date:</strong> {formatDate(selectedEvent.createdDate)}</p>
+                                </>
+                                ) : (
+                                <p>Loading event details...</p>
+                            )}
+                            <button onClick={closePopup}>Close</button>
+                        </div>
+                    </div>
+                )}
             </div>
+            <ToastContainer />
         </div>
     );
 };
