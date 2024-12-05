@@ -1,0 +1,56 @@
+/* üst kısımdaki bar */
+.event-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  color: #fff;
+  height: 10vh;
+}
+
+/* üst kısımdaki bardaki ticketup icon */
+.event-top-bar-left {
+  flex: 1;
+}
+
+/* ticketup icon boyutu */
+.event-logo-image {
+  width: 200px;
+}
+
+/* üst barın orta kısmı */
+.event-top-bar-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* üst kısımdaki orta barın içindeki yazılar */
+.event-top-bar-center a {
+  text-decoration: none;
+  color: black;
+  padding: 0 50px;
+}
+
+/* yazıların tıklanabilir olması */
+.event-clickable-text {
+  text-decoration: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* barın içindeki yazıları ayıran çizgiler */
+.event-top-bar-center a:not(:last-child) {
+  border-right: 2px solid black;
+  padding-right: 50px;
+}
+
+/* üst barın en sağındaki icon ve buton alanı */
+.event-top-bar-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
