@@ -89,7 +89,7 @@ const SignupForm = () => {
         passwordHash: formData.password,
       };
 
-      await axios.post('http://localhost:8080/ticketup/organizators/register', requestBody, {
+      await axios.post('http://46.101.166.170:8080/ticketup/organizators/register', requestBody, {
         headers: {
           'Content-Type': 'application/json',
         },
