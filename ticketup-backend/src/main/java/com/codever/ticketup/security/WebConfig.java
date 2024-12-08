@@ -10,7 +10,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(@NotNull CorsRegistry registry) {
         registry.addMapping("/**")                  // Tüm endpoint'lere izin verir
-                .allowedOrigins("http://localhost:3000")       // Frontend URL'si
+                .allowedOrigins("http://46.101.166.170:5173")       // Frontend URL'si
                 .allowedMethods("GET", "POST", "PUT", "DELETE"); // İzin verilen HTTP metotları
     }
 }
