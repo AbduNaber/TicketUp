@@ -1,6 +1,8 @@
 package com.codever.ticketup.controller;
 
 import com.codever.ticketup.dto.LoginRequestDto;
+import com.codever.ticketup.dto.organizator.OrganizatorDto;
+import com.codever.ticketup.dto.organizator.OrganizatorDtoIU;
 import com.codever.ticketup.model.Organizator;
 import com.codever.ticketup.service.OrganizatorService;
 import lombok.AllArgsConstructor;
@@ -18,8 +20,8 @@ public class OrganizatorController {
     private final OrganizatorService organizatorService;
 
     @PostMapping(path = "/register")
-    public ResponseEntity<String> register(@RequestBody Organizator organizator) {
-        organizatorService.register(organizator);
+    public ResponseEntity<String> register(@RequestBody OrganizatorDtoIU organizatorDtoIU) {
+        organizatorService.register(organizatorDtoIU);
         return ResponseEntity.ok("Organizator registered");
     }
 
@@ -31,20 +33,20 @@ public class OrganizatorController {
     }
 
     @GetMapping(path = "/list")
-    public List<Organizator> getAllOrganizators() {
-        List<Organizator> organizators = organizatorService.getAllOrganizators();
+    public List<OrganizatorDto> getAllOrganizators() {
+        List<OrganizatorDto> organizators = organizatorService.getAllOrganizators();
         System.out.println(organizators);
         return organizators;
 
     }
 
     @GetMapping(path = "/list/{id}")
-    public Organizator getOrganizatorById(@PathVariable(name = "id") UUID id) {
+    public OrganizatorDto getOrganizatorById(@PathVariable(name = "id") UUID id) {
         return organizatorService.getOrganizatorById(id);
     }
 
     @GetMapping(path = "/get/email/{email}")
-    public Organizator getOrganizatorByEmail(@PathVariable(name = "email") String id) {
+    public OrganizatorDto getOrganizatorByEmail(@PathVariable(name = "email") String id) {
         return organizatorService.getOrganizatorByEmail(id);
     }
 
