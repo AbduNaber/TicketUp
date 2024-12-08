@@ -1,0 +1,34 @@
+/* Form Genel Stili */
+.form {
+  font-family: 'Roboto', sans-serif; /* Genel yazı tipi */
+  color: #333333; /* Genel metin rengi */
+  font-size: 1rem; /* Genel yazı boyutu */
+  line-height: 1.5; /* Satır yüksekliği */
+}
+
+/* Label Stili */
+.form-label {
+}
+
+/* Input Stili */
+.form-input {
+}
+
+/* Question Stili */
+.question {
+}
+
+/* Checkbox ve Seçenekler */
+.checkbox-text {
+}
+
+/* Buton Stili */
+.submit-button {
+  width: 25%;
+}
+
+.clear-button {
+}
+
+.submit-button:hover, .clear-button:hover {
+}

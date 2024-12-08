@@ -7,6 +7,8 @@ import Form from './form';
 
 import AdminPanel from './AdminPanel';
 import Event from './event';
+import Ticket from './ticket';
+import TicketEdit from './ticket_edit';
 
 function App() {
   return (
@@ -17,8 +19,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/form" element={<Form />} />
-  
+
         <Route path="/event" element={<Event></Event>} />
+        <Route path="/ticket" element={<Ticket></Ticket>} />
+        <Route path="/ticket/edit" element={<TicketEdit></TicketEdit>} />
       </Routes>
     </Router>
   );
