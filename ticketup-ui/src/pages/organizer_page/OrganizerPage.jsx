@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import "./AdminPanel.css";
+import "./OrganizerPage.css";
 
 
-const AdminPanel = () => {
+const OrganizerPage = () => {
     const [events, setEvents] = useState([]);
     const [popupVisible, setPopupVisible] = useState(false); 
     const [selectedEvent, setSelectedEvent] = useState(null);
@@ -258,4 +258,4 @@ const AdminPanel = () => {
     );
 };
 
-export default AdminPanel;
+export default OrganizerPage;

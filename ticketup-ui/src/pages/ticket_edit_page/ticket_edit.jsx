@@ -1,10 +1,9 @@
-import React from "react";
 import "./ticket_edit.css";
-import "./ticket.css";
-import GradientButton from "./components/gradientButton/gradientButton";
-import Footer from "./components/footer/footer";
-import Form from "./components/form/form"; // Form componentini import ettik
-import "./components/event_top_bar/event_top_bar.css";
+import "../ticket_page/ticket.css";
+import GradientButton from "../../components/gradientButton/gradientButton";
+import Footer from "../../components/footer/footer";
+import Form from "../../components/form/form"; // Form componentini import ettik
+import "../../components/event_top_bar/event_top_bar.css";
 
 const TicketEdit = () => {
   return (
@@ -42,7 +41,7 @@ const TicketEdit = () => {
         </div>
       </div>
       <h2 className="ticket-title">Anadolu'dan Dünyaya (Denizli)</h2>
-      <div className="form-container">
+      <div className="t-form-container">
         <Form />
       </div>
       <Footer />

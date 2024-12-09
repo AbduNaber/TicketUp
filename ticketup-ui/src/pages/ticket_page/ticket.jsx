@@ -1,10 +1,9 @@
-import React from "react";
 import { QRCodeCanvas } from "qrcode.react"; // QR kod kütüphanesini ekledik
 import "./ticket.css";
-import GradientButton from "./components/gradientButton/gradientButton";
-import Footer from "./components/footer/footer";
-import "./components/event_top_bar/event_top_bar.css";
-import EmptyBox from "./components/empty_box/empty_box";
+import GradientButton from "../../components/gradientButton/gradientButton";
+import Footer from "../../components/footer/footer";
+import "../../components/event_top_bar/event_top_bar.css";
+import EmptyBox from "../../components/empty_box/empty_box";
 
 const Ticket = () => {
   return (
