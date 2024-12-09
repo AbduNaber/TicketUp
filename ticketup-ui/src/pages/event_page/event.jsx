@@ -1,8 +1,7 @@
-import React from "react";
 import "./event.css";
-import GradientButton from "./components/gradientButton/gradientButton";
-import Footer from "./components/footer/footer";
-import "./components/event_top_bar/event_top_bar.css";
+import GradientButton from "../../components/gradientButton/gradientButton";
+import Footer from "../../components/footer/footer";
+import "../../components/event_top_bar/event_top_bar.css";
 
 const Event = () => {
   return (

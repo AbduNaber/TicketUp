@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -33,12 +33,11 @@ function Login() {
 
       const token = response.data;
       sessionStorage.setItem('token', token); 
-      
-    
-      
-      navigate(`/organizator`);
+       
+      navigate(`/organizer`);
     } catch (error) {
       toast.error("Incorrect password. Please try again.");
+      console.log(error.message)
     }
 
 
