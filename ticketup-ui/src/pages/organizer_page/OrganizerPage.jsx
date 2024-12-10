@@ -23,6 +23,18 @@ const OrganizerPage = () => {
         setSelectedEvent(null); // Clear selected event details
     };
 
+    const goToEventPage = () => {
+        if(selectedEvent) {
+            window.location.href = `/event/${selectedEvent.id}`;
+        }
+    };
+
+    const goToParticipantList = () => {
+        if(selectedEvent) {
+            window.location.href = `/event/${selectedEvent.id}/participants`;
+        }
+    };
+
     const toggleDropdown = () => {
         setIsDropdownVisible(!isDropdownVisible);
       };
@@ -234,24 +246,30 @@ const OrganizerPage = () => {
                 </div>
 
                 {popupVisible && selectedEvent && (
-                    <div className="popup-overlay">
-                        <div className="popup-content">
-                            <h3>Event Details</h3>
-                            {selectedEvent ? (
-                                <>
-                                    <p><strong>Name:</strong> {selectedEvent.name}</p>
-                                    <p><strong>Type:</strong> {selectedEvent.type}</p>
-                                    <p><strong>Date:</strong> {formatDate(selectedEvent.eventDate)}</p>
-                                    <p><strong>Status:</strong> {selectedEvent.status}</p>
-                                    <p><strong>Created Date:</strong> {formatDate(selectedEvent.createdDate)}</p>
-                                </>
-                                ) : (
-                                <p>Loading event details...</p>
-                            )}
-                            <button onClick={closePopup}>Close</button>
+                <div className="popup-overlay">
+                    <div className="popup-content">
+                        <button className="close-button" onClick={closePopup}>
+                            <i className="fas fa-times"></i>
+                        </button>
+                        <h3>Event Details</h3>
+                        {selectedEvent ? (
+                            <>
+                                <p><strong>Name: {selectedEvent.name} </strong></p>
+                                <p><strong>Type:{selectedEvent.type} </strong> </p>
+                                <p><strong>Date: {formatDate(selectedEvent.eventDate)} </strong></p>
+                                <p><strong>Status: {selectedEvent.status} </strong></p>
+                                <p><strong>Created Date:{formatDate(selectedEvent.createdDate)} </strong> </p>
+                            </>
+                        ) : (
+                            <p>Loading event details...</p>
+                        )}
+                        <div className="button-container">
+                            <button className="primary-button" onClick={goToEventPage}>Event Page</button>
+                            <button className="secondary-button" onClick={goToParticipantList}>Participants</button>
                         </div>
                     </div>
-                )}
+                </div>
+            )}
             </div>
             <ToastContainer />
         </div>
