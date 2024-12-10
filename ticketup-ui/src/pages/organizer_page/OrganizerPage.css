@@ -1,70 +1,55 @@
-/* AdminPanel styles */
 body {
   font-family: "Inter", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 1;
-  font-style: normal;
+  margin: 0;
+  background: #f5f5f5;
 }
 
 .AdminPanel {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start; 
   height: 100vh;
 }
 
-
+/* Sidebar */
 .sidebar {
-  width: 260px;
-  min-height: 100vh;
-  background-color: #FAFAFA;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  width: 240px;
+  background: #ffffff;
+  border-right: 1px solid #ddd;
   display: flex;
   flex-direction: column;
+  padding: 20px;
 }
 
-/* Logo */
 .logo-container {
   margin-bottom: 40px;
+  text-align: center;
 }
+
 .logo {
-  max-width: 100%;
+  width: 80%;
   height: auto;
 }
 
-/* Menu */
 .menu {
   list-style: none;
   padding: 0;
   margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 .menu-item {
-  font-family: "Inter", sans-serif;
-  font-optical-sizing: auto;
-  font-weight:0.1;
-  font-style: normal;
-  font-size: 16px;
-  font-weight: 500;
-  color: #333;
-  text-decoration: none;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
-  border-radius: 8px;
+  padding: 12px 10px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  position: relative;
+  font-size: 15px;
+  color: #333;
+  transition: background 0.3s;
 }
 .menu-item:hover {
-  background-color: #f0f0f0;
+  background: #f0f0f0;
 }
 .menu-item.active {
-  background-color: #ececec;
+  background: #e0e0e0;
   font-weight: bold;
 }
 .menu-item-icon img {
@@ -72,300 +57,256 @@ body {
   height: 20px;
 }
 .active-icon {
-  position: absolute;
-  right: 10px;
-}
-.active-icon-img {
-  width: 14px;
-  height: 14px;
+  margin-left: auto;
 }
 
 /* Main Content */
 .main-content {
-  flex: 1; 
+  flex: 1;
   display: flex;
-  flex-direction: column; 
-  padding: 20px;
-  overflow-y: auto;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 /* Top Bar */
-.admin-top-bar {
-  
-   display: flex;
-  justify-content: flex-end;
-  align-items: center; 
-  gap: 10px;
-  width: 100%;
-  box-sizing: border-box;
-  background-color: #FAFAFA;
-  padding: 10px; 
-}
-
-.admin-top-bar button {
-  padding: 8px 12px;
-  font-size: 14px;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #fff;
-  transition: background-color 0.2s
-}
-.admin-top-bar button:hover {
-  background-color: #f5f5f5;
-}
-
-
-
-
-.event-list-container {
-  margin-top: 20px;
-  width: 100%; 
-
-  background-color: #fff; /* Clean background */
-  overflow: hidden; /* Prevent content overflow */
-}
-
-/* Header */
-.event-list-header {
-  display: grid;
-  grid-template-columns: 3fr 2fr 2fr 2fr; /* Consistent column structure */
-  gap: 10px;
-  padding: 10px 0;
-  font-weight: bold;
-  border-bottom: 2px solid #ccc; /* Separate header with a line */
-  background-color: #f9f9f9; /* Optional: Light background for header */
-  position: sticky; /* Sticky header (optional for better UX) */
-  top: 0; /* Sticks to the top of the container */
-  z-index: 1; /* Ensure it stays above the content */
-}
-
-/* Scrollable Event List */
-.event-list {
-  max-height: 400px; /* Fixed height for scrollable rows */
-  overflow-y: auto; /* Enable vertical scrolling */
-}
-
-/* Individual Rows */
-.event-item {
-  display: grid;
-  grid-template-columns: 3fr 2fr 2fr 2fr; /* Same as header for alignment */
-  gap: 10px;
-  padding: 10px 0;
-  align-items: center;
-  border-bottom: 1px solid #eee;
-}
-
-/* Last Row Without Border */
-.event-item:last-child {
-  border-bottom: none;
-}
-
-/* Column Text Alignments */
-.event-name,
-.event-date,
-.event-organizer,
-.event-actions {
-  text-align: left;
-}
-
-/* Action Buttons */
-.event-actions button {
-  margin-left: 5px;
-  padding: 4px 8px;
-  font-size: 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #fff;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.event-actions button:hover {
-  background-color: #f5f5f5;
-}
-
-/* Scrollbar Styling (Optional) */
-.event-list::-webkit-scrollbar {
-  width: 8px;
-}
-
-.event-list::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-  border-radius: 8px;
-}
-
-.event-list::-webkit-scrollbar-thumb:hover {
-  background-color: #999;
-}
-
-.event-list-header,
-.event-item {
-  display: grid; 
-  grid-template-columns: 1fr 3fr 1fr 2fr 1fr 2fr 1fr; 
-  gap: 10px; 
-  padding: 10px 0;
-  align-items: center; 
-}
-
-
-.event-list-header {
-  font-weight: bold;
-  border-bottom: 2px solid #ccc; 
-}
-
-
-.event-item {
-  font-weight: 300;
-  border-bottom: 1px solid #eee; 
-}
-
-
-.event-name,
-.event-date,
-.event-organizer {
-  text-align: left; 
-}
-
-.event-actions {
-  display: flex; 
-  align-items: center; 
-}
-
-.event-actions {
-  text-align: center; 
-}
-
-/* Buttons in Actions */
-.event-actions button {
-  margin-left: 5px;
-  padding: 4px 8px;
-  font-size: 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #fff;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.event-actions button:hover {
-  background-color: #f5f5f5;
-}
-
-
-.custom-checkbox {
-  position: relative;
-  display: inline-block;
-  width: 24px; 
-  height: 24px;
-  cursor: pointer;
-}
-
-
-.custom-checkbox input[type="checkbox"] {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-
-
-.checkbox-icon {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('../assets/icons/checkbox.svg'); 
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
-.custom-checkbox input[type="checkbox"]:checked + .checkbox-icon {
-  background-image: url('../assets/icons/selected-checkbox.svg'); 
-}
-
-
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+.top-bar {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.popup-content {
+  justify-content: space-between; /* Space items evenly: left, center, right */
+  align-items: center; /* Center items vertically */
   background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  max-width: 400px;
-  width: 100%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+  gap: 5px;
 }
 
-.popup-content h3 {
-  margin-bottom: 15px;
-}
-
-.popup-content button {
-  background: #007BFF;
-  color: #fff;
-  padding: 10px 15px;
-  border: none;
+.search-input {
+  display: flex;
+  justify-content: center; /* Center the search bar */
+  flex: 1; /* Takes up the available space */
+  max-width: 300px;
+  padding: 6px 10px;
+  border: 1px solid #000000;
   border-radius: 4px;
-  cursor: pointer;
+  font-size: 14px;
+
+}
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 5px; 
 }
 
-.popup-content button:hover {
-  background: #0056b3;
-}
-
-.dropdown-container {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-toggle {
+.user-button {
   background: none;
   border: none;
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
-  color: #333;
-  padding: 10px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.user-button:hover {
+  background: #f0f0f0;
 }
 
 .dropdown-menu {
   position: absolute;
   top: 40px;
   right: 0;
-  background: white;
+  background: #fff;
   border: 1px solid #ddd;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
-  padding: 10px 0;
+  padding: 0;
   width: 150px;
   z-index: 1000;
 }
-
 .dropdown-menu.column button {
   background: none;
   border: none;
   text-align: left;
   padding: 10px 15px;
   cursor: pointer;
-  width: 100%;
   font-size: 14px;
   color: #333;
 }
-
 .dropdown-menu.column button:hover {
   background: #f0f0f0;
+}
+
+/* Event List */
+.event-list-container {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.event-list-container h2 {
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+.event-list-header, .event-item {
+  display: grid;
+  grid-template-columns: 40px 2fr 1fr 1fr 1fr 1fr 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.event-list-header {
+  padding: 10px 0;
+  font-weight: bold;
+  border-bottom: 2px solid #ccc;
+  background: #fefefe;
+}
+
+.event-list {
+  flex: 1;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.event-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+.event-item:hover {
+  background: #f9f9f9;
+}
+
+.checkbox-icon {
+  width: 20px;
+  height: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.event-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.event-actions button {
+  background: #f8f8f8;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 12px;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.event-actions button:hover {
+  background: #e0e0e0;
+}
+
+.view-btn {
+  color: #007BFF;
+  border-color: #007BFF;
+}
+.view-btn:hover {
+  background: #007BFF;
+  color: #fff;
+}
+
+.delete-btn {
+  color: #d9534f;
+  border-color: #d9534f;
+}
+.delete-btn:hover {
+  background: #d9534f;
+  color: #fff;
+}
+
+.edit-btn {
+  color: #5bc0de;
+  border-color: #5bc0de;
+}
+.edit-btn:hover {
+  background: #5bc0de;
+  color: #fff;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Popup */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+.popup-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+}
+.popup-content h3 {
+  margin-top: 0;
+  font-size: 1.4rem;
+  text-align: center;
+}
+.popup-content p {
+  margin: 10px 0;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.primary-button, .secondary-button {
+  padding: 8px 14px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+.primary-button {
+  background: #007BFF;
+  color: #fff;
+}
+.primary-button:hover {
+  background: #0056b3;
+}
+.secondary-button {
+  background: #f0f0f0;
+  color: #333;
+}
+.secondary-button:hover {
+  background: #e0e0e0;
 }
