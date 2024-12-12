@@ -127,7 +127,7 @@ const Event = () => {
               <h3 className="property-title">Konum</h3>
               <p className="location-description">Denizli Ticaret Odası</p>
               <div className="location-image-container">
-                <LoadScript googleMapsApiKey="AIzaSyAlok2yTe2GY6brdbeKQxGDMPdlWDYlThE">
+                <LoadScript googleMapsApiKey="API KEY HERE">
                   <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={15}>
                     <Marker position={center}></Marker>
                   </GoogleMap>
