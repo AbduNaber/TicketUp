@@ -1,8 +1,20 @@
 import React, { useState } from "react";
 import "./form.css";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import axios from "axios";
 
 
 const EventForm = () => {
+
+  const location = useLocation();
+  const eventID = location.state?.eventID;
+  const imageLink = location.state?.imageLink;
+  const navigate = useNavigate();
+  
+
+  
+
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
@@ -24,9 +36,35 @@ const EventForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data Submitted:", formData);
+    
+    
+    try{
+      const requestBody = {
+        eventId: eventID,
+        name: formData.name,
+        surname: formData.surname,
+        email: formData.mailAddress,
+        phone: formData.phoneNumber,
+        companyName: formData.phoneNumber,
+        title: formData.title,
+        companyUrl: formData.website,
+        city: formData.city,
+        isFirstTime: formData.terms
+      };
+
+      await axios.post('http://localhost:8080/ticketup/participants/create', requestBody, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      navigate('/ticket')
+      
+    }catch(error){
+      console.error(error);
+    }
   };
 
   const handleReset = () => {
@@ -45,9 +83,11 @@ const EventForm = () => {
     console.log("Form reset");
   };
 
+
   return (
+
     <div  className="form-wrapper">
-      <img className="event-icon" src="/src/assets/images/form_bg.png" alt="Event" />
+      <img className="event-icon" src={imageLink} alt="Event" />
       <div className="form-container">
         <form className="form" onSubmit={handleSubmit}>
           <div className="form-input-container-row">

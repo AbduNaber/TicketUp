@@ -25,7 +25,8 @@ const OrganizerPage = () => {
 
     const toggleDropdown = () => {
         setIsDropdownVisible(!isDropdownVisible);
-      };
+    };
+
     useEffect(() => {
         if(!token) {
             console.error('No token found. Redirecting to login.');

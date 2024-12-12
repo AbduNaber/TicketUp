@@ -6,10 +6,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("ticketup/partcipants")
+@RequestMapping("ticketup/participants")
 public class ParticipantController {
 
     private final ParticipantService participantService;
@@ -20,7 +21,7 @@ public class ParticipantController {
     }
 
     @GetMapping(path = "/list/{id}")
-    public Participant getParticipantById(@PathVariable(name = "id") Long id) {
+    public Participant getParticipantById(@PathVariable(name = "id") UUID id) {
         return participantService.getPartipantById(id);
     }
 
@@ -35,7 +36,7 @@ public class ParticipantController {
     }
 
     @DeleteMapping(path = "/delete/{id}")
-    public void deleteParticipant(@PathVariable(name = "id") Long id) {
+    public void deleteParticipant(@PathVariable(name = "id") UUID id) {
         participantService.deleteParticipant(id);
     }
 }

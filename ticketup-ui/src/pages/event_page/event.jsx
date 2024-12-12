@@ -2,8 +2,56 @@ import "./event.css";
 import GradientButton from "../../components/gradientButton/gradientButton";
 import Footer from "../../components/footer/footer";
 import "../../components/event_top_bar/event_top_bar.css";
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+
+const eventImage = "/db_images/Hero-1.jpg";
+const containerStyle = {
+  width: '100%',
+  height: '300px',
+};
+
+// Haritanın merkez noktası
+const center = {
+  lat: 37.7749, // Örneğin Denizli'nin enlemi
+  lng: 29.0875, // Örneğin Denizli'nin boylamı
+};
+
+
 
 const Event = () => {
+
+
+  const {id} = useParams();
+  const [event, setEvent] = useState(null);
+  const navigate = useNavigate();
+
+  const handleGoToForm = () => {
+    
+    navigate('/form', {state: {eventID: id, imageLink: eventImage}});
+  }
+
+
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/ticketup/events/list/${id}`);
+        setEvent(response.data);
+        console.log('Event Fetched');
+      } catch(error) {
+        console.error('Error fetching event:', error.response?.data || error.message);
+        alert('Kayıt Başarısız.');
+        
+      }
+    };
+
+    fetchEvent();
+  }, [id]);
+
+
   return (
     <div className="event-wrapper">
       <div className="event-top-bar">
@@ -26,11 +74,11 @@ const Event = () => {
       </div>
       <div className="content-container">
         <div className="image-container">
-          <img className="event-image" src="/src/assets/images/event_page_event.jpg" alt="Event" />
+          <img className="event-image" src={eventImage} alt="Event" />
         </div>
         <div className="event-header">
           <h2 className="event-title">Anadolu'dan Dünyaya</h2>
-          <GradientButton text="Katılım Formu" onClick={() => { }} />
+          <GradientButton text="Katılım Formu" onClick={handleGoToForm} />
         </div>
         <div className="event-details-container">
           <h1 className="event-subtitle">Etkinlik Açıklaması</h1>
@@ -79,6 +127,11 @@ const Event = () => {
               <h3 className="property-title">Konum</h3>
               <p className="location-description">Denizli Ticaret Odası</p>
               <div className="location-image-container">
+                <LoadScript googleMapsApiKey="AIzaSyAlok2yTe2GY6brdbeKQxGDMPdlWDYlThE">
+                  <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={15}>
+                    <Marker position={center}></Marker>
+                  </GoogleMap>
+                </LoadScript>
               </div>
             </div>
           </div>
