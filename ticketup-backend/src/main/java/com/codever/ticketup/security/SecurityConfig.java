@@ -33,7 +33,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return  http.cors(withDefaults()).csrf(customizer->customizer.disable()).
                 authorizeHttpRequests(request->request
-                        .requestMatchers("/ticketup/organizators/login", "/ticketup/organizators/register")
+                        .requestMatchers("/ticketup/organizators/login", "/ticketup/organizators/register", "/ticketup/events/list/{id}",
+                                "/ticketup/participants/create")
                         .permitAll().anyRequest().authenticated())
                 .httpBasic(withDefaults())
                 .sessionManagement(session->session.sessionCreationPolicy(STATELESS))
