@@ -1,0 +1,299 @@
+/* App.css */
+.create-top-bar {
+  display: flex;
+  gap: 60px;
+  align-items: center;
+  height: 60px;
+  /* Top bar yüksekliği */
+  background-color: transparent;
+  /* Renksiz yapar */
+  padding: 0 20px;
+}
+
+.create-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 75px;
+}
+
+.create-box-logo {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.create-head-text {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: left;
+  color: #2E5D9F;
+}
+
+.create-container {
+  margin: 300px;
+  margin-top: 40px;
+  border-radius: 8px;
+}
+
+.create-center-text {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: black;
+  text-align: left;
+  /* Metni sola hizalar */
+  margin-bottom: 20px;
+  /* Başlıkla içerik arasına mesafe bırakır */
+}
+
+.create-left-text {
+  font-size: 32px;
+  font-weight: 400;
+  color: black;
+  text-align: left;
+  /* Metni sola hizalar */
+  margin-bottom: 20px;
+  /* Başlıkla içerik arasına mesafe bırakır */
+}
+
+.create-buttons-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.create-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-size: 14px;
+  font-weight: bold;
+  color: #2E5D9F;
+  cursor: pointer;
+}
+
+.create-button-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-bottom: 5px;
+}
+
+.create-button-circle.active {
+  color: white;
+}
+
+.create-line {
+  width: 100%;
+  height: 1px;
+  margin-top: 10px;
+}
+
+.create-buttons-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 50px;
+  margin-left: 200px;
+  margin-right: 200px;
+  margin-bottom: 100px;
+}
+
+.create-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-size: 14px;
+  font-weight: bold;
+  color: #2E5D9F;
+  cursor: pointer;
+}
+
+.create-button-circle {
+  width: 12px;
+  height: 12px;
+  border: 2px solid black;
+  border-radius: 50%;
+}
+
+.create-button-circle.active {
+  background-color: black;
+  color: white;
+}
+
+.create-line {
+  width: 100%;
+  height: 1px;
+  background-color: black;
+}
+
+.düzenle-page .create-button-circle.active {
+  background-color: black;
+  color: white;
+}
+
+.create-event-details {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.create-event-title {
+  font-size: 16px;
+  color: #333;
+  margin-right: 10px;
+}
+
+.create-event-title span {
+  color: red;
+}
+
+.create-date-title span {
+  color: red;
+}
+
+.create-input-container {
+  display: flex;
+  flex-grow: 1; /* Kalan tüm boşluğu kaplar */
+}
+
+.create-input {
+  width: 100%;
+  height: 50px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0;
+}
+
+.create-input::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+.create-dates-container {
+  width: 70%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.create-date-input {
+  margin-top: 10px;
+  width: 100%;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.create-dropdown-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+  /* Başlık ile dropdown arasına boşluk */
+}
+
+.create-dropdown-select {
+  width: 100%;
+  height: 50px;
+  padding: 16px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  appearance: none;
+  /* Tarayıcıya özgü ok simgesini kaldırır */
+  -webkit-appearance: none;
+  /* Safari için */
+}
+
+.create-left-text-container {
+  width: 175px;
+  height: 75px;
+  display: flex;
+  align-items: center;
+  text-align: left;
+}
+
+.create-dropdown-container {
+  flex-grow: 1; /* Kalan tüm boşluğu kaplar */
+  display: flex;
+  flex-direction: column;
+  /* Başlık ve dropdown menü alt alta gelecek şekilde */
+  align-items: flex-start;
+}
+
+.create-large-input-container {
+  display: flex;
+  flex-grow: 1; /* Kalan tüm alanı kaplar */
+  flex-direction: column; /* İçeriği dikey hizalar */
+}
+
+.create-large-input {
+  width: 100%;
+  height: 120px; /* Yüksekliği daha büyük olacak şekilde ayarlandı */
+  font-size: 14px; /* Daha büyük metin boyutu */
+  border: 1px solid #ccc;
+  font-family: inherit;
+  border-radius: 4px;
+  resize: vertical; /* Kullanıcı yüksekliği değiştirebilir */
+}
+
+.create-large-input::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+.create-button-container{
+  display: flex;
+  align-items: end;
+  justify-content: end;
+}
+
+.create-file-upload-container {
+  display: flex;
+  align-items: center; /* Dikeyde hizalama */
+  justify-content: center; /* Ortada hizalama */
+  width: 100%;
+  max-width: 450px; /* Maksimum genişlik */
+  padding: 10px;
+  border: 2px dashed #ccc; /* Çizgili sınır */
+  border-radius: 8px;
+  background-color: #f9f9f9; /* Hafif arka plan rengi */
+  box-sizing: border-box;
+}
+
+.create-file-upload-container:hover {
+  border-color: #2e5d9f; /* Hover durumunda sınır rengi değişir */
+}
+
+.create-file-upload-button {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  background-color: #2e5d9f; /* Buton rengi */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-right: 15px; /* Yazı ile buton arasındaki boşluk */
+}
+
+.create-file-upload-button:hover {
+  background-color: #1b3d6b; /* Hover durumunda koyu mavi */
+}
+
+.create-file-upload-text {
+  font-size: 14px;
+  color: #666;
+}
+
+.create-file-input {
+  display: none; /* Dosya seçme input'u gizli */
+}
+
