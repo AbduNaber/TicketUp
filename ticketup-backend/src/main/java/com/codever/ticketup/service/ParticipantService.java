@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -21,7 +22,7 @@ public class ParticipantService {
         return participantRepository.findAll();
     }
 
-    public Participant getPartipantById(Long id) {
+    public Participant getPartipantById(UUID id) {
         return participantRepository.getReferenceById(id);
     }
      public Participant updateParticipant(Participant participant) {
@@ -32,7 +33,7 @@ public class ParticipantService {
                 }
         ).orElseThrow(() -> new RuntimeException("Participant not found with id: " + participant.getId()));
      }
-     public void deleteParticipant(Long id) {
+     public void deleteParticipant(UUID id) {
         participantRepository.deleteById(id);
      }
      public void add(Participant participant) {

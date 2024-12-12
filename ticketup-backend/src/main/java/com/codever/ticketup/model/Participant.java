@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @Entity
@@ -17,8 +18,38 @@ import java.time.LocalDateTime;
 @Table(name = "participants")
 public class Participant {
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", columnDefinition = "UUID")
+    private UUID id;
+
+    @Column(name = "event_id", columnDefinition = "UUID")
+    private UUID eventId;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "surname")
+    private String surname;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "company_name")
+    private String companyName;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "company_url")
+    private String companyUrl;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "is_first_time")
+    private boolean isFirstTime;
 
 }
