@@ -133,9 +133,6 @@ const Event = () => {
               <h3 className="property-title">Konum</h3>
               <p className="location-description">Denizli Ticaret Odası</p>
               <div className="location-image-container">
-              
-              
-                
                 <LoadScript googleMapsApiKey= {apiKey}>
                   <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={15}>
                     <MarkerF position={center}  onClick={() => window.open(url, '_blank')}>   </MarkerF>
