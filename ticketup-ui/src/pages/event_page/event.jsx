@@ -2,13 +2,18 @@ import "./event.css";
 import GradientButton from "../../components/gradientButton/gradientButton";
 import Footer from "../../components/footer/footer";
 import "../../components/event_top_bar/event_top_bar.css";
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, MarkerF } from '@react-google-maps/api';
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const apiKey = import.meta.env.REACT_APP_GOOGLE_API_KEY;
-console.log(apiKey);
+const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+
+if (!apiKey) {
+  throw new Error('REACT_APP_GOOGLE_API_KEY is not defined in .env file');
+}
+
+
 const eventImage = "/db_images/Hero-1.jpg";
 const containerStyle = {
   width: '100%',
@@ -20,8 +25,8 @@ const center = {
   lat: 37.7749, // Örneğin Denizli'nin enlemi
   lng: 29.0875, // Örneğin Denizli'nin boylamı
 };
-
-
+const url = `https://www.google.com/maps?q=${center.lat},${center.lng}`;
+console.log(url);
 
 const Event = () => {
 
@@ -128,9 +133,12 @@ const Event = () => {
               <h3 className="property-title">Konum</h3>
               <p className="location-description">Denizli Ticaret Odası</p>
               <div className="location-image-container">
-                <LoadScript googleMapsApiKey="API KEY HERE">
+              
+              
+                
+                <LoadScript googleMapsApiKey= {apiKey}>
                   <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={15}>
-                    <Marker position={center}></Marker>
+                    <MarkerF position={center}  onClick={() => window.open(url, '_blank')}>   </MarkerF>
                   </GoogleMap>
                 </LoadScript>
               </div>
