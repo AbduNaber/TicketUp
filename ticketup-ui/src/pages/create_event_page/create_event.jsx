@@ -2,8 +2,21 @@ import GradientButton from "../../components/gradientButton/gradientButton";
 import Footer from "../../components/footer/footer";
 import EmptyBox from "../../components/empty_box/empty_box";
 import "./create_event.css";
+import { useState } from "react";
 
 const CreateEvent = () => {
+
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploadMessage, setUploadMessage] = useState("");
+
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
+  const handleFileUpload = async() => {
+    
+  }
+
   return (
     <div className="create-wrapper">
       <div className="create-top-bar">

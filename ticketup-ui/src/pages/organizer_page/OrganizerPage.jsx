@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+<<<<<<< HEAD
 import '../../index.css';
+=======
+import "./OrganizerPage.css";
+import GradientButton from "../../components/gradientButton/gradientButton";
+import { useNavigate } from "react-router-dom";
+>>>>>>> origin/ilker
 
 const OrganizerPage = () => {
   const [events, setEvents] = useState([]);
@@ -11,6 +17,7 @@ const OrganizerPage = () => {
   const [popupVisible, setPopupVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const navigate = useNavigate();
 
   const token = sessionStorage.getItem("token");
   const parsedToken = token ? jwtDecode(token) : null;
@@ -138,6 +145,10 @@ const OrganizerPage = () => {
     sessionStorage.removeItem("token");
     window.location.href = "/login?loggedOut=true";
   };
+
+  const handleCreateEvent = () => {
+    navigate("/event/create");
+  }
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -295,11 +306,40 @@ const OrganizerPage = () => {
               <h3 className="mt-0 text-xl text-center">Event Details</h3>
               {selectedEvent ? (
                 <>
+<<<<<<< HEAD
                   <p><strong>Name: </strong> {selectedEvent.name}</p>
                   <p><strong>Type: </strong> {selectedEvent.type}</p>
                   <p><strong>Date: </strong> {formatDate(selectedEvent.eventDate)}</p>
                   <p><strong>Status: </strong> {selectedEvent.status}</p>
                   <p><strong>Created Date: </strong> {formatDate(selectedEvent.createdDate)}</p>
+=======
+                  <p>
+                    <strong>Name: </strong> {selectedEvent.name}
+                  </p>
+                  <p>
+                    <strong>Type: </strong> {selectedEvent.type}
+                  </p>
+                  <p>
+                    <strong>Date: </strong> {formatDate(selectedEvent.eventDate)}
+                  </p>
+                  <p>
+                    <strong>Status: </strong> {selectedEvent.status}
+                  </p>
+                  <p>
+                    <strong>Created Date: </strong>{" "}
+                    {formatDate(selectedEvent.createdDate)}
+                  </p>
+                  <p>
+                    <strong>Event Link: </strong> 
+                    <a 
+                      href={`http://localhost:3000/event/${selectedEvent.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      http://localhost:3000/event/{selectedEvent.id}
+                    </a>
+                  </p>
+>>>>>>> origin/ilker
                 </>
               ) : (
                 <p>Loading event details...</p>
@@ -315,6 +355,7 @@ const OrganizerPage = () => {
             </div>
           </div>
         )}
+        <GradientButton text="Create" onClick={handleCreateEvent}></GradientButton>
       </div>
       <ToastContainer />
     </div>
