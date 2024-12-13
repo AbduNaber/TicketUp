@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import '../../index.css';
+import "./OrganizerPage.css";
 
 const OrganizerPage = () => {
   const [events, setEvents] = useState([]);
@@ -15,7 +15,7 @@ const OrganizerPage = () => {
   const token = sessionStorage.getItem("token");
   const parsedToken = token ? jwtDecode(token) : null;
 
-  const [activeItem, setActiveItem] = useState(2);
+  const [activeItem, setActiveItem] = useState(2); // Default to "ETKİNLİKLER"
   const [isAllSelected, setIsAllSelected] = useState(false);
 
   const menuItems = [
@@ -26,6 +26,7 @@ const OrganizerPage = () => {
     { id: 5, label: "LOG KAYITLARI", icon: "/assets/icons/participant-icon.svg" },
     { id: 6, label: "ORGANIZATOR İŞLEMLERİ", icon: "/assets/icons/participant-icon.svg" },
     { id: 7, label: "TicketUp'a Ulaş", icon: "/assets/icons/participant-icon.svg" }
+
   ];
 
   const handleView = (event) => {
@@ -66,7 +67,7 @@ const OrganizerPage = () => {
       window.location.href = "/login";
       return;
     }
-
+   
     const fetchOrganizers = async () => {
       try {
         const response = await axios.get(
@@ -80,7 +81,10 @@ const OrganizerPage = () => {
         setEvents(response.data);
         setFilteredEvents(response.data);
       } catch (error) {
-        console.error("Error fetching events:", error.response?.data || error.message);
+        console.error(
+          "Error fetching events:",
+          error.response?.data || error.message
+        );
         if (error.response?.status === 401) {
           console.error("Unauthorized. Redirecting to login.");
           window.location.href = "/login";
@@ -89,7 +93,7 @@ const OrganizerPage = () => {
     };
 
     fetchOrganizers();
-  }, [token]);
+  }, [token]); // Only run when `token` changes
 
   const handleToggle = (clickedEvent) => {
     setEvents((prevEvents) =>
@@ -115,15 +119,20 @@ const OrganizerPage = () => {
   };
 
   const handleDelete = async (eventId) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this event?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this event?"
+    );
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`http://localhost:8080/ticketup/events/delete/${eventId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axios.delete(
+        `http://localhost:8080/ticketup/events/delete/${eventId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setEvents((prev) => prev.filter((event) => event.id !== eventId));
       setFilteredEvents((prev) => prev.filter((event) => event.id !== eventId));
     } catch (error) {
@@ -155,31 +164,33 @@ const OrganizerPage = () => {
   }, [searchTerm, events]);
 
   return (
-    <div className="flex h-screen bg-gray-100 font-sans">
+    <div className="AdminPanel">
       {/* Sidebar */}
-      <div className="w-60 bg-white border-r border-gray-300 p-5 flex flex-col">
-        <div className="mb-10 text-center">
+      <div className="sidebar">
+        <div className="logo-container">
           <img
             src="/assets/icons/ticketUp-logo.svg"
             alt="TicketUp Logo"
-            className="w-4/5 h-auto mx-auto"
+            className="logo"
           />
         </div>
-        <ul className="list-none p-0 m-0">
+        <ul className="menu">
           {menuItems.map((item) => (
             <li
               key={item.id}
-              className={`flex items-center gap-2 p-3 rounded-md cursor-pointer text-sm text-gray-800 transition-colors 
-              ${item.id === activeItem ? "bg-gray-200 font-bold" : "hover:bg-gray-100"}`}
+              className={`menu-item ${item.id === activeItem ? "active" : ""}`}
               onClick={() => setActiveItem(item.id)}
             >
-              <span className="w-5 h-5 flex-shrink-0">
+              <span className="menu-item-icon">
                 <img src={item.icon} alt={item.label} />
               </span>
-              <span>{item.label}</span>
+              <span className="menu-item-label">{item.label}</span>
               {item.id === activeItem && (
-                <span className="ml-auto">
-                  <img src="/assets/icons/dashicons_arrow-right.svg" alt="Active" />
+                <span className="active-icon">
+                  <img
+                    src="/assets/icons/dashicons_arrow-right.svg"
+                    alt="Active"
+                  />
                 </span>
               )}
             </li>
@@ -187,52 +198,43 @@ const OrganizerPage = () => {
         </ul>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="main-content">
         {/* Top Navigation Bar */}
-        <div className="flex justify-between items-center bg-white px-5 py-2 border-b border-gray-300 gap-1">
-        <input type="text" placeholder="Search events..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="flex mx-auto flex-1 max-w-sm p-1 border border-black rounded text-sm"
+        <div className="top-bar">
+          <input
+            type="text"
+            placeholder="Search events..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
           />
-          <div className="relative user-menu flex items-center gap-1">
-            <button
-              onClick={toggleDropdown}
-              className="bg-none border-none text-sm cursor-pointer p-2 rounded hover:bg-gray-100"
-            >
+          <div className="user-menu">
+            <button onClick={toggleDropdown} className="user-button">
               Organizator
             </button>
             {isDropdownVisible && (
-              <div className="absolute top-10 right-0 bg-white border border-gray-300 shadow-lg flex flex-col p-0 w-36 z-50">
-                <button className="text-left p-3 text-sm text-gray-800 hover:bg-gray-100">
-                  View Profile
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="text-left p-3 text-sm text-gray-800 hover:bg-gray-100"
-                >
-                  Logout
-                </button>
+              <div className="dropdown-menu column">
+                <button>View Profile</button>
+                <button onClick={handleLogout}>Logout</button>
               </div>
             )}
           </div>
         </div>
 
         {/* Event List */}
-        <div className="p-5 flex-1 flex flex-col overflow-hidden">
-          <h2 className="mb-4 text-lg font-medium">Event List</h2>
-          <div className="grid grid-cols-[40px_2fr_1fr_1fr_1fr_1fr_1fr] gap-2 items-center font-bold border-b-2 border-gray-300 bg-gray-50 py-2">
-          <span className="flex justify-center items-center ml-2">
+        <div className="event-list-container">
+          <h2>Event List</h2>
+          <div className="event-list-header">
             <img
               onClick={handleToggleAll}
               src={
-              isAllSelected
-              ? "/src/assets/icons/selected-checkbox.svg"
-              : "/src/assets/icons/checkbox.svg"
+                isAllSelected
+                  ? "/src/assets/icons/selected-checkbox.svg"
+                  : "/src/assets/icons/checkbox.svg"
               }
               alt="Checkbox"
-              className="w-5 h-4 cursor-pointer"
+              className="checkbox-icon"
             />
-          </span>
-            
             <span>Event Name</span>
             <span>Event Type</span>
             <span>Date</span>
@@ -241,43 +243,30 @@ const OrganizerPage = () => {
             <span>Quick Actions</span>
           </div>
 
-          <div className="flex-1 overflow-y-auto bg-white border border-gray-300 rounded">
+          <div className="event-list">
             {filteredEvents.map((event, index) => (
-              <div
-                key={index}
-                className="grid grid-cols-[40px_2fr_1fr_1fr_1fr_1fr_1fr] gap-2 items-center py-3 border-b border-gray-200 text-sm hover:bg-gray-50 transition"
-              >
-                <span className="flex justify-center items-center ml-2">
-                  <img
-                      onClick={handleToggleAll}
-                      src={
-                      isAllSelected
+              <div key={index} className="event-item">
+                <img
+                  onClick={() => handleToggle(event)}
+                  src={
+                    event.isselected
                       ? "/src/assets/icons/selected-checkbox.svg"
                       : "/src/assets/icons/checkbox.svg"
-                      }
-                      alt="Checkbox"
-                      className="w-5 h-4 cursor-pointer"
-                  />
-                </span>
+                  }
+                  alt="Checkbox"
+                  className="checkbox-icon"
+                />
                 <span className="truncate">{event.name}</span>
                 <span className="truncate">{event.type}</span>
                 <span>{formatDate(event.eventDate)}</span>
                 <span>{event.status}</span>
                 <span>{formatDate(event.createdDate)}</span>
-                <div className="flex gap-1">
-                  <button
-                    className="bg-gray-50 border border-blue-700 text-blue-700 rounded text-xs px-2 py-1 hover:bg-blue-700 hover:text-white"
-                    onClick={() => handleView(event)}
-                  >
+                <div className="event-actions">
+                  <button className="view-btn" onClick={() => handleView(event)}>
                     View
                   </button>
-                  <button className="bg-gray-50 border border-cyan-600 text-cyan-600 rounded text-xs px-2 py-1 hover:bg-cyan-600 hover:text-white">
-                    Edit
-                  </button>
-                  <button
-                    className="bg-gray-50 border border-red-600 text-red-600 rounded text-xs px-2 py-1 hover:bg-red-600 hover:text-white"
-                    onClick={() => handleDelete(event.id)}
-                  >
+                  <button className="edit-btn">Edit</button>
+                  <button className="delete-btn" onClick={() => handleDelete(event.id)}>
                     Delete
                   </button>
                 </div>
@@ -287,28 +276,39 @@ const OrganizerPage = () => {
         </div>
 
         {popupVisible && selectedEvent && (
-          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-60 flex justify-center items-center z-50">
-            <div className="bg-white p-5 rounded-lg max-w-md w-11/12 relative">
-              <button className="absolute top-2 right-2 bg-none border-none text-2xl cursor-pointer leading-none" onClick={closePopup}>
+          <div className="popup-overlay">
+            <div className="popup-content">
+              <button className="close-button" onClick={closePopup}>
                 &times;
               </button>
-              <h3 className="mt-0 text-xl text-center">Event Details</h3>
+              <h3>Event Details</h3>
               {selectedEvent ? (
                 <>
-                  <p><strong>Name: </strong> {selectedEvent.name}</p>
-                  <p><strong>Type: </strong> {selectedEvent.type}</p>
-                  <p><strong>Date: </strong> {formatDate(selectedEvent.eventDate)}</p>
-                  <p><strong>Status: </strong> {selectedEvent.status}</p>
-                  <p><strong>Created Date: </strong> {formatDate(selectedEvent.createdDate)}</p>
+                  <p>
+                    <strong>Name: </strong> {selectedEvent.name}
+                  </p>
+                  <p>
+                    <strong>Type: </strong> {selectedEvent.type}
+                  </p>
+                  <p>
+                    <strong>Date: </strong> {formatDate(selectedEvent.eventDate)}
+                  </p>
+                  <p>
+                    <strong>Status: </strong> {selectedEvent.status}
+                  </p>
+                  <p>
+                    <strong>Created Date: </strong>{" "}
+                    {formatDate(selectedEvent.createdDate)}
+                  </p>
                 </>
               ) : (
                 <p>Loading event details...</p>
               )}
-              <div className="flex justify-between mt-5">
-                <button className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700" onClick={goToEventPage}>
+              <div className="button-container">
+                <button className="primary-button" onClick={goToEventPage}>
                   Event Page
                 </button>
-                <button className="px-3 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300" onClick={goToParticipantList}>
+                <button className="secondary-button" onClick={goToParticipantList}>
                   Participants
                 </button>
               </div>

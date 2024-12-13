@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import '../../index.css';
+
 
 const OrganizerPage = () => {
   const [events, setEvents] = useState([]);
