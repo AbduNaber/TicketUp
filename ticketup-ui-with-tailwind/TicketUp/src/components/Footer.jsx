@@ -2,7 +2,7 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <footer className="flex justify-between items-center bg-gray-900 text-white px-5 py-2 h-[4vw] fixed bottom-0 w-full z-50">
+    <footer className="flex justify-between items-center bg-gray-900 text-white px-5 py-2 h-[4vw] w-full">
       {/* Left Section */}
       <div className="flex items-center">
         <p className="text-sm">© 2024 All Rights Reserved by TicketUp!</p>
