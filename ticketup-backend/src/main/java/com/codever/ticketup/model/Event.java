@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -28,10 +29,16 @@ public class Event {
     @Column(name = "organizator_id", columnDefinition = "UUID")
     private UUID organizatorId;
 
+    @Column(name = "organizator_name")
+    private String organizatorName;
+
+    @Column(name = "organizatorCompany")
+    private String organizatorCompany;
+
     @Column(name = "location")
     private String location;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "created_date")
@@ -39,5 +46,20 @@ public class Event {
 
     @Column(name = "event_date")
     private Date eventDate;
+
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
+    @Column(name = "start_time")
+    private LocalTime startTime;
+
+    @Column(name = "end_time")
+    private LocalTime endTime;
+
+    @Column(name = "img_url")
+    private String imgUrl;
 
 }
