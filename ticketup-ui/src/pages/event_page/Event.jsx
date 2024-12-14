@@ -11,17 +11,10 @@ if (!apiKey) {
   throw new Error("REACT_APP_GOOGLE_API_KEY is not defined in .env file");
 }
 
-const eventImage = "/db_images/Hero-1.jpg";
 const containerStyle = {
   width: "100%",
   height: "300px",
 };
-
-const center = {
-  lat: 37.7749, // Example latitude
-  lng: 29.0875, // Example longitude
-};
-const url = `https://www.google.com/maps?q=${center.lat},${center.lng}`;
 
 const Event = () => {
   const { id } = useParams();
@@ -29,6 +22,7 @@ const Event = () => {
   const navigate = useNavigate();
 
   const handleGoToForm = () => {
+    console.log("res");
     navigate("/form", { state: { eventID: id, imageLink: eventImage } });
   };
 
@@ -42,12 +36,35 @@ const Event = () => {
         console.log("Event Fetched");
       } catch (error) {
         console.error("Error fetching event:", error.response?.data || error.message);
-        alert("Kayıt Başarısız.");
+        alert("Event Bigleri yüklenemedi.");
       }
     };
 
     fetchEvent();
   }, [id]);
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "Geçersiz Tarih";
+
+    const date = new Date(dateString);
+
+    const months = [
+      "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz",
+      "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık",
+    ];
+
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+
+    return `${day} ${month} ${year}`;
+  };
+
+  const center = {
+    lat: event?.latitude || 37.7749,
+    lng: event?.longitude || 29.0875,
+  };
+  const url = `https://www.google.com/maps/search/?api=1&query=${center.lat},${center.lng}`;
 
   return (
     <div className="flex flex-col min-h-screen bg-white overflow-y-auto">
@@ -74,20 +91,16 @@ const Event = () => {
       {/* Content */}
       <div className="flex-grow mx-[6vw] mt-[7.5vh] mb-[30vh] flex flex-col items-center">
         <div className="w-full h-[50vh] mb-4 overflow-hidden">
-          <img src={eventImage} alt="Event" className="w-full h-full object-cover" />
+          <img src={event?.imgUrl} alt="Event" className="w-full h-full object-cover" />
         </div>
         <div className="flex justify-between items-center w-full">
-          <h2 className="text-2xl font-bold">Anadolu'dan Dünyaya</h2>
+          <h2 className="text-2xl font-bold">{event?.name || "Etkinlik Adı Yükleniyor..."}</h2>
           <GradientButton text="Katılım Formu" onClick={handleGoToForm} />
         </div>
         <div className="w-full mt-4">
           <h1 className="text-xl text-gray-700 mb-3">Etkinlik Açıklaması</h1>
           <p className="text-gray-600 mb-3">
-            İlkini Bursa'da gerçekleştirdiğimiz, ikincisini ise 19 Aralık Perşembe günü DENİZLİ Ticaret
-            Odası'nda gerçekleştireceğimiz ve Denizli'nin üretici & toptancı & e-ticaret profesyonelleri
-            ile e-ihracat'ın olmazsa olmaz sektörlerinden firmaları bir araya getireceğimiz etkinliğe kayıt
-            ve etkinlik günü giriş bilgilerini e-posta ve telefonunuza SMS olarak almak için lütfen bu formu
-            eksiksiz doldurun.
+            {event?.description || "Etkinlik Açıklaması Yükleniyor..."}
           </p>
         </div>
 
@@ -97,14 +110,15 @@ const Event = () => {
           <div className="w-[48%] flex flex-col gap-4">
             <div>
               <h3 className="text-lg font-bold text-gray-800">Tarih ve Saat</h3>
-              <p>19 Aralık 2024</p>
-              <p>19:00</p>
+              <p>{event?.eventDate ? formatDate(event.eventDate) : "Tarih yükleniyor..."}</p>
+              <p>{event?.startTime || "Saat Yükleniyor..."} - {event?.endTime || "Saat Yükleniyor..."}</p>
               <a href="#" className="text-blue-600 hover:underline">+ Takvime Ekle</a>
             </div>
             <div className="flex items-center gap-4">
               <img src="/src/assets/icons/tsoft-icon.png" alt="Organizer Icon" className="w-12 h-12 rounded-full" />
               <div>
-                <p className="font-bold">T-Soft</p>
+                <p className="font-bold">{event?.organizatorName || "Organizatör Bilgisi Yükleniyor..."}</p>
+                <p className="font-bold">{event?.organizatorCompany || "Organizatör Bilgisi Yükleniyor..."}</p>
                 <a href="#" className="inline-block px-4 py-2 text-sm bg-white border border-black rounded-full hover:shadow-lg">İletişime Geç</a>
               </div>
             </div>
@@ -117,7 +131,7 @@ const Event = () => {
           {/* Right Section */}
           <div className="w-[48%]">
             <h3 className="text-lg font-bold text-gray-800">Konum</h3>
-            <p className="text-gray-600">Denizli Ticaret Odası</p>
+            <p className="text-gray-600">{event?.location || "Konum Yükleniyor..."}</p>
             <div className="mt-6 w-full h-[275px] bg-gray-300 flex justify-center items-center rounded">
               <LoadScript googleMapsApiKey={apiKey}>
                 <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={15}>

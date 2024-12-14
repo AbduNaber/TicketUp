@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 const Register = () => {
+
   const [formData, setFormData] = useState({
     name: '',
     surname: '',
@@ -45,6 +47,7 @@ const Register = () => {
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -59,18 +62,31 @@ const Register = () => {
         passwordHash: formData.password,
       };
       await axios.post('http://localhost:8080/ticketup/organizators/register', requestBody);
-      alert('Kayıt başarılı!');
+      toast.success('Kayıt başarılı. Giriş yapabilirsiniz.');
+      navigate('/login');
     } catch (error) {
       console.error('Kayıt sırasında hata:', error);
-      alert('Kayıt başarısız.');
+      toast.error('Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.');
     }
+  };
+
+  const isFormValid = () => {
+    return (
+      formData.name &&
+      formData.surname &&
+      formData.mailAddress &&
+      formData.organizationName &&
+      formData.password &&
+      formData.confirmPassword &&
+      Object.keys(errors).length === 0
+    );
   };
 
   return (
     <div className="bg-cover bg-center h-screen flex items-center justify-center text-white" style={{ backgroundImage: "url('/src/assets/images/login_bg.png')" }}>
-      <div className="w-[40vw] h-[80vh] bg-white/70 shadow-lg rounded-2xl flex flex-col items-center justify-center">
-        <h2 className="text-3xl font-semibold text-black my-2">TicketUp'a Organizatör Olarak Kayıt Olun</h2>
-        <form className="flex flex-col w-[28vw]">
+      <div className="w-[40vw] h-[75vh] bg-white/90 shadow-lg rounded-2xl flex flex-col items-center justify-center">
+        <h2 className="text-3xl font-semibold text-black my-2 -mt-4 mb-10">TicketUp'a Organizatör Olarak Kayıt Olun</h2>
+        <form onSubmit={handleRegister} className="flex flex-col w-[28vw]">
           <div className="flex space-x-4 mb-4">
             <div className="flex-1">
               <input
@@ -79,7 +95,7 @@ const Register = () => {
                 value={formData.name}
                 onChange={handleInputChange}
                 placeholder="İsim"
-                className="p-3 text-base border border-gray-300 rounded-lg w-full"
+                className="text-black p-3 text-base border border-gray-300 rounded-lg w-full"
               />
               {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
             </div>
@@ -90,7 +106,7 @@ const Register = () => {
                 value={formData.surname}
                 onChange={handleInputChange}
                 placeholder="Soyisim"
-                className="p-3 text-base border border-gray-300 rounded-lg w-full"
+                className="text-black p-3 text-base border border-gray-300 rounded-lg w-full"
               />
               {errors.surname && <span className="text-red-500 text-sm">{errors.surname}</span>}
             </div>
@@ -101,7 +117,7 @@ const Register = () => {
             value={formData.mailAddress}
             onChange={handleInputChange}
             placeholder="E-posta"
-            className="p-3 text-base border border-gray-300 rounded-lg mb-4"
+            className="text-black p-3 text-base border border-gray-300 rounded-lg mb-4"
           />
           {errors.mailAddress && <span className="text-red-500 text-sm">{errors.mailAddress}</span>}
 
@@ -111,7 +127,7 @@ const Register = () => {
             value={formData.organizationName}
             onChange={handleInputChange}
             placeholder="Organizasyon Adı"
-            className="p-3 text-base border border-gray-300 rounded-lg mb-4"
+            className="text-black p-3 text-base border border-gray-300 rounded-lg mb-4"
           />
           {errors.organizationName && <span className="text-red-500 text-sm">{errors.organizationName}</span>}
 
@@ -123,7 +139,7 @@ const Register = () => {
                 value={formData.password}
                 onChange={handleInputChange}
                 placeholder="Şifre"
-                className="p-3 text-base border border-gray-300 rounded-lg w-full"
+                className="text-black p-3 text-base border border-gray-300 rounded-lg w-full"
               />
               <img
                 src={passwordVisible ? '/src/assets/icons/eye_closed.png' : '/src/assets/icons/eye_opened.png'}
@@ -140,7 +156,7 @@ const Register = () => {
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
                 placeholder="Şifreyi Doğrula"
-                className="p-3 text-base border border-gray-300 rounded-lg w-full"
+                className="text-black p-3 text-base border border-gray-300 rounded-lg w-full"
               />
               {errors.confirmPassword && <span className="text-red-500 text-sm">{errors.confirmPassword}</span>}
             </div>
@@ -151,8 +167,10 @@ const Register = () => {
           </Link>
           <button
             type="submit"
-            onClick={handleRegister}
-            className="bg-gradient-to-r from-pink-500 to-orange-500 text-black font-bold py-3 px-4 rounded-full hover:bg-green-500 transition"
+            disabled={!isFormValid()}
+            className={`bg-gradient-to-r from-pink-500 to-orange-500 text-black font-bold py-3 px-4 rounded-full hover:bg-green-500 transition ${
+              !isFormValid() ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
             Kayıt Ol
           </button>

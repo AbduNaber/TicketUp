@@ -38,7 +38,7 @@ const Ticket = () => {
           <EmptyBox width="180px" height="40px" />
         </div>
         <QRCodeCanvas
-          value="https://www.youtube.com"
+          value="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
           size={200}
           bgColor="#ffffff"
           fgColor="#000000"

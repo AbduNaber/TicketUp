@@ -19,13 +19,13 @@ const OrganizerPage = () => {
   const [isAllSelected, setIsAllSelected] = useState(false);
 
   const menuItems = [
-    { id: 1, label: "KATILIMCILAR", icon: "/assets/icons/statistic-icon.svg" },
-    { id: 2, label: "AKTİF ETKİNLİKLER", icon: "/assets/icons/participant-icon.svg" },
-    { id: 3, label: "KAPANMIŞ ETKİNLİKLER", icon: "/assets/icons/participant-icon.svg" },
-    { id: 4, label: "ETKİNLİK OLUŞTUR", icon: "/assets/icons/participant-icon.svg" },
-    { id: 5, label: "LOG KAYITLARI", icon: "/assets/icons/participant-icon.svg" },
-    { id: 6, label: "ORGANIZATOR İŞLEMLERİ", icon: "/assets/icons/participant-icon.svg" },
-    { id: 7, label: "TicketUp'a Ulaş", icon: "/assets/icons/participant-icon.svg" }
+    { id: 1, label: "KATILIMCILAR", icon: "/src/assets/icons/statistic-icon.svg" },
+    { id: 2, label: "AKTİF ETKİNLİKLER", icon: "/src/assets/icons/participant-icon.svg" },
+    { id: 3, label: "KAPANMIŞ ETKİNLİKLER", icon: "/src/assets/icons/participant-icon.svg" },
+    { id: 4, label: "ETKİNLİK OLUŞTUR", icon: "/src/assets/icons/participant-icon.svg" },
+    { id: 5, label: "LOG KAYITLARI", icon: "/src/assets/icons/participant-icon.svg" },
+    { id: 6, label: "ORGANIZATOR İŞLEMLERİ", icon: "/src/assets/icons/participant-icon.svg" },
+    { id: 7, label: "TicketUp'a Ulaş", icon: "/src/assets/icons/participant-icon.svg" }
   ];
 
   const handleView = (event) => {
@@ -160,7 +160,7 @@ const OrganizerPage = () => {
       <div className="w-60 bg-white border-r border-gray-300 p-5 flex flex-col">
         <div className="mb-10 text-center">
           <img
-            src="/assets/icons/ticketUp-logo.svg"
+            src="/src/assets/icons/ticketUp-logo.svg"
             alt="TicketUp Logo"
             className="w-4/5 h-auto mx-auto"
           />
@@ -179,7 +179,7 @@ const OrganizerPage = () => {
               <span>{item.label}</span>
               {item.id === activeItem && (
                 <span className="ml-auto">
-                  <img src="/assets/icons/dashicons_arrow-right.svg" alt="Active" />
+                  <img src="/src/assets/icons/dashicons_arrow-right.svg" alt="Active" />
                 </span>
               )}
             </li>
@@ -218,7 +218,7 @@ const OrganizerPage = () => {
 
         {/* Event List */}
         <div className="p-5 flex-1 flex flex-col overflow-hidden">
-          <h2 className="mb-4 text-lg font-medium">Event List</h2>
+          <h2 className="mb-4 text-lg font-medium">EVENTLER</h2>
           <div className="grid grid-cols-[40px_2fr_1fr_1fr_1fr_1fr_1fr] gap-2 items-center font-bold border-b-2 border-gray-300 bg-gray-50 py-2">
           <span className="flex justify-center items-center ml-2">
             <img

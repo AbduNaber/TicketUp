@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
+import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.css';
 
 function Login() {
@@ -33,7 +34,7 @@ function Login() {
        
       navigate(`/organizer`);
     } catch (error) {
-      toast.error("Incorrect password. Please try again.");
+      toast.error("Incorrect password or email. Please try again.");
       console.log(error.message)
     }
   };
@@ -59,7 +60,7 @@ function Login() {
       <div className="w-[40vw] h-[75vh] bg-white/90 shadow-lg rounded-2xl flex flex-col items-center justify-center">
         <h2 className="text-4xl font-semibold text-black mt-3">TicketUp! Boost Your Event</h2>
         <p className="text-black font-normal text-lg mt-4 mb-2">Sadece Organizatör Girişine açıktır.</p>
-        <form className="flex flex-col w-[28vw] z-10">
+        <form onSubmit={handleLogin} className="flex flex-col w-[28vw] z-10">
           <input
             type="text"
             id="username"
