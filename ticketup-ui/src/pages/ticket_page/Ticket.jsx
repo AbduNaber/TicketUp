@@ -1,9 +1,35 @@
 import { QRCodeCanvas } from "qrcode.react";
-import GradientButton from "../../components/GradientButton"; 
+import GradientButton from "../../components/GradientButton";
 import Footer from "../../components/Footer";
 import EmptyBox from "../../components/empty_box";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 
 const Ticket = () => {
+  const downloadTicket = () => {
+    const input = document.getElementById("pdf-content");
+
+    // Butonların görünürlüğünü kaldırma
+    const buttons = input.querySelectorAll("button");
+    buttons.forEach(button => (button.style.visibility = "hidden"));
+
+    html2canvas(input, { scale: 2 }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgWidth = 210;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+      pdf.save("bilet.pdf");
+
+      // Butonları geri görünür yapma
+      buttons.forEach(button => (button.style.visibility = "visible"));
+    });
+  };
+
+
+
+
   return (
     <div className="flex flex-col min-h-screen bg-white overflow-y-auto">
       {/* Top Bar */}
@@ -25,7 +51,8 @@ const Ticket = () => {
           </a>
         </div>
       </div>
-
+      {/* PDF İçeriği */}
+      <div id="pdf-content" className="bg-white w-full flex flex-col items-center">
       {/* Title */}
       <h2 className="text-4xl text-black font-bold text-center mt-8">
         Anadolu'dan Dünyaya (Denizli)
@@ -46,11 +73,12 @@ const Ticket = () => {
         <div className="flex flex-col gap-4">
           <GradientButton text="Bileti Düzenle" onClick={() => { }} />
           <GradientButton text="Bileti Sil" onClick={() => { }} />
+          <GradientButton text="Bileti İndir" onClick={downloadTicket} /> {/* Yeni Buton */}
         </div>
       </div>
 
       {/* Ticket Details */}
-      <div className="flex flex-col items-center mt-10 mb-20">
+      <div id="ticket-area" className="flex flex-col items-center mt-10 mb-20">
         <p className="text-xl font-light text-black mt-6">Etkinlik Bilgileri</p>
         <p className="text-2xl font-extrabold text-black mt-2">T-Soft ile Anadolu'dan Dünya'ya</p>
 
@@ -100,7 +128,7 @@ const Ticket = () => {
           Organizator ile iletişim için: info@upista.com
         </p>
       </div>
-
+      </div>
       <Footer />
     </div>
   );
