@@ -5,20 +5,8 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; 
 import React, { useState } from "react";
 import { GoogleMap, LoadScript, MarkerF } from "@react-google-maps/api";
+import { useEffect } from "react";
 
-const turkishCities = [
-    "Adana", "Adıyaman", "Afyonkarahisar", "Ağrı", "Aksaray", "Amasya", "Ankara", "Antalya", 
-    "Ardahan", "Artvin", "Aydın", "Balıkesir", "Bartın", "Batman", "Bayburt", "Bilecik", 
-    "Bingöl", "Bitlis", "Bolu", "Burdur", "Bursa", "Çanakkale", "Çankırı", "Çorum", 
-    "Denizli", "Diyarbakır", "Düzce", "Edirne", "Elazığ", "Erzincan", "Erzurum", "Eskişehir", 
-    "Gaziantep", "Giresun", "Gümüşhane", "Hakkâri", "Hatay", "Iğdır", "Isparta", "İstanbul", 
-    "İzmir", "Kahramanmaraş", "Karabük", "Karaman", "Kars", "Kastamonu", "Kayseri", 
-    "Kilis", "Kırıkkale", "Kırklareli", "Kırşehir", "Kocaeli", "Konya", "Kütahya", 
-    "Malatya", "Manisa", "Mardin", "Mersin", "Muğla", "Muş", "Nevşehir", "Niğde", 
-    "Ordu", "Osmaniye", "Rize", "Sakarya", "Samsun", "Şanlıurfa", "Siirt", "Sinop", 
-    "Şırnak", "Sivas", "Tekirdağ", "Tokat", "Trabzon", "Tunceli", "Uşak", "Van", 
-    "Yalova", "Yozgat", "Zonguldak"
-  ];
 
 
 const CreateEvent = () => {
@@ -27,6 +15,16 @@ const CreateEvent = () => {
 
     const [coordinates, setCoordinates] = useState({ lat: 37.7749, lng: -122.4194 }); // Default coordinates
     const [inputValue, setInputValue] = useState(`${coordinates.lat}, ${coordinates.lng}`);
+    const [description, setDescription] = useState("");
+    const [eventTitle, setEventTitle] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+    const [startTime, setStartTime] = useState("");
+    const [endTime, setEndTime] = useState("");
+    const [eventType, setEventType] = useState("");
+    const [eventLocation, setEventLocation] = useState("");
+    const [isFormValid, setIsFormValid] = useState(false);
+    
 
     const handleMapClick = (event) => {
     const lat = event.latLng.lat();
@@ -44,12 +42,27 @@ const CreateEvent = () => {
     };
 
 
-    const [description, setDescription] = useState("");
+  
 
   const handleDescriptionChange = (value) => {
     setDescription(value);
   };
 
+
+
+  const validateForm = () => {
+    console.log(description);
+    return eventTitle && startDate && endDate && startTime && endTime && eventType && eventLocation && description;
+  };
+  
+  useEffect(() => {
+    setIsFormValid(validateForm());
+  }, [eventTitle, startDate, endDate, startTime, endTime, eventType, eventLocation, description]);
+  
+const handleChange = (setter) => (e) => {
+    setter(e.target.value);
+    validateForm();
+};
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       {/* Top Bar */}
@@ -79,78 +92,159 @@ const CreateEvent = () => {
 
         {/* Event Details Section */}
         <div className="flex items-center mb-6">
-          <EmptyBox width="175px" height="75px" />
-          <div className="text-2xl font-normal text-black">Etkinlik Detayları</div>
+  <EmptyBox width="175px" height="75px" />
+  
         </div>
-        <div className="grid grid-cols-3 gap-4 mb-6">
-            <div className="flex flex-col gap-2">
-                <label className="text-lg font-medium text-black whitespace-nowrap">
-                Etkinlik Başlığı <span className="text-red-600">*</span>
-                </label>
-                <input
-                type="text"
-                className="h-12 w-80 p-3 text-base border border-gray-300 rounded-md"
-                placeholder="Etkinliğin adını giriniz"
-                />
-            </div>
+        <div className="grid grid-cols-1 gap-4 mb-0">
           <div className="flex flex-col gap-2">
-            <label className="text-lg font-medium text-black">
-              Başlangıç Tarihi <span className="text-red-600">*</span>
+            <label className="text-lg font-medium text-black whitespace-nowrap">
+              Etkinlik Başlığı <span className="text-red-600">*</span>
             </label>
             <input
-              type="date"
-              className="w-80 h-12 p-3 mt-2 text-base border border-gray-300 rounded-md"
+              type="text"
+              className="h-12 w-full p-3 text-base border border-gray-300 rounded-md"
+              placeholder="Etkinliğin adını giriniz (maksimum 100 karakter)"
+              maxLength={100}
+              onChange={handleChange(setEventTitle)}
             />
           </div>
+          <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-2">
-            <label className="text-lg font-medium text-black">
-              Başlangıç Saati <span className="text-red-600">*</span>
-            </label>
-            <input
-              type="time"
-              className="w-80 h-12 p-3 mt-2 text-base border border-gray-300 rounded-md"
-            />
+              <label className="text-lg font-medium text-black">
+                Başlangıç Tarihi <span className="text-red-600">*</span>
+              </label>
+              <input
+                type="date"
+                className="w-80 h-12 p-3 mt-2 text-base border border-gray-300 rounded-md"
+                min={(() => {
+                  const today = new Date();
+                  today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+                  return today.toISOString().split('T')[0];
+                })()} // Adjust for local timezone to prevent selecting previous dates
+                onChange={handleChange(setStartDate)}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="text-lg font-medium text-black">
+                Bitiş Tarihi <span className="text-red-600">*</span>
+              </label>
+              <input
+                type="date"
+                className="w-80 h-12 p-3 mt-2 text-base border border-gray-300 rounded-md"
+                min={(() => {
+                  const today = new Date();
+                  today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+                  return today.toISOString().split('T')[0];
+                })()} // Adjust for local timezone to prevent selecting previous dates
+                onChange={handleChange(setEndDate)}
+              />
+            </div>
+
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-2">
+              <label className="text-lg font-medium text-black">
+                Başlangıç Saati <span className="text-red-600">*</span>
+              </label>
+              <input
+                type="time"
+                className="w-80 h-12 p-3 mt-2 text-base border border-gray-300 rounded-md"
+                onChange={handleChange(setStartTime)}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="text-lg font-medium text-black">
+                Bitiş Saati <span className="text-red-600">*</span>
+              </label>
+              <input
+                type="time"
+                className="w-80 h-12 p-3 mt-2 text-base border border-gray-300 rounded-md"
+                onChange={handleChange(setEndTime)}
+              />
+            </div>
           </div>
         </div>
 
+
         {/* Event Location Section */}
         <div className="grid grid-cols-2 gap-4 mb-6 mr-50">
+  {/* First column for Etkinlik Nerede Olacak and Etkinlik Tipi */}
+        <div className="flex flex-col gap-4">
+
+        <div className="flex flex-col gap-2">
+            <label className="text-lg font-medium text-black mt-2">
+              Etkinlik Tipi <span className="text-red-600">*</span>
+            </label>
+            <select
+              className="w-full h-12 p-3 mt-2 text-base border border-gray-300 rounded-md"
+              defaultValue=""
+              onChange={handleChange(setEventType)}
+            >
+              <option value="" disabled>Etkinlik tipini seçiniz</option>
+              <option value="konferans">Konferans</option>
+              <option value="seminer">Seminer</option>
+              <option value="panel">Panel</option>
+              <option value="fuar">Fuar</option>
+              <option value="çalıştay">Çalıştay</option>
+              <option value="zirve">Zirve</option>
+            </select>
+          </div>
           <div className="flex flex-col gap-2">
             <label className="text-lg font-medium text-black ">
               Etkinlik Nerede Olacak? <span className="text-red-600">*</span>
             </label>
-            <select className="w-80 h-12 p-3 mt-2 text-base border border-gray-300 rounded-md">
-            {turkishCities.map((city) => (
-                <option key={city} value={city.toLowerCase()}>
-                {city}
-                </option>
-            ))}
-            </select>
+            <input 
+              type="text"
+              placeholder="Etkinliğin yapılacağı yeri yazınız. (Örn: İstanbul Fuar Merkezi, İstanbul)"
+              className="w-full h-12 p-3 text-base border border-gray-300 rounded-md" onChange={handleChange(setEventLocation)} />
+              
           </div>
-          <div>
-      <label className="text-lg font-medium text-black">
-        Haritadan seçiniz: <span className="text-red-600">*</span>
-      </label>
-      <input
-        type="text"
-        className="w-full h-12 p-3 mt-2 text-base border border-gray-300 rounded-md"
-        placeholder="Koordinat Giriniz"
-        value={inputValue}
-        onChange={handleInputChange}
-      />
-      <div className="mt-4 h-80 border border-gray-300 rounded-md">
-        <LoadScript googleMapsApiKey={apiKey}>
-          <GoogleMap
-            mapContainerStyle={{ width: "100%", height: "100%" }}
-            center={coordinates}
-            zoom={12}
-            onClick={handleMapClick}
-          >
-            <MarkerF position={coordinates} />
-          </GoogleMap>
-        </LoadScript>
-      </div>
-    </div>
+        </div>
+
+  {/* Second column for Map Selection */}
+        <div className="flex flex-col gap-2">
+          <label className="text-lg font-medium text-black mt-2">
+            Haritadan seçiniz: <span className="text-red-600">*</span>
+          </label>
+          <input
+            type="text"
+            className="w-full h-12 p-3 mt-2 text-base border border-gray-300 rounded-md"
+            placeholder="Koordinat Giriniz veya Yer Adı Yazınız"
+            value={inputValue}
+            onChange={async (e) => {
+              handleInputChange(e);
+              const address = e.target.value;
+              if (address) {
+                try {
+                  const geocoder = new window.google.maps.Geocoder();
+                  geocoder.geocode({ address }, (results, status) => {
+                    if (status === "OK" && results[0]) {
+                      const location = results[0].geometry.location;
+                      setCoordinates({ lat: location.lat(), lng: location.lng() });
+                    } else {
+                      console.error("Geocode was not successful for the following reason:", status);
+                    }
+                  });
+                } catch (error) {
+                  console.error("Error during geocoding:", error);
+                }
+              }
+            }}
+            
+          />
+          <div className="mt-4 h-80 border border-gray-300 rounded-md">
+            <LoadScript googleMapsApiKey={apiKey}>
+              <GoogleMap
+                mapContainerStyle={{ width: "100%", height: "100%" }}
+                center={coordinates}
+                zoom={12}
+                onClick={handleMapClick}
+              >
+                <MarkerF position={coordinates} />
+              </GoogleMap>
+            </LoadScript>
+          </div>
+        </div>
         </div>
 
         {/* Event Description Section */}
@@ -191,7 +285,7 @@ const CreateEvent = () => {
         <div className="mb-6 ">
           <label className="text-lg font-medium text-black">Görüntü Yükle</label>
           <div className="flex items-center justify-center w-full max-w-md p-4 mt-2 border-2 border-dashed rounded-md bg-gray-50 border-gray-300">
-            <input type="file" className="hidden" id="file-upload" />
+            <input type="file" className="hidden" id="file-upload"  />
             <label
               htmlFor="file-upload"
               className="px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded cursor-pointer hover:bg-blue-600"
@@ -206,7 +300,15 @@ const CreateEvent = () => {
 
         {/* Buttons */}
         <div className="flex justify-end mt-8">
-          <GradientButton text="Etkinlik Önizleme" onClick={() => {}} />
+          <button
+              type="submit"
+              disabled={!validateForm()}
+              className={`bg-gradient-to-r from-pink-500 to-orange-500 text-black font-bold py-3 px-4 rounded-full hover:bg-green-500 transition ${
+                !isFormValid ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+            >
+              Etkinlik Önizleme
+            </button>
         </div>
       </div>
 

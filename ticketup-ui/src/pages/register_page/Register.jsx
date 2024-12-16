@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 const Register = () => {
 
   const [formData, setFormData] = useState({
@@ -20,27 +20,59 @@ const Register = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-
-    let formErrors = {};
+  
+    let formErrors = { ...errors }; // Preserve existing errors
+  
+    // Validate each field
     if (name === 'name' && !/^[A-Za-z\s]+$/.test(value)) {
       formErrors.name = 'İsim geçerli olmalı (sadece harf ve boşluk)';
+    } else {
+      delete formErrors.name;
     }
+  
     if (name === 'surname' && !/^[A-Za-z\s]+$/.test(value)) {
       formErrors.surname = 'Soyisim geçerli olmalı (sadece harf ve boşluk)';
+    } else {
+      delete formErrors.surname;
     }
+  
     if (name === 'mailAddress' && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) {
       formErrors.mailAddress = 'Geçerli bir e-posta adresi giriniz';
+    } else {
+      delete formErrors.mailAddress;
     }
+  
     if (name === 'organizationName' && !/^[A-Za-z0-9\s]+$/.test(value)) {
       formErrors.organizationName = 'Geçerli bir organizasyon adı giriniz';
+    } else {
+      delete formErrors.organizationName;
     }
-    if (name === 'password' && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(value)) {
-      formErrors.password = 'Şifre en az 8 karakter olmalı, 1 büyük harf, 1 küçük harf, 1 rakam içermelidir';
+  
+    if (name === 'password') {
+      if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(value)) {
+        formErrors.password = 'Şifre en az 8 karakter olmalı, 1 büyük harf, 1 küçük harf, 1 rakam içermelidir';
+      } else {
+        delete formErrors.password;
+      }
+  
+      
+      if (formData.confirmPassword && formData.confirmPassword !== value) {
+        formErrors.confirmPassword = 'Şifreler uyuşmuyor';
+      } else if (formData.confirmPassword) {
+        delete formErrors.confirmPassword;
+      }
     }
-    if (name === 'confirmPassword' && value !== formData.password) {
-      formErrors.confirmPassword = 'Şifreler uyuşmuyor';
+  
+    if (name === 'confirmPassword') {
+      if (value !== formData.password) {
+        formErrors.confirmPassword = 'Şifreler uyuşmuyor';
+      } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(formData.password)) {
+        formErrors.confirmPassword = 'Şifre geçersiz olduğu için şifreler doğrulanamaz';
+      } else {
+        delete formErrors.confirmPassword;
+      }
     }
-
+  
     setErrors(formErrors);
   };
 
@@ -52,7 +84,7 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     if (Object.keys(errors).length > 0) return;
-
+  
     try {
       const requestBody = {
         name: formData.name,
@@ -65,8 +97,19 @@ const Register = () => {
       toast.success('Kayıt başarılı. Giriş yapabilirsiniz.');
       navigate('/login');
     } catch (error) {
-      console.error('Kayıt sırasında hata:', error);
-      toast.error('Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.');
+      if (error.response?.status === 409) {
+        const errorMessage = error.response.data?.error ;
+        toast.error(errorMessage);
+        return;
+      }
+      
+
+  
+      const errorMessage =
+        error.response?.data?.error || 
+        'Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.';
+  
+      toast.error(errorMessage);
     }
   };
 
@@ -176,6 +219,7 @@ const Register = () => {
           </button>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 };
