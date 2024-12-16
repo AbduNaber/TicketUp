@@ -45,7 +45,7 @@ const EventForm = () => {
         isFirstTime: formData.terms,
       };
 
-      await axios.post("http://localhost:8080/ticketup/participants/create", requestBody, {
+      await axios.post("http://46.101.166.170:8080/ticketup/participants/create", requestBody, {
         headers: {
           "Content-Type": "application/json",
         },
