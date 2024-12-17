@@ -44,8 +44,11 @@ public class Event {
     @Column(name = "created_date")
     private LocalDateTime createdDate = LocalDateTime.now();
 
-    @Column(name = "event_date")
-    private Date eventDate;
+    @Column(name = "start_date")
+    private Date startDate;
+
+    @Column(name = "end_date")
+    private Date endDate;
 
     @Column(name = "latitude")
     private Double latitude;
@@ -61,5 +64,8 @@ public class Event {
 
     @Column(name = "img_url")
     private String imgUrl;
+
+    @Column(name = "event_type")
+    private String eventType;
 
 }
