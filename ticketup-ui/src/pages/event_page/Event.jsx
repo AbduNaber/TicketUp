@@ -23,7 +23,7 @@ const Event = () => {
 
   const handleGoToForm = () => {
     console.log("res");
-    navigate("/form", { state: { eventID: id, imageLink: eventImage } });
+    navigate("/form", { state: { eventID: id, imageLink: event?.imgUrl } });
   };
 
   useEffect(() => {
@@ -58,6 +58,13 @@ const Event = () => {
     const year = date.getFullYear();
 
     return `${day} ${month} ${year}`;
+  };
+
+  const formatTime = (timeString) => {
+    if (!timeString) return "Saat Bilgisi Yükleniyor...";
+  
+    const time = new Date(`1970-01-01T${timeString}`);
+    return time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
   const center = {
@@ -109,9 +116,10 @@ const Event = () => {
           {/* Left Section */}
           <div className="w-[48%] flex flex-col gap-4">
             <div>
-              <h3 className="text-lg font-bold text-gray-800">Tarih ve Saat</h3>
-              <p>{event?.eventDate ? formatDate(event.eventDate) : "Tarih yükleniyor..."}</p>
-              <p>{event?.startTime || "Saat Yükleniyor..."} - {event?.endTime || "Saat Yükleniyor..."}</p>
+              <h3 className="text-lg font-bold text-gray-800">Başlama Tarihi</h3>
+              <p>{event?.startDate ? formatDate(event.startDate) : "Tarih yükleniyor..."} - {event?.startTime ? formatTime(event.startTime): "Saat Yükleniyor"}</p>
+              <h3 className="text-lg font-bold text-gray-800">Bitiş Tarihi</h3>
+              <p>{event?.endDate ? formatDate(event.endDate) : "Tarih yükleniyor..."} - {event?.endTime ? formatTime(event.endTime): "Saat Yükleniyor"}</p>
               <a href="#" className="text-blue-600 hover:underline">+ Takvime Ekle</a>
             </div>
             <div className="flex items-center gap-4">

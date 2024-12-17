@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "tickets")
 @Getter
@@ -14,13 +16,13 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Ticket {
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", columnDefinition = "UUID")
+    private UUID id;
 
     @Column(name = "event_id")
-    private Long eventId;
+    private UUID eventId;
 
     @Column(name = "participant_id")
-    private Long participantId;
+    private UUID participantId;
 }
