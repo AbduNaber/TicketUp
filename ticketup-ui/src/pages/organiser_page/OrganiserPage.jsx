@@ -70,14 +70,11 @@ const OrganizerPage = () => {
 
     const fetchOrganizers = async () => {
       try {
-        const response = await axios.get(
-            `http://46.101.166.170:8080/ticketup/events/list-organizer-events/${parsedToken.id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-        );
+        const participantResponse = await axios.post("http://46.101.166.170:8080/ticketup/participants/create", requestBody, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
         setEvents(response.data);
         setFilteredEvents(response.data);
       } catch (error) {
