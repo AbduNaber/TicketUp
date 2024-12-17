@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import ParticipantList from "../participant_page/ParticipantList";
 
 
 const OrganizerPage = () => {
@@ -11,6 +12,7 @@ const OrganizerPage = () => {
   const [popupVisible, setPopupVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [participants, setParticipants] = useState([]);
 
   const token = sessionStorage.getItem("token");
   const parsedToken = token ? jwtDecode(token) : null;
@@ -217,6 +219,12 @@ const OrganizerPage = () => {
         </div>
 
         {/* Event List */}
+
+        {activeItem === 1 ? (
+        <ParticipantList participants={participants} />
+      ) : (
+       
+     
         <div className="p-5 flex-1 flex flex-col overflow-hidden">
           <h2 className="mb-4 text-lg font-medium">EVENTLER</h2>
           <div className="grid grid-cols-[40px_2fr_1fr_1fr_1fr_1fr_1fr] gap-2 items-center font-bold border-b-2 border-gray-300 bg-gray-50 py-2">
@@ -285,7 +293,7 @@ const OrganizerPage = () => {
             ))}
           </div>
         </div>
-
+      )}
         {popupVisible && selectedEvent && (
           <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-60 flex justify-center items-center z-50">
             <div className="bg-white p-5 rounded-lg max-w-md w-11/12 relative">
