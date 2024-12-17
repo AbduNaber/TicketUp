@@ -18,7 +18,7 @@ const Ticket = () => {
     const fetchTicket = async () => {
       try {
         const ticketResponse = await axios.get(
-          `http://localhost:8080/ticketup/tickets/list/${id}`
+          `http://46.101.166.170:8080/ticketup/tickets/list/${id}`
         );
         setTicket(ticketResponse.data); // ticket state güncellenir
       } catch (error) {
@@ -34,12 +34,12 @@ const Ticket = () => {
       const fetchParticipantAndEvent = async () => {
         try {
           const participantResponse = await axios.get(
-            `http://localhost:8080/ticketup/participants/list/${ticket.participantId}`
+            `http://46.101.166.170:8080/ticketup/participants/list/${ticket.participantId}`
           );
           setParticipant(participantResponse.data);
   
           const eventResponse = await axios.get(
-            `http://localhost:8080/ticketup/events/list/${ticket.eventId}`
+            `http://46.101.166.170:8080/ticketup/events/list/${ticket.eventId}`
           );
           setEvent(eventResponse.data);
         } catch (error) {
