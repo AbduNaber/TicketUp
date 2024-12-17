@@ -31,8 +31,8 @@ public class ParticipantController {
     }
 
     @PostMapping(path = "/create")
-    public void createParticipant(@RequestBody Participant participant) {
-        participantService.add(participant);
+    public UUID createParticipant(@RequestBody Participant participant) {
+        return participantService.add(participant);
     }
 
     @DeleteMapping(path = "/delete/{id}")

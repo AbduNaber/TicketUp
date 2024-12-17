@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
@@ -20,7 +21,7 @@ public class TicketController {
     }
 
     @GetMapping(path = "/list/{id}")
-    public Ticket getTicketById(@PathVariable Long id) {
+    public Ticket getTicketById(@PathVariable UUID id) {
         return ticketService.getTicketById(id);
     }
 
@@ -30,12 +31,14 @@ public class TicketController {
     }
 
     @PostMapping(path = "/create")
-    public void createTicket(@RequestBody Ticket ticket) {
-        ticketService.addTicket(ticket);
+    public UUID createTicket(@RequestBody Ticket ticket) {
+        System.out.println("Event ID: " + ticket.getEventId());
+        System.out.println("Participant ID: " + ticket.getParticipantId());
+        return ticketService.addTicket(ticket);
     }
 
     @DeleteMapping(path = "/delete/{id}")
-    public void deleteTicket(@PathVariable Long id) {
+    public void deleteTicket(@PathVariable UUID id) {
         ticketService.deleteTicketById(id);
     }
 

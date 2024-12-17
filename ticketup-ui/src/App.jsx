@@ -21,7 +21,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/event/:id" element={<Event />} />
-        <Route path="/ticket" element={<Ticket />} />
+        <Route path="/ticket/:id" element={<Ticket />} />
         <Route path="/ticket/edit" element={<TicketEdit />} />
         <Route path="/form" element={<EventForm />} />
         <Route path="/create" element={<CreateEvent />} />

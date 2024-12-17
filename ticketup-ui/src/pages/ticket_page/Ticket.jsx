@@ -4,8 +4,56 @@ import Footer from "../../components/Footer";
 import EmptyBox from "../../components/empty_box";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const Ticket = () => {
+  const {id} = useParams();
+  const [ticket, setTicket] = useState(null);
+  const [participant, setParticipant] = useState(null);
+  const [event, setEvent] = useState(null);
+
+  useEffect(() => {
+    const fetchTicket = async () => {
+      try {
+        const ticketResponse = await axios.get(
+          `http://localhost:8080/ticketup/tickets/list/${id}`
+        );
+        setTicket(ticketResponse.data); // ticket state güncellenir
+      } catch (error) {
+        console.error("Error fetching ticket:", error);
+      }
+    };
+  
+    fetchTicket();
+  }, [id]);
+  
+  useEffect(() => {
+    if (ticket) {
+      const fetchParticipantAndEvent = async () => {
+        try {
+          const participantResponse = await axios.get(
+            `http://localhost:8080/ticketup/participants/list/${ticket.participantId}`
+          );
+          setParticipant(participantResponse.data);
+  
+          const eventResponse = await axios.get(
+            `http://localhost:8080/ticketup/events/list/${ticket.eventId}`
+          );
+          setEvent(eventResponse.data);
+        } catch (error) {
+          console.error("Error fetching participant or event:", error);
+        }
+      };
+  
+      fetchParticipantAndEvent();
+    }
+  }, [ticket]); // ticket güncellenince çalışır
+
+
+
+
   const downloadTicket = () => {
     const input = document.getElementById("pdf-content");
 
@@ -27,7 +75,22 @@ const Ticket = () => {
     });
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "Geçersiz Tarih";
 
+    const date = new Date(dateString);
+
+    const months = [
+      "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz",
+      "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık",
+    ];
+
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+
+    return `${day} ${month} ${year}`;
+  };
 
 
   return (
@@ -55,7 +118,7 @@ const Ticket = () => {
       <div id="pdf-content" className="bg-white w-full flex flex-col items-center">
       {/* Title */}
       <h2 className="text-4xl text-black font-bold text-center mt-8">
-        Anadolu'dan Dünyaya (Denizli)
+        {event?.name || "Yükleniyor..."}
       </h2>
 
       {/* QR Code Section */}
@@ -80,21 +143,21 @@ const Ticket = () => {
       {/* Ticket Details */}
       <div id="ticket-area" className="flex flex-col items-center mt-10 mb-20">
         <p className="text-xl font-light text-black mt-6">Etkinlik Bilgileri</p>
-        <p className="text-2xl font-extrabold text-black mt-2">T-Soft ile Anadolu'dan Dünya'ya</p>
+        <p className="text-2xl font-extrabold text-black mt-2">{event?.name || "Bilet Bilgileri Yükleniyor..."}</p>
 
         <div className="flex justify-between mt-4 w-2/5">
           <div className="flex flex-col items-center p-2 text-center">
             <p className="text-sm font-medium text-black">TARİH</p>
-            <p className="text-sm font-bold text-black">4.11.2024</p>
+            <p className="text-sm font-bold text-black">{event?.startDate ? formatDate(event.startDate) : "Tarih yükleniyor..."}</p>
           </div>
           <div className="flex flex-col items-center p-2 text-center">
             <p className="text-sm font-medium text-black">SAAT</p>
-            <p className="text-sm font-bold text-black">17.00</p>
+            <p className="text-sm font-bold text-black">{event?.startTime || "Saat Yükleniyor..."}</p>
           </div>
           <div className="flex flex-col items-center p-2 text-center">
             <p className="text-sm font-medium text-black">KONUM</p>
             <p className="text-sm font-bold text-black">
-              Tüyap Etkinlik Fuarı İstanbul
+            {event?.location || "Konum Yükleniyor..."}
             </p>
           </div>
         </div>
@@ -104,22 +167,22 @@ const Ticket = () => {
         <div className="flex justify-between mt-4 w-2/5">
           <div className="flex flex-col items-center p-2 text-center">
             <p className="text-sm font-medium text-black">Ad-Soyad</p>
-            <p className="text-sm font-bold text-black">Sinan Eryiğit</p>
+            <p className="text-sm font-bold text-black">{participant?.name || "Katılımcı Bilgileri Yükleniyor..."} {participant?.surname || "Katılımcı Bilgileri Yükleniyor..."} </p>
           </div>
           <div className="flex flex-col items-center p-2 text-center">
             <p className="text-sm font-medium text-black">Ünvan</p>
-            <p className="text-sm font-bold text-black">Organizatör</p>
+            <p className="text-sm font-bold text-black">{participant?.title}</p>
           </div>
           <div className="flex flex-col items-center p-2 text-center">
             <p className="text-sm font-medium text-black">Katılınılan İl</p>
-            <p className="text-sm font-bold text-black">İstanbul</p>
+            <p className="text-sm font-bold text-black">{participant?.city}</p>
           </div>
         </div>
 
         {/* Additional Information */}
         <p className="text-sm font-medium text-black mt-7">KATILIMCI ID</p>
         <p className="text-sm font-bold text-black mb-4">
-          1f479181-d0ce-43d8-9742-48c26530c865
+          {ticket?.participantId}
         </p>
         <p className="text-xl font-light text-black">Bilmeniz Gerekenler</p>
         <p className="text-sm font-light text-center text-black mt-2 w-1/5 leading-6">
