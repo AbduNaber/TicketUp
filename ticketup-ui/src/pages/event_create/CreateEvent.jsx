@@ -6,6 +6,9 @@ import "react-quill/dist/quill.snow.css";
 import React, { useState } from "react";
 import { GoogleMap, LoadScript, MarkerF } from "@react-google-maps/api";
 import { useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -24,6 +27,10 @@ const CreateEvent = () => {
     const [eventType, setEventType] = useState("");
     const [eventLocation, setEventLocation] = useState("");
     const [isFormValid, setIsFormValid] = useState(false);
+    const [uploadedImageUrl, setUploadedImageURl] = useState("");
+    const token = sessionStorage.getItem("token");
+    const parsedToken = token ? jwtDecode(token) : null;
+    const navigate = useNavigate();
     
 
     const handleMapClick = (event) => {
@@ -52,17 +59,105 @@ const CreateEvent = () => {
 
   const validateForm = () => {
     console.log(description);
-    return eventTitle && startDate && endDate && startTime && endTime && eventType && eventLocation && description;
+    return eventTitle && startDate && endDate && startTime && endTime && eventType && eventLocation && description && coordinates && uploadedImageUrl;
   };
   
   useEffect(() => {
     setIsFormValid(validateForm());
-  }, [eventTitle, startDate, endDate, startTime, endTime, eventType, eventLocation, description]);
+  }, [eventTitle, startDate, endDate, startTime, endTime, eventType, eventLocation, description, coordinates, uploadedImageUrl]);
   
-const handleChange = (setter) => (e) => {
+  const handleChange = (setter) => (e) => {
     setter(e.target.value);
     validateForm();
-};
+  };
+
+  const handleFileUpload = async(e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const token = sessionStorage.getItem("token");
+
+    try{
+      const response = await fetch("http://localhost:8080/ticketup/files/upload", {
+        method: "POST", 
+        body: formData,
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
+      if(!response.ok) throw new Error("Dosya Yüklenemedi");
+
+      const data = await response.json();
+      setUploadedImageURl(data.url);
+      console.log("Yüklenen dosya URL si: ", data.url);
+    } catch(error){
+      console.error("Dosya Yükleme Hatası: ", error);
+    }
+  };
+
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+
+    if (!token) {
+      console.error("No token found. Redirecting to login.");
+      window.location.href = "/login";
+      return;
+    }
+
+    if (!parsedToken || !parsedToken.id) {
+      console.error("Invalid token. No user ID found.");
+      window.location.href = "/login";
+      return;
+    }
+
+    try{
+
+      const organizer =  await axios.get(
+        `http://localhost:8080/ticketup/organizators/list/${parsedToken.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+
+      const requestBody = {
+        name: eventTitle,
+        organizatorId: parsedToken.id,
+        organizatorName: organizer.data.name,
+        organizatorCompany: organizer.data.organizationName,
+        location: eventLocation,
+        description: description,
+        startDate: startDate,
+        endDate: endDate,
+        latitude: coordinates.lat,
+        longitude: coordinates.lng,
+        startTime: startTime,
+        endTime: endTime,
+        imgUrl: uploadedImageUrl,
+        eventType: eventType,
+      };
+
+      await axios.post("http://localhost:8080/ticketup/events/create", requestBody, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      navigate("/organizer");
+    }catch(error){
+      console.error(error);
+    }
+  };
+
+
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       {/* Top Bar */}
@@ -285,7 +380,7 @@ const handleChange = (setter) => (e) => {
         <div className="mb-6 ">
           <label className="text-lg font-medium text-black">Görüntü Yükle</label>
           <div className="flex items-center justify-center w-full max-w-md p-4 mt-2 border-2 border-dashed rounded-md bg-gray-50 border-gray-300">
-            <input type="file" className="hidden" id="file-upload"  />
+            <input type="file" className="hidden" id="file-upload" onChange={handleFileUpload} />
             <label
               htmlFor="file-upload"
               className="px-4 py-2 text-sm font-bold text-white bg-blue-500 rounded cursor-pointer hover:bg-blue-600"
@@ -295,19 +390,27 @@ const handleChange = (setter) => (e) => {
             <span className="ml-3 text-sm text-gray-600">
               Görüntü yüklemek için bir dosya seçin
             </span>
+            {uploadedImageUrl && (
+              <img
+                src={uploadedImageUrl}
+                alt="Yüklenen Görsel"
+                className="w-32 h-32 mt-4"
+              />
+            )}
           </div>
         </div>
 
         {/* Buttons */}
         <div className="flex justify-end mt-8">
           <button
+            onClick={handleSubmit}
               type="submit"
               disabled={!validateForm()}
               className={`bg-gradient-to-r from-pink-500 to-orange-500 text-black font-bold py-3 px-4 rounded-full hover:bg-green-500 transition ${
                 !isFormValid ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
-              Etkinlik Önizleme
+              Etkinlik Oluştur
             </button>
         </div>
       </div>

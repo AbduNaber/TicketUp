@@ -19,7 +19,6 @@ const OrganizerPage = () => {
   const [isAllSelected, setIsAllSelected] = useState(false);
 
   const menuItems = [
-    { id: 1, label: "KATILIMCILAR", icon: "/src/assets/icons/statistic-icon.svg" },
     { id: 2, label: "AKTİF ETKİNLİKLER", icon: "/src/assets/icons/participant-icon.svg" },
     { id: 3, label: "KAPANMIŞ ETKİNLİKLER", icon: "/src/assets/icons/participant-icon.svg" },
     { id: 4, label: "ETKİNLİK OLUŞTUR", icon: "/src/assets/icons/participant-icon.svg" },
@@ -260,8 +259,8 @@ const OrganizerPage = () => {
                   />
                 </span>
                 <span className="truncate">{event.name}</span>
-                <span className="truncate">{event.type}</span>
-                <span>{formatDate(event.eventDate)}</span>
+                <span className="truncate">{event.eventType}</span>
+                <span>{formatDate(event.startDate)}</span>
                 <span>{event.status}</span>
                 <span>{formatDate(event.createdDate)}</span>
                 <div className="flex gap-1">
@@ -296,10 +295,21 @@ const OrganizerPage = () => {
               {selectedEvent ? (
                 <>
                   <p><strong>Name: </strong> {selectedEvent.name}</p>
-                  <p><strong>Type: </strong> {selectedEvent.type}</p>
-                  <p><strong>Date: </strong> {formatDate(selectedEvent.eventDate)}</p>
+                  <p><strong>Type: </strong> {selectedEvent.eventType}</p>
+                  <p><strong>Date: </strong> {formatDate(selectedEvent.startDate)}</p>
                   <p><strong>Status: </strong> {selectedEvent.status}</p>
                   <p><strong>Created Date: </strong> {formatDate(selectedEvent.createdDate)}</p>
+                  <p>
+                    <strong>Event Link: </strong>
+                    <a
+                      href={`http://localhost:3000/event/${selectedEvent.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ textDecoration: "none", color: "#6c5ce7", fontWeight: "bold" }}
+                    >
+                      {`http://localhost:3000/event/${selectedEvent.id}`}
+                    </a>      
+                  </p>
                 </>
               ) : (
                 <p>Loading event details...</p>
