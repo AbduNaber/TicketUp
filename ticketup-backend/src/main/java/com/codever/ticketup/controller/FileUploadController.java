@@ -18,7 +18,7 @@ import java.nio.file.StandardCopyOption;
 @RestController
 @RequestMapping("ticketup/files")
 public class FileUploadController {
-    private static final String UPLOAD_DIR = "ticketup-ui/public/db_images/";
+    private static final String UPLOAD_DIR = "(/home/ticketup/TicketUp/ticketup-ui/public/db_images/";
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
