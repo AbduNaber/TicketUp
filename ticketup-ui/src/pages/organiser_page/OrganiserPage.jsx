@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 
 const OrganizerPage = () => {
+  const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -170,7 +172,13 @@ const OrganizerPage = () => {
               key={item.id}
               className={`flex items-center gap-2 p-3 rounded-md cursor-pointer text-sm text-gray-800 transition-colors 
               ${item.id === activeItem ? "bg-gray-200 font-bold" : "hover:bg-gray-100"}`}
-              onClick={() => setActiveItem(item.id)}
+              onClick={() => {
+                setActiveItem(item.id);
+                if (item.id === 4) {
+                  navigate("/create");
+                }
+              }}
+              
             >
               <span className="w-5 h-5 flex-shrink-0">
                 <img src={item.icon} alt={item.label} />
