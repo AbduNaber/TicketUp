@@ -45,13 +45,29 @@ const EventForm = () => {
         isFirstTime: formData.terms,
       };
 
-      await axios.post("http://localhost:8080/ticketup/participants/create", requestBody, {
+      const participantResponse = await axios.post("http://localhost:8080/ticketup/participants/create", requestBody, {
         headers: {
           "Content-Type": "application/json",
         },
       });
 
-      navigate("/ticket");
+      console.log("Participant ID: ", participantResponse.data);
+
+      const ticketRequest = {
+        eventId: eventID,
+        participantId: participantResponse.data,
+      };
+
+      const ticketResponse = await axios.post("http://localhost:8080/ticketup/tickets/create", ticketRequest, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      console.log("Ticket ID: ", ticketResponse.data);
+      console.log("Ticket Request: ", ticketRequest);
+
+      navigate(`/ticket/${ticketResponse.data}`);
     } catch (error) {
       console.error(error);
     }

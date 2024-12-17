@@ -23,7 +23,7 @@ public class ParticipantService {
     }
 
     public Participant getPartipantById(UUID id) {
-        return participantRepository.getReferenceById(id);
+        return participantRepository.findById(id).orElse(null);
     }
      public Participant updateParticipant(Participant participant) {
         return participantRepository.findById(participant.getId()).map(
@@ -36,8 +36,10 @@ public class ParticipantService {
      public void deleteParticipant(UUID id) {
         participantRepository.deleteById(id);
      }
-     public void add(Participant participant) {
+     public UUID add(Participant participant) {
+
         participantRepository.save(participant);
+        return participant.getId();
      }
 
 }

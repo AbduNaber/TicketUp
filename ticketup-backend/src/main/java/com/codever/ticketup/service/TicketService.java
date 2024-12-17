@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -22,7 +23,7 @@ public class TicketService {
         return ticketRepository.findAll();
     }
 
-    public Ticket getTicketById(Long id){
+    public Ticket getTicketById(UUID id){
         return ticketRepository.findById(id).get();
     }
 
@@ -36,12 +37,13 @@ public class TicketService {
                 }
         ).orElseThrow(() -> new RuntimeException("Ticket not found with id: " + ticket.getId()));
     }
-    public void deleteTicketById(Long id){
+    public void deleteTicketById(UUID id){
         ticketRepository.deleteById(id);
     }
 
-    public void addTicket(Ticket ticket){
+    public UUID addTicket(Ticket ticket){
         ticketRepository.save(ticket);
+        return ticket.getId();
     }
 
 }
