@@ -30,7 +30,7 @@ const Event = () => {
     const fetchEvent = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/ticketup/events/list/${id}`
+          `http://46.101.166.170:8080/ticketup/events/list/${id}`
         );
         setEvent(response.data);
         console.log("Event Fetched");
