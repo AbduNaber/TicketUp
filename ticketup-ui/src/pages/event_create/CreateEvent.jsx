@@ -81,7 +81,7 @@ const CreateEvent = () => {
     const token = sessionStorage.getItem("token");
 
     try{
-      const response = await fetch("http://localhost:8080/ticketup/files/upload", {
+      const response = await fetch("http://46.101.166.170:8080/ticketup/files/upload", {
         method: "POST", 
         body: formData,
         headers: {
@@ -117,7 +117,7 @@ const CreateEvent = () => {
     try{
 
       const organizer =  await axios.get(
-        `http://localhost:8080/ticketup/organizators/list/${parsedToken.id}`,
+        `http://46.101.166.170:8080/ticketup/organizators/list/${parsedToken.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -143,7 +143,7 @@ const CreateEvent = () => {
         eventType: eventType,
       };
 
-      await axios.post("http://localhost:8080/ticketup/events/create", requestBody, {
+      await axios.post("http://46.101.166.170:8080/ticketup/events/create", requestBody, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

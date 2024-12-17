@@ -71,7 +71,7 @@ const OrganizerPage = () => {
     const fetchOrganizers = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/ticketup/events/list-organizer-events/${parsedToken.id}`,
+          `http://46.101.166.170:8080/ticketup/events/list-organizer-events/${parsedToken.id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -120,7 +120,7 @@ const OrganizerPage = () => {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`http://localhost:8080/ticketup/events/delete/${eventId}`, {
+      await axios.delete(`http://46.101.166.170:8080/ticketup/events/delete/${eventId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -310,12 +310,12 @@ const OrganizerPage = () => {
                   <p>
                     <strong>Event Link: </strong>
                     <a
-                      href={`http://localhost:3000/event/${selectedEvent.id}`}
+                      href={`http://46.101.166.170:5173/event/${selectedEvent.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{ textDecoration: "none", color: "#6c5ce7", fontWeight: "bold" }}
                     >
-                      {`http://localhost:3000/event/${selectedEvent.id}`}
+                      {`http://46.101.166.170:5173/event/${selectedEvent.id}`}
                     </a>      
                   </p>
                 </>
