@@ -13,31 +13,20 @@ if (!apiKey) {
   throw new Error('REACT_APP_GOOGLE_API_KEY is not defined in .env file');
 }
 
-
-const eventImage = "/db_images/Hero-1.jpg";
 const containerStyle = {
   width: '100%',
   height: '300px',
 };
 
-// Haritanın merkez noktası
-const center = {
-  lat: 37.7749, // Örneğin Denizli'nin enlemi
-  lng: 29.0875, // Örneğin Denizli'nin boylamı
-};
-const url = `https://www.google.com/maps?q=${center.lat},${center.lng}`;
-console.log(url);
 
 const Event = () => {
-
-
   const {id} = useParams();
   const [event, setEvent] = useState(null);
   const navigate = useNavigate();
 
   const handleGoToForm = () => {
     
-    navigate('/form', {state: {eventID: id, imageLink: eventImage}});
+    navigate('/form', {state: {eventID: id, imageLink: event?.imgUrl}});
   }
 
 
@@ -49,13 +38,38 @@ const Event = () => {
         console.log('Event Fetched');
       } catch(error) {
         console.error('Error fetching event:', error.response?.data || error.message);
-        alert('Kayıt Başarısız.');
+        alert('Event Bilgileri Yüklenemedi');
         
       }
     };
 
     fetchEvent();
   }, [id]);
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "Geçersiz Tarih";
+  
+    const date = new Date(dateString);
+  
+    const months = [
+      "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
+      "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"
+    ];
+  
+    const day = date.getDate(); 
+    const month = months[date.getMonth()]; 
+    const year = date.getFullYear(); 
+  
+    return `${day} ${month} ${year}`;
+  };
+
+  
+
+  const center = {
+    lat: event?.latitude || 37.7749,
+    lng: event?.longitude || 29.0875
+  };
+  const url = `https://www.google.com/maps?q=${center.lat},${center.lng}`;
 
 
   return (
@@ -80,34 +94,25 @@ const Event = () => {
       </div>
       <div className="content-container">
         <div className="image-container">
-          <img className="event-image" src={eventImage} alt="Event" />
+          <img className="event-image" src={event?.imgUrl} alt="Event" />
         </div>
         <div className="event-header">
-          <h2 className="event-title">Anadolu'dan Dünyaya</h2>
+          <h2 className="event-title">{event?.name || "Etkinlik Adı Yükleniyor..."}</h2>
           <GradientButton text="Katılım Formu" onClick={handleGoToForm} />
         </div>
         <div className="event-details-container">
           <h1 className="event-subtitle">Etkinlik Açıklaması</h1>
           <p className="event-description">
-            İlkini Bursa'da gerçekleştirdiğimiz, ikincisini ise 19 Aralık Perşembe günü DENİZLİ
-            Ticaret Odası'nda gerçekleştireceğimiz ve Denizli'nin üretici & toptancı & e-ticaret
-            profesyonelleri ile e-ihracat'ın olmazsa olmaz sektörlerinden firmaları bir araya getireceğimiz
-            etkinliğe kayıt ve etkinlik günü giriş bilgilerini e-posta ve telefonunuza SMS olarak almak için
-            lütfen bu formu eksiksiz doldurun
+            {event?.description || "Etkinlik Açıklaması Yükleniyor..."}
           </p>
-          <p className="event-description">
-            KATILIMCILAR VE FİRMALAR ETKİNLİK AÇIKLAMASI KISMINDA VERİLECEK. ZATEN ETKİNLİKLERE
-            100DEN FAZLA KATILIMCI GELİYOR ONLARI GÖSTEREMEYİZ BAHSEDEBİLECEĞİMİZ TEK KATILIMCI
-            FİRMALARIN KONUŞMACI OLARAK GÖNDERDİKLERİ OLMALI. BU YÜZDEN KATILIMCILAR VE FİRMALARO
-            BURADA GÖSTERMELİYİZ.
-          </p>
+         
         </div>
         <div className="properties-container">
           <div className="properties-left">
             <div className="property-section">
               <h3 className="property-title">Tarih ve Saat</h3>
-              <p>19 Aralık 2024</p>
-              <p>19:00</p>
+              <p>{event?.eventDate ? formatDate(event.eventDate) : "Tarih Yükleniyor..."}</p>
+              <p>{event?.startTime || "Saat Yükleniyor..."} - {event?.endTime || "Saat Yükleniyor..."}</p>
               <a href="#" className="add-to-calendar">+ Takvime Ekle</a>
             </div>
 
@@ -116,7 +121,8 @@ const Event = () => {
               <div className="organizer-info">
                 <img src="/src/assets/icons/tsoft-icon.png" alt="Organizer Icon" className="organizer-image" />
                 <div className="organizer-details">
-                  <p>T-Soft</p>
+                  <p>{event?.organizatorName || "Organizatör Bilgisi Yükleniyor..."}</p>
+                  <p>{event?.organizatorCompany || "Organizatör Bilgisi Yükleniyor..."}</p>
                   <a href="#" className="button-white-border">İletişime Geç</a>
                 </div>
               </div>
@@ -131,11 +137,8 @@ const Event = () => {
           <div className="properties-right">
             <div className="property-section">
               <h3 className="property-title">Konum</h3>
-              <p className="location-description">Denizli Ticaret Odası</p>
+              <p className="location-description">{event?.location || "Konum Yükleniyor..."}</p>
               <div className="location-image-container">
-              
-              
-                
                 <LoadScript googleMapsApiKey= {apiKey}>
                   <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={15}>
                     <MarkerF position={center}  onClick={() => window.open(url, '_blank')}>   </MarkerF>

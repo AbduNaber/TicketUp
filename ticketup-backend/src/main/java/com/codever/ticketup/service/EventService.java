@@ -34,7 +34,7 @@ public class EventService {
                     event1.setName(event.getName());
                     event1.setDescription(event.getDescription());
                     event1.setLocation(event.getLocation());
-                    event1.setEventDate(event.getEventDate());
+                    event1.setStartDate(event.getStartDate());
                     return eventRepository.save(event1);
                 }
         ).orElseThrow(() -> new RuntimeException("Event with id " + event.getId() + " not found"));
