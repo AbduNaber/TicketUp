@@ -9,6 +9,8 @@ import { useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import sanitizeHtml from "sanitize-html";
+
 
 
 
@@ -31,6 +33,7 @@ const CreateEvent = () => {
     const token = sessionStorage.getItem("token");
     const parsedToken = token ? jwtDecode(token) : null;
     const navigate = useNavigate();
+    
     
 
     const handleMapClick = (event) => {
@@ -125,6 +128,11 @@ const CreateEvent = () => {
         }
       );
 
+      const sanitizedDescription = sanitizeHtml(description, {
+        allowedTags: [], // Hiçbir HTML etiketine izin verme
+        allowedAttributes: {}, // Hiçbir HTML özelliğine izin verme
+      });
+
 
       const requestBody = {
         name: eventTitle,
@@ -132,7 +140,7 @@ const CreateEvent = () => {
         organizatorName: organizer.data.name,
         organizatorCompany: organizer.data.organizationName,
         location: eventLocation,
-        description: description,
+        description: sanitizedDescription,
         startDate: startDate,
         endDate: endDate,
         latitude: coordinates.lat,
