@@ -2,7 +2,7 @@ import GradientButton from "../../components/GradientButton";
 import Footer from "../../components/Footer";
 import EmptyBox from "../../components/empty_box";
 import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css"; 
+import "react-quill/dist/quill.snow.css";
 import React, { useState } from "react";
 import { GoogleMap, LoadScript, MarkerF } from "@react-google-maps/api";
 import { useEffect } from "react";
@@ -13,43 +13,43 @@ import { useNavigate } from "react-router-dom";
 
 
 const CreateEvent = () => {
-    const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
-    
+  const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
-    const [coordinates, setCoordinates] = useState({ lat: 37.7749, lng: -122.4194 }); // Default coordinates
-    const [inputValue, setInputValue] = useState(`${coordinates.lat}, ${coordinates.lng}`);
-    const [description, setDescription] = useState("");
-    const [eventTitle, setEventTitle] = useState("");
-    const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
-    const [startTime, setStartTime] = useState("");
-    const [endTime, setEndTime] = useState("");
-    const [eventType, setEventType] = useState("");
-    const [eventLocation, setEventLocation] = useState("");
-    const [isFormValid, setIsFormValid] = useState(false);
-    const [uploadedImageUrl, setUploadedImageURl] = useState("");
-    const token = sessionStorage.getItem("token");
-    const parsedToken = token ? jwtDecode(token) : null;
-    const navigate = useNavigate();
-    
 
-    const handleMapClick = (event) => {
+  const [coordinates, setCoordinates] = useState({ lat: 37.7749, lng: -122.4194 }); // Default coordinates
+  const [inputValue, setInputValue] = useState(`${coordinates.lat}, ${coordinates.lng}`);
+  const [description, setDescription] = useState("");
+  const [eventTitle, setEventTitle] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [eventType, setEventType] = useState("");
+  const [eventLocation, setEventLocation] = useState("");
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [uploadedImageUrl, setUploadedImageURl] = useState("");
+  const token = sessionStorage.getItem("token");
+  const parsedToken = token ? jwtDecode(token) : null;
+  const navigate = useNavigate();
+
+
+  const handleMapClick = (event) => {
     const lat = event.latLng.lat();
     const lng = event.latLng.lng();
     setCoordinates({ lat, lng });
     setInputValue(`${lat}, ${lng}`);
-    };
+  };
 
-    const handleInputChange = (e) => {
+  const handleInputChange = (e) => {
     setInputValue(e.target.value);
     const [lat, lng] = e.target.value.split(",").map(Number);
     if (!isNaN(lat) && !isNaN(lng)) {
-    setCoordinates({ lat, lng });
+      setCoordinates({ lat, lng });
     }
-    };
+  };
 
 
-  
+
 
   const handleDescriptionChange = (value) => {
     setDescription(value);
@@ -61,45 +61,45 @@ const CreateEvent = () => {
     console.log(description);
     return eventTitle && startDate && endDate && startTime && endTime && eventType && eventLocation && description && coordinates && uploadedImageUrl;
   };
-  
+
   useEffect(() => {
     setIsFormValid(validateForm());
   }, [eventTitle, startDate, endDate, startTime, endTime, eventType, eventLocation, description, coordinates, uploadedImageUrl]);
-  
+
   const handleChange = (setter) => (e) => {
     setter(e.target.value);
     validateForm();
   };
 
-  const handleFileUpload = async(e) => {
+  const handleFileUpload = async (e) => {
     const file = e.target.files[0];
-    if(!file) return;
+    if (!file) return;
 
     const formData = new FormData();
     formData.append("file", file);
 
     const token = sessionStorage.getItem("token");
 
-    try{
+    try {
       const response = await fetch("http://46.101.166.170:8080/ticketup/files/upload", {
-        method: "POST", 
+        method: "POST",
         body: formData,
         headers: {
           "Authorization": `Bearer ${token}`,
         },
       });
 
-      if(!response.ok) throw new Error("Dosya Yüklenemedi");
+      if (!response.ok) throw new Error("Dosya Yüklenemedi");
 
       const data = await response.json();
       setUploadedImageURl(data.url);
       console.log("Yüklenen dosya URL si: ", data.url);
-    } catch(error){
+    } catch (error) {
       console.error("Dosya Yükleme Hatası: ", error);
     }
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!token) {
@@ -114,9 +114,9 @@ const CreateEvent = () => {
       return;
     }
 
-    try{
+    try {
 
-      const organizer =  await axios.get(
+      const organizer = await axios.get(
         `http://46.101.166.170:8080/ticketup/organizators/list/${parsedToken.id}`,
         {
           headers: {
@@ -151,7 +151,7 @@ const CreateEvent = () => {
       });
 
       navigate("/organizer");
-    }catch(error){
+    } catch (error) {
       console.error(error);
     }
   };
@@ -187,8 +187,8 @@ const CreateEvent = () => {
 
         {/* Event Details Section */}
         <div className="flex items-center mb-6">
-  <EmptyBox width="175px" height="75px" />
-  
+          <EmptyBox width="175px" height="75px" />
+
         </div>
         <div className="grid grid-cols-1 gap-4 mb-0">
           <div className="flex flex-col gap-2">
@@ -204,7 +204,7 @@ const CreateEvent = () => {
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2">
               <label className="text-lg font-medium text-black">
                 Başlangıç Tarihi <span className="text-red-600">*</span>
               </label>
@@ -263,117 +263,117 @@ const CreateEvent = () => {
 
         {/* Event Location Section */}
         <div className="grid grid-cols-2 gap-4 mb-6 mr-50">
-  {/* First column for Etkinlik Nerede Olacak and Etkinlik Tipi */}
-        <div className="flex flex-col gap-4">
+          {/* First column for Etkinlik Nerede Olacak and Etkinlik Tipi */}
+          <div className="flex flex-col gap-4">
 
-        <div className="flex flex-col gap-2">
-            <label className="text-lg font-medium text-black mt-2">
-              Etkinlik Tipi <span className="text-red-600">*</span>
-            </label>
-            <select
-              className="w-full h-12 p-3 mt-2 text-base border border-gray-300 rounded-md"
-              defaultValue=""
-              onChange={handleChange(setEventType)}
-            >
-              <option value="" disabled>Etkinlik tipini seçiniz</option>
-              <option value="konferans">Konferans</option>
-              <option value="seminer">Seminer</option>
-              <option value="panel">Panel</option>
-              <option value="fuar">Fuar</option>
-              <option value="çalıştay">Çalıştay</option>
-              <option value="zirve">Zirve</option>
-            </select>
-          </div>
-          <div className="flex flex-col gap-2">
-            <label className="text-lg font-medium text-black ">
-              Etkinlik Nerede Olacak? <span className="text-red-600">*</span>
-            </label>
-            <input 
-              type="text"
-              placeholder="Etkinliğin yapılacağı yeri yazınız. (Örn: İstanbul Fuar Merkezi, İstanbul)"
-              className="w-full h-12 p-3 text-base border border-gray-300 rounded-md" onChange={handleChange(setEventLocation)} />
-              
-          </div>
-        </div>
-
-  {/* Second column for Map Selection */}
-        <div className="flex flex-col gap-2">
-          <label className="text-lg font-medium text-black mt-2">
-            Haritadan seçiniz: <span className="text-red-600">*</span>
-          </label>
-          <input
-            type="text"
-            className="w-full h-12 p-3 mt-2 text-base border border-gray-300 rounded-md"
-            placeholder="Koordinat Giriniz veya Yer Adı Yazınız"
-            value={inputValue}
-            onChange={async (e) => {
-              handleInputChange(e);
-              const address = e.target.value;
-              if (address) {
-                try {
-                  const geocoder = new window.google.maps.Geocoder();
-                  geocoder.geocode({ address }, (results, status) => {
-                    if (status === "OK" && results[0]) {
-                      const location = results[0].geometry.location;
-                      setCoordinates({ lat: location.lat(), lng: location.lng() });
-                    } else {
-                      console.error("Geocode was not successful for the following reason:", status);
-                    }
-                  });
-                } catch (error) {
-                  console.error("Error during geocoding:", error);
-                }
-              }
-            }}
-            
-          />
-          <div className="mt-4 h-80 border border-gray-300 rounded-md">
-            <LoadScript googleMapsApiKey={apiKey}>
-              <GoogleMap
-                mapContainerStyle={{ width: "100%", height: "100%" }}
-                center={coordinates}
-                zoom={12}
-                onClick={handleMapClick}
+            <div className="flex flex-col gap-2">
+              <label className="text-lg font-medium text-black mt-2">
+                Etkinlik Tipi <span className="text-red-600">*</span>
+              </label>
+              <select
+                className="w-full h-12 p-3 mt-2 text-base border border-gray-300 rounded-md"
+                defaultValue=""
+                onChange={handleChange(setEventType)}
               >
-                <MarkerF position={coordinates} />
-              </GoogleMap>
-            </LoadScript>
+                <option value="" disabled>Etkinlik tipini seçiniz</option>
+                <option value="konferans">Konferans</option>
+                <option value="seminer">Seminer</option>
+                <option value="panel">Panel</option>
+                <option value="fuar">Fuar</option>
+                <option value="çalıştay">Çalıştay</option>
+                <option value="zirve">Zirve</option>
+              </select>
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="text-lg font-medium text-black ">
+                Etkinlik Nerede Olacak? <span className="text-red-600">*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Etkinliğin yapılacağı yeri yazınız. (Örn: İstanbul Fuar Merkezi, İstanbul)"
+                className="w-full h-12 p-3 text-base border border-gray-300 rounded-md" onChange={handleChange(setEventLocation)} />
+
+            </div>
           </div>
-        </div>
+
+          {/* Second column for Map Selection */}
+          <div className="flex flex-col gap-2">
+            <label className="text-lg font-medium text-black mt-2">
+              Haritadan seçiniz: <span className="text-red-600">*</span>
+            </label>
+            <input
+              type="text"
+              className="w-full h-12 p-3 mt-2 text-base border border-gray-300 rounded-md"
+              placeholder="Koordinat Giriniz veya Yer Adı Yazınız"
+              value={inputValue}
+              onChange={async (e) => {
+                handleInputChange(e);
+                const address = e.target.value;
+                if (address) {
+                  try {
+                    const geocoder = new window.google.maps.Geocoder();
+                    geocoder.geocode({ address }, (results, status) => {
+                      if (status === "OK" && results[0]) {
+                        const location = results[0].geometry.location;
+                        setCoordinates({ lat: location.lat(), lng: location.lng() });
+                      } else {
+                        console.error("Geocode was not successful for the following reason:", status);
+                      }
+                    });
+                  } catch (error) {
+                    console.error("Error during geocoding:", error);
+                  }
+                }
+              }}
+
+            />
+            <div className="mt-4 h-80 border border-gray-300 rounded-md">
+              <LoadScript googleMapsApiKey={apiKey}>
+                <GoogleMap
+                  mapContainerStyle={{ width: "100%", height: "100%" }}
+                  center={coordinates}
+                  zoom={12}
+                  onClick={handleMapClick}
+                >
+                  <MarkerF position={coordinates} />
+                </GoogleMap>
+              </LoadScript>
+            </div>
+          </div>
         </div>
 
         {/* Event Description Section */}
         <div className="mb-6">
-            <label className="text-lg font-medium text-black">
+          <label className="text-lg font-medium text-black">
             Etkinlik Hakkında <span className="text-red-600">*</span>
-            </label>
-            <ReactQuill
+          </label>
+          <ReactQuill
             value={description}
             onChange={handleDescriptionChange}
             placeholder="Etkinliğinizi tanıtın"
             className="mt-2 h-60 mb-2"
             theme="snow"
             modules={{
-                toolbar: [
+              toolbar: [
                 [{ header: [1, 2, 3, false] }],
                 ["bold", "italic", "underline", "strike"], // Text formatting
                 [{ list: "ordered" }, { list: "bullet" }], // Lists
                 ["link", "image"], // Link and image
                 ["clean"], // Remove formatting
-                ],
+              ],
             }}
             formats={[
-                "header",
-                "bold",
-                "italic",
-                "underline",
-                "strike",
-                "list",
-                "bullet",
-                "link",
-                "image",
+              "header",
+              "bold",
+              "italic",
+              "underline",
+              "strike",
+              "list",
+              "bullet",
+              "link",
+              "image",
             ]}
-            />
+          />
         </div>
 
         {/* File Upload */}
@@ -404,14 +404,13 @@ const CreateEvent = () => {
         <div className="flex justify-end mt-8">
           <button
             onClick={handleSubmit}
-              type="submit"
-              disabled={!validateForm()}
-              className={`bg-gradient-to-r from-pink-500 to-orange-500 text-black font-bold py-3 px-4 rounded-full hover:bg-green-500 transition ${
-                !isFormValid ? 'opacity-50 cursor-not-allowed' : ''
+            type="submit"
+            disabled={!validateForm()}
+            className={`bg-gradient-to-r from-pink-500 to-orange-500 text-black font-bold py-3 px-4 rounded-full hover:bg-green-500 transition ${!isFormValid ? 'opacity-50 cursor-not-allowed' : ''
               }`}
-            >
-              Etkinlik Oluştur
-            </button>
+          >
+            Etkinlik Oluştur
+          </button>
         </div>
       </div>
 
