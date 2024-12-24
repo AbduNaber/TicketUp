@@ -68,4 +68,7 @@ public class Event {
     @Column(name = "event_type")
     private String eventType;
 
+    @Column(name = "event_status")
+    private String eventStatus = "AKTİF";
+
 }
