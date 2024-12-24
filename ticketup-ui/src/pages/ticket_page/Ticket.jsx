@@ -62,13 +62,33 @@ const Ticket = () => {
     buttons.forEach(button => (button.style.visibility = "hidden"));
 
     html2canvas(input, { scale: 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
+      const imgData = canvas.toDataURL("image/jpeg", 0.8);
       const pdf = new jsPDF("p", "mm", "a4");
       const imgWidth = 210;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+      pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight);
       pdf.save("bilet.pdf");
+
+      const pdfBlob = new Blob([pdf.output("blob")], {type: "application/pdf"});
+
+
+      console.log("Participant Email is: ", participant.email);
+      
+       const formData = new FormData();
+       formData.append("email", participant.email);
+       formData.append("file", pdfBlob);
+
+       axios.post("http://localhost:8080/ticketup/tickets/sendEmail", formData, {
+         headers: {
+           "Content-Type": "multipart/form-data",
+         },
+       })
+       .then((response) => {
+         console.log("Email Sent Succesfully:", response.data);
+       })
+       .catch((error => {
+         console.error("Error Sending Email:", error.response?.data || error.message); 
+      }));
 
       // Butonları geri görünür yapma
       buttons.forEach(button => (button.style.visibility = "visible"));
