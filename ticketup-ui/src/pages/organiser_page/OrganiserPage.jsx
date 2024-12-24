@@ -1,27 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
 import EventList from "./EventList";
 import CreateEvent from '../event_create/CreateEvent';
+import ConfirmationModal from "./ConfirmationModal";
 import axios from "axios";
 
 
 const OrganizerPage = () => {
-  const navigate = useNavigate();
+ 
   const [events, setEvents] = useState([]);
-  const [filteredEvents, setFilteredEvents] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [popupVisible, setPopupVisible] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
-  
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const token = sessionStorage.getItem("token");
   const parsedToken = token ? jwtDecode(token) : null;
+  const [isLocked, setIsLocked] = useState(false);
 
+  const [showConfirmation, setShowConfirmation] = useState(false); // For modal visibility
   const [activeItem, setActiveItem] = useState(2);
-  const [isAllSelected, setIsAllSelected] = useState(false);
+  const [nextMenuItem, setNextMenuItem] = useState(null);
 
   const menuItems = [
     { id: 2, label: "AKTİF ETKİNLİKLER", icon: "/src/assets/icons/participant-icon.svg" },
@@ -32,36 +29,16 @@ const OrganizerPage = () => {
     { id: 7, label: "TicketUp'a Ulaş", icon: "/src/assets/icons/participant-icon.svg" }
   ];
 
-  const handleView = (event) => {
-    setSelectedEvent(event);
-    setPopupVisible(true);
-  };
-
-
+  
 
   const handleEventCreated = () => {
    
-    setActiveItem(2); // Switch to the EventList view
+    setActiveItem(2); 
+    fetchEvents();
   };
 
 
-  const closePopup = () => {
-    setPopupVisible(false);
-    setSelectedEvent(null);
-  };
-
-  const goToEventPage = () => {
-    if (selectedEvent) {
-      window.location.href = `/event/${selectedEvent.id}`;
-    }
-  };
-
-  const goToParticipantList = () => {
-    if (selectedEvent) {
-      window.location.href = `/event/${selectedEvent.id}/participants`;
-    }
-  };
-
+  
   const toggleDropdown = () => {
     setIsDropdownVisible(!isDropdownVisible);
   };
@@ -79,71 +56,35 @@ const OrganizerPage = () => {
       return;
     }
 
-    const fetchOrganizers = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/ticketup/events/list-organizer-events/${parsedToken.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setEvents(response.data);
-        setFilteredEvents(response.data);
-      } catch (error) {
-        console.error("Error fetching events:", error.response?.data || error.message);
-        if (error.response?.status === 401) {
-          console.error("Unauthorized. Redirecting to login.");
-          window.location.href = "/login";
-        }
-      }
-    };
+    
 
-    fetchOrganizers();
+    fetchEvents();
   }, [token]);
 
-  const handleToggle = (clickedEvent) => {
-    setEvents((prevEvents) =>
-      prevEvents.map((event) =>
-        event === clickedEvent
-          ? { ...event, isselected: !event.isselected }
-          : event
-      )
-    );
-  };
-
-  const handleToggleAll = () => {
-    setIsAllSelected((prev) => {
-      const newSelectedState = !prev;
-      setEvents((prevEvents) =>
-        prevEvents.map((event) => ({
-          ...event,
-          isselected: newSelectedState,
-        }))
-      );
-      return newSelectedState;
-    });
-  };
-
-  const handleDelete = async (eventId) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this event?");
-    if (!confirmDelete) return;
-
-    try {
-      await axios.delete(`http://localhost:8080/ticketup/events/delete/${eventId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setEvents((prev) => prev.filter((event) => event.id !== eventId));
-      setFilteredEvents((prev) => prev.filter((event) => event.id !== eventId));
-    } catch (error) {
-      console.error("Error deleting event:", error.response?.data || error.message);
-      if (error.response?.status === 401) {
-        window.location.href = "/login";
-      }
+  const handleMenuClick = (item) => {
+    if (isLocked && item.id !== 4) {
+      setNextMenuItem(item.id); // Store the next menu item
+      setShowConfirmation(true); // Show confirmation modal
+      return;
     }
+
+    if (item.id === 4) {
+      setIsLocked(true); // Lock navigation when entering "ETKİNLİK OLUŞTUR"
+    }
+
+    setActiveItem(item.id); // Navigate to the selected menu item
+    setForceUpdate((prev) => !prev);
+  };
+
+  const handleConfirmLeave = () => {
+    setShowConfirmation(false); // Close the modal
+    setIsLocked(false); // Unlock navigation
+    setActiveItem(nextMenuItem); // Navigate to the stored menu item
+    setForceUpdate((prev) => !prev);
+  };
+
+  const handleCancelLeave = () => {
+    setShowConfirmation(false); // Close the modal without navigation
   };
 
   const handleLogout = () => {
@@ -151,33 +92,33 @@ const OrganizerPage = () => {
     window.location.href = "/login?loggedOut=true";
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+  const fetchEvents = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/ticketup/events/list-organizer-events/${parsedToken.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setEvents(response.data);
+     
+    } catch (error) {
+      console.error("Error fetching events:", error.response?.data || error.message);
+      if (error.response?.status === 401) {
+        console.error("Unauthorized. Redirecting to login.");
+        window.location.href = "/login";
+      }
+    }
   };
-
-  useEffect(() => {
-    const filtered = events.filter((event) =>
-      event.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredEvents(filtered);
-  }, [searchTerm, events]);
 
 
   const pageComponents = {
-    2: (
-      <EventList
-        filteredEvents={filteredEvents}
-        isAllSelected={isAllSelected}
-        handleToggleAll={handleToggleAll}
-        formatDate={formatDate}
-        handleView={handleView}
-        handleDelete={handleDelete}
-      />
-    ),
+    2: 
+    <EventList events={events} token={token} setEvents={setEvents} fetchEvents={fetchEvents} isActive={2} />
+    ,
+    3: <EventList events={events} token={token} setEvents={setEvents} fetchEvents={fetchEvents} isActive={3} />,
     4: <CreateEvent onEventCreated={handleEventCreated} />,
   };
   
@@ -199,8 +140,7 @@ const OrganizerPage = () => {
               className={`flex items-center gap-2 p-3 rounded-md cursor-pointer text-sm text-gray-800 transition-colors 
               ${item.id === activeItem ? "bg-gray-200 font-bold" : "hover:bg-gray-100"}`}
               onClick={() => {
-                setActiveItem(item.id);
-                setForceUpdate((prev) => !prev);
+                handleMenuClick(item)
                 
               }}
               
@@ -221,31 +161,30 @@ const OrganizerPage = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Navigation Bar */}
-        <div className="flex justify-between items-center bg-white px-5 py-2 border-b border-gray-300 gap-1">
-        <input type="text" placeholder="Search events..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="flex mx-auto flex-1 max-w-sm p-1 border border-black rounded text-sm"
-          />
-          <div className="relative user-menu flex items-center gap-1">
-            <button
-              onClick={toggleDropdown}
-              className="bg-none border-none text-sm cursor-pointer p-2 rounded hover:bg-gray-100"
-            >
-              Organizator
-            </button>
-            {isDropdownVisible && (
-              <div className="absolute top-10 right-0 bg-white border border-gray-300 shadow-lg flex flex-col p-0 w-36 z-50">
-                <button className="text-left p-3 text-sm text-gray-800 hover:bg-gray-100">
-                  View Profile
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="text-left p-3 text-sm text-gray-800 hover:bg-gray-100"
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
+          {/* Top Navigation Bar */}
+          <div className="flex justify-end items-center bg-white px-5 py-2 border-b border-gray-300 gap-1">
+          
+          <div className="justify-end user-menu flex items-center gap-1 relative">
+        <button
+        onClick={toggleDropdown}
+        className="bg-none border-none text-sm cursor-pointer p-2 rounded hover:bg-gray-100"
+        >
+        Organizator
+        </button>
+        {isDropdownVisible && (
+        <div className="absolute top-10 right-0 bg-white border border-gray-300 shadow-lg flex flex-col p-0 w-36 z-50">
+        <button className="text-left p-3 text-sm text-gray-800 hover:bg-gray-100">
+          View Profile
+        </button>
+        <button
+          onClick={handleLogout}
+          className="text-left p-3 text-sm text-gray-800 hover:bg-gray-100"
+        >
+          Logout
+        </button>
+        </div>
+        )}
+      </div>
         </div>
 
         {/* Event List */}
@@ -257,48 +196,15 @@ const OrganizerPage = () => {
         
         
 
-        {popupVisible && selectedEvent && (
-          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-60 flex justify-center items-center z-50">
-            <div className="bg-white p-5 rounded-lg max-w-md w-11/12 relative">
-              <button className="absolute top-2 right-2 bg-none border-none text-2xl cursor-pointer leading-none" onClick={closePopup}>
-                &times;
-              </button>
-              <h3 className="mt-0 text-xl text-center">Event Details</h3>
-              {selectedEvent ? (
-                <>
-                  <p><strong>Name: </strong> {selectedEvent.name}</p>
-                  <p><strong>Type: </strong> {selectedEvent.eventType}</p>
-                  <p><strong>Date: </strong> {formatDate(selectedEvent.startDate)}</p>
-                  <p><strong>Status: </strong> {selectedEvent.status}</p>
-                  <p><strong>Created Date: </strong> {formatDate(selectedEvent.createdDate)}</p>
-                  <p>
-                    <strong>Event Link: </strong>
-                    <a
-                      href={`http://localhost:3000/event/${selectedEvent.id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ textDecoration: "none", color: "#6c5ce7", fontWeight: "bold" }}
-                    >
-                      {`http://localhost:3000/event/${selectedEvent.id}`}
-                    </a>      
-                  </p>
-                </>
-              ) : (
-                <p>Loading event details...</p>
-              )}
-              <div className="flex justify-between mt-5">
-                <button className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700" onClick={goToEventPage}>
-                  Event Page
-                </button>
-                <button className="px-3 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300" onClick={goToParticipantList}>
-                  Participants
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        
       </div>
       <ToastContainer />
+      <ConfirmationModal
+        isOpen={showConfirmation}
+        onConfirm={handleConfirmLeave}
+        onCancel={handleCancelLeave}
+        message="ETKİNLİK DAHA OLUŞTURMADIN EMİN MİSİN?"
+      />
     </div>
   );
 };
