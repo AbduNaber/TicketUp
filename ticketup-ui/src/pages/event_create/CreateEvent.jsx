@@ -1,4 +1,4 @@
-import GradientButton from "../../components/GradientButton";
+
 import Footer from "../../components/Footer";
 import EmptyBox from "../../components/empty_box";
 import ReactQuill from "react-quill";
@@ -10,14 +10,11 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import sanitizeHtml from "sanitize-html";
+import { toast } from "react-toastify";
 
+const CreateEvent = ({ onEventCreated }) => {
 
-
-
-const CreateEvent = () => {
     const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
-    
-
     const [coordinates, setCoordinates] = useState({ lat: 37.7749, lng: -122.4194 }); // Default coordinates
     const [inputValue, setInputValue] = useState(`${coordinates.lat}, ${coordinates.lng}`);
     const [description, setDescription] = useState("");
@@ -32,7 +29,8 @@ const CreateEvent = () => {
     const [uploadedImageUrl, setUploadedImageURl] = useState("");
     const token = sessionStorage.getItem("token");
     const parsedToken = token ? jwtDecode(token) : null;
-    const navigate = useNavigate();
+    const [apiLoaded, setApiLoaded] = useState(false);
+    
     
     
 
@@ -133,7 +131,6 @@ const CreateEvent = () => {
         allowedAttributes: {}, // Hiçbir HTML özelliğine izin verme
       });
 
-
       const requestBody = {
         name: eventTitle,
         organizatorId: parsedToken.id,
@@ -157,28 +154,29 @@ const CreateEvent = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      navigate("/organizer");
+       toast.success("Etkinlik başarıyla oluşturuldu."); 
+      onEventCreated();
     }catch(error){
       console.error(error);
     }
   };
 
-
+  useEffect(() => {
+    if (!window.google) {
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
+      script.async = true;
+      script.onload = () => setApiLoaded(true);
+      document.body.appendChild(script);
+    } else {
+      setApiLoaded(true);
+    }
+  }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="flex flex-col min-h-screen bg-gray-100 overflow-auto">
       {/* Top Bar */}
-      <div className="flex items-center h-16 px-5 bg-transparent">
-        <div className="flex items-center justify-center w-36 h-12">
-          <img
-            src="/src/assets/icons/ticketUp-logo.svg"
-            alt="Left Logo"
-            className="w-full h-full object-contain"
-          />
-        </div>
-        <div className="ml-5 text-lg font-bold text-blue-600">ORGANİZATOR PANELİ</div>
-      </div>
+      
 
       <div className="m-10 p-6 bg-white rounded-lg shadow-md">
         {/* Header */}
@@ -335,17 +333,21 @@ const CreateEvent = () => {
             }}
             
           />
-          <div className="mt-4 h-80 border border-gray-300 rounded-md">
-            <LoadScript googleMapsApiKey={apiKey}>
-              <GoogleMap
-                mapContainerStyle={{ width: "100%", height: "100%" }}
-                center={coordinates}
-                zoom={12}
-                onClick={handleMapClick}
-              >
-                <MarkerF position={coordinates} />
-              </GoogleMap>
-            </LoadScript>
+          <div className="mt-4 h-80 border border-gray-300 rounded-md relative overflow-hidden">
+          {apiLoaded ? (
+          <GoogleMap
+          mapContainerStyle={{ width: "100%", height: "100%" }}
+          center={coordinates}
+          zoom={12}
+          onClick={handleMapClick}
+          >
+          <MarkerF position={coordinates} />
+          </GoogleMap>
+          ) : (
+          <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-500">
+          Loading map...
+          </p>
+          )}
           </div>
         </div>
         </div>

@@ -50,8 +50,12 @@ function Login() {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
+
     if (params.get("loggedOut") === "true") {
-      toast.info("You have been logged out successfully.");
+      toast.info("Başarıyla çıkış yaptınız.");
+    }
+    if (params.get("registered") === "true") {
+      toast.success("Başarıyla kayıt oldunuz. Giriş yapabilirsiniz.");
     }
   }, [location.search]);
 
