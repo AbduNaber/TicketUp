@@ -11,6 +11,7 @@ import CreateEvent from './pages/event_create/CreateEvent';
 import CreatePreview from './pages/create_preview/CreatePreview';
 import Auth from './pages/auth_page/Auth';
 import OrganizerPage from './pages/organiser_page/OrganiserPage';
+import TicketQuery from './pages/query_ticket/QueryTicket';
 import "./index.css";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         <Route path="/event/:id" element={<Event />} />
         <Route path="/ticket/:id" element={<Ticket />} />
         <Route path="/ticket/edit" element={<TicketEdit />} />
+        <Route path="/ticket/query" element={<TicketQuery />} />
         <Route path="/form" element={<EventForm />} />
         <Route path="/create" element={<CreateEvent />} />
         <Route path="/create/preview" element={<CreatePreview />} />

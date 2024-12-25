@@ -1,4 +1,3 @@
-import GradientButton from "../../components/GradientButton";
 import Footer from "../../components/Footer";
 import EmptyBox from "../../components/empty_box";
 import ReactQuill from "react-quill";
@@ -125,7 +124,6 @@ const CreateEvent = () => {
         }
       );
 
-
       const requestBody = {
         name: eventTitle,
         organizatorId: parsedToken.id,
@@ -160,7 +158,6 @@ const CreateEvent = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
-      {/* Top Bar */}
       <div className="flex items-center h-16 px-5 bg-transparent">
         <div className="flex items-center justify-center w-36 h-12">
           <img
@@ -173,10 +170,8 @@ const CreateEvent = () => {
       </div>
 
       <div className="m-10 p-6 bg-white rounded-lg shadow-md">
-        {/* Header */}
         <div className="text-4xl font-bold text-black mb-5">Etkinlik Oluştur</div>
 
-        {/* Progress Bar */}
         <div className="flex items-center justify-around mb-10">
           <div className="w-full h-0.5 bg-black"></div>
           <div className="flex items-center justify-center w-6 h-6 rounded-full bg-black text-white"></div>
