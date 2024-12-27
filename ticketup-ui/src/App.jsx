@@ -11,6 +11,7 @@ import EventForm from './pages/event_form/EventForm';
 import Auth from './pages/auth_page/Auth';
 import OrganizerPage from './pages/organiser_page/OrganiserPage';
 import "./index.css";
+import VerifyEmail from './pages/verify_email/VerifyEmail';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         
         <Route path="/auth" element={<Auth />} />
         <Route path="/organizer" element={<OrganizerPage/>} />
+        <Route path="/verify-email" element={<VerifyEmail></VerifyEmail>}></Route>
       </Routes>
     </Router>
   );

@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -35,6 +36,8 @@ public class OrganizatorService {
 
     private final AuthenticationManager authenticationManager;
 
+    private final EmailService emailService;
+
     public void register(@NotNull OrganizatorDtoIU organizatorDtoIU) {
         if(organizatorRepository.findByEmail(organizatorDtoIU.getEmail()) != null) {
             throw new RuntimeException("Email already exists");
@@ -43,18 +46,38 @@ public class OrganizatorService {
         Organizator organizator = new Organizator();
         BeanUtils.copyProperties(organizatorDtoIU, organizator);
         organizator.setPasswordHash(encoder.encode(organizatorDtoIU.getPasswordHash()));
+        String token = UUID.randomUUID().toString();
+        organizator.setVerificationToken(token);
+        organizator.setTokenExpiry(LocalDateTime.now().plusHours(24));
+        organizator.setVerified(false);
         organizatorRepository.save(organizator);
+
+        emailService.sendVerificationEmail(organizator.getEmail(), token);
+        System.out.println("Organizator Registration Successful");
+
+
 
     }
 
     public String login(String email, String password) {
         Organizator organizator = organizatorRepository.findByEmail(email);
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-        if (organizator != null && authentication.isAuthenticated()) {
-            return jwtService.generateToken(organizator.getEmail(), organizator.getId());
-        } else {
+
+        if(organizator == null) {
             throw new RuntimeException("Invalid email or password");
         }
+
+        if(!organizator.isVerified()){
+            throw new RuntimeException("Email is not verified. Please verify your email");
+        }
+
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+
+        if(authentication.isAuthenticated()){
+            return jwtService.generateToken(organizator.getEmail(), organizator.getId());
+        }else {
+            throw new RuntimeException("Invalid email or password");
+        }
+
 
     }
 

@@ -3,6 +3,7 @@ package com.codever.ticketup.service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -21,14 +22,22 @@ public class EmailService {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 
-
-
         helper.setTo(toEmail);
         helper.setSubject(subject);
         helper.setText(body, true);
         helper.addAttachment(attachment.getName(), attachment);
 
         mailSender.send(mimeMessage);
+    }
+
+    public void sendVerificationEmail(String recipientEmail, String token) {
+        String verificationUrl = "http://localhost:3000/verify-email?token=" + token;
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(recipientEmail);
+        message.setSubject("Verification Email");
+        message.setText("Click the link to verify your email: " + verificationUrl);
+        mailSender.send(message);
     }
 
 

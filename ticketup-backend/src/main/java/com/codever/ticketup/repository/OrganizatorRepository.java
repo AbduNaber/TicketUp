@@ -13,4 +13,6 @@ public interface OrganizatorRepository extends JpaRepository<Organizator, UUID> 
     Organizator findByEmail(String email);
 
     Organizator getOrganizatorsById(UUID id);
+
+    Organizator findByVerificationToken(String verificationToken);
 }
