@@ -13,11 +13,7 @@ const EventForm = () => {
     surname: "",
     mailAddress: "",
     phoneNumber: "",
-    organization: "",
-    title: "",
-    website: "",
-    city: "",
-    answer: "",
+    description: "",
     terms: false,
   });
 
@@ -38,10 +34,7 @@ const EventForm = () => {
         surname: formData.surname,
         email: formData.mailAddress,
         phone: formData.phoneNumber,
-        companyName: formData.organization,
-        title: formData.title,
-        companyUrl: formData.website,
-        city: formData.city,
+        description: formData.description,
         isFirstTime: formData.terms,
       };
 
@@ -79,11 +72,7 @@ const EventForm = () => {
       surname: "",
       mailAddress: "",
       phoneNumber: "",
-      organization: "",
-      title: "",
-      website: "",
-      city: "",
-      answer: "",
+      description: "",
       terms: false,
     });
     console.log("Form reset");
@@ -159,101 +148,20 @@ const EventForm = () => {
               />
             </div>
           </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div>
-              <label htmlFor="organization" className="block font-medium mb-2">
-                Firma:
-              </label>
-              <input
-                type="text"
-                id="organization"
-                name="organization"
-                required
-                placeholder="X Firması"
-                value={formData.organization}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-            <div>
-              <label htmlFor="title" className="block font-medium mb-2">
-                Ünvan:
-              </label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                required
-                placeholder="Ünvan Giriniz"
-                value={formData.title}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div>
-              <label htmlFor="website" className="block font-medium mb-2">
-                Firma Websitesi:
-              </label>
-              <input
-                type="url"
-                id="website"
-                name="website"
-                required
-                placeholder="www.örneksite.com"
-                value={formData.website}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-            <div>
-              <label htmlFor="city" className="block font-medium mb-2">
-                Hangi İlden Katılıyorsunuz:
-              </label>
-              <input
-                type="text"
-                id="city"
-                name="city"
-                required
-                placeholder="Şehir Giriniz"
-                value={formData.city}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-          </div>
-
           <div className="mb-6">
             <p className="font-medium mb-2">
-              Daha önce e-ticaret & e-ihracat odaklı bir etkinliğe katıldınız mı?
+              Eklemek istedikleriniz:
             </p>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="answer"
-                  value="yes"
-                  checked={formData.answer === "yes"}
-                  onChange={handleChange}
-                  className="form-radio"
-                />
-                Evet
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="answer"
-                  value="no"
-                  checked={formData.answer === "no"}
-                  onChange={handleChange}
-                  className="form-radio"
-                />
-                Hayır
-              </label>
-            </div>
+            <input
+                
+                id="description"
+                name="description"
+                required
+                placeholder="buraya yazınız."
+                value={formData.description}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-300 rounded"
+              />
           </div>
 
           <div className="flex items-center gap-4 mb-6">
