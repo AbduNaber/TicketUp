@@ -72,6 +72,7 @@ const Event = () => {
     lng: event?.longitude || 29.0875,
   };
   const url = `https://www.google.com/maps/search/?api=1&query=${center.lat},${center.lng}`;
+  
 
   return (
     <div className="flex flex-col min-h-screen bg-white overflow-y-auto">
@@ -111,35 +112,85 @@ const Event = () => {
           </p>
         </div>
 
-        {/* Properties */}
+        
         <div className="flex w-full justify-between mt-6">
           {/* Left Section */}
-          <div className="w-[48%] flex flex-col gap-4">
-            <div>
-              <h3 className="text-lg font-bold text-gray-800">Başlama Tarihi</h3>
-              <p>{event?.startDate ? formatDate(event.startDate) : "Tarih yükleniyor..."} - {event?.startTime ? formatTime(event.startTime): "Saat Yükleniyor"}</p>
-              <h3 className="text-lg font-bold text-gray-800">Bitiş Tarihi</h3>
-              <p>{event?.endDate ? formatDate(event.endDate) : "Tarih yükleniyor..."} - {event?.endTime ? formatTime(event.endTime): "Saat Yükleniyor"}</p>
-              <a href="#" className="text-blue-600 hover:underline">+ Takvime Ekle</a>
-            </div>
-            <div className="flex items-center gap-4">
-              <img src="/src/assets/icons/tsoft-icon.png" alt="Organizer Icon" className="w-12 h-12 rounded-full" />
-              <div>
-                <p className="font-bold">{event?.organizatorName || "Organizatör Bilgisi Yükleniyor..."}</p>
-                <p className="font-bold">{event?.organizatorCompany || "Organizatör Bilgisi Yükleniyor..."}</p>
-                <a href="#" className="inline-block px-4 py-2 text-sm bg-white border border-black rounded-full hover:shadow-lg">İletişime Geç</a>
+          <div className="w-[48%] flex flex-col ">
+            {/* Start Date*/}
+            <div className="flex gap-8">
+              <div className="flex flex-col items-start gap-2">
+                <h3 className="text-lg font-bold text-gray-800">Başlangıç Tarihi</h3>
+                <div className="flex items-center gap-2">
+                  <img src="/src/assets/icons/calendar_icon.svg" alt="Calendar Icon" className="w-5 h-5" />
+                  <p className="font-medium text-gray-600">
+                    {event?.startDate ? formatDate(event.startDate) : "Yükleniyor..."}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <img src="/src/assets/icons/clock_icon.svg" alt="Clock Icon" className="w-5 h-5" />
+                  <p className="font-medium text-gray-600">
+                    {event?.startTime ? formatTime(event.startTime) : "Yükleniyor..."}
+                  </p>
+                </div>
+              </div>
+              {/* Finish Date*/}
+              <div className="flex flex-col items-start gap-2">
+                <h3 className="text-lg font-bold text-gray-800">Bitiş Tarihi</h3>
+                <div className="flex items-center gap-2">
+                  <img src="/src/assets/icons/calendar_icon.svg" alt="Calendar Icon" className="w-5 h-5" />
+                  <p className="font-medium text-gray-600">
+                    {event?.endDate ? formatDate(event.endDate) : "Yükleniyor..."}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <img src="/src/assets/icons/clock_icon.svg" alt="Clock Icon" className="w-5 h-5" />
+                  <p className="font-medium text-gray-600">
+                    {event?.endTime ? formatTime(event.endTime) : "Yükleniyor..."}
+                  </p>
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <img src="/src/assets/icons/upista_icon.png" className="w-7 h-7" alt="Upista Icon" />
-              <p className="font-bold text-gray-800">Upista Gururla Sunar</p>
+            <a
+             href="#"
+              className="text-blue-600 hover:underline self-start mt-2"
+            >
+              + Takvime Ekle
+            </a>
+
+
+            <h3 className="text-lg font-bold text-gray-800 mt-6">Organizatör</h3>
+            <div className="flex items-center gap-6 p-4 border border-gray-300 rounded-lg shadow-sm w-fit">
+              <img 
+                src={event?.organizator_pp || "/src/assets/icons/profile_icon.svg"}
+                alt="Organizer Icon" 
+                className="w-16 h-16 rounded-full border border-gray-300 shadow-sm" 
+              />
+              <div className="flex flex-col">
+                <p className="font-bold text-gray-800">
+                  {event?.organizatorName || "Organizatör Bilgisi Yükleniyor..."}
+                </p>
+                <p className="text-gray-600">
+                  {event?.organizatorCompany || "Organizatör Bilgisi Yükleniyor..."}
+                </p>
+                <a
+                  href="#"
+                  className="inline-block px-4 py-2 mt-2 text-sm text-white bg-blue-600 rounded-full hover:bg-blue-700"
+                >
+                  İletişime Geç
+                </a>
+              </div>
             </div>
           </div>
 
           {/* Right Section */}
           <div className="w-[48%]">
             <h3 className="text-lg font-bold text-gray-800">Konum</h3>
-            <p className="text-gray-600">{event?.location || "Konum Yükleniyor..."}</p>
+            <div className="flex items-center gap-2">
+              <img src="/src/assets/icons/location_icon.svg" alt="Calendar Icon" className="w-5 h-5" />
+              <p className="text-gray-600">
+                {event?.location || "Yükleniyor..."}
+              </p>
+            </div>
             <div className="mt-6 w-full h-[275px] bg-gray-300 flex justify-center items-center rounded">
               <LoadScript googleMapsApiKey={apiKey}>
                 <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={15}>
