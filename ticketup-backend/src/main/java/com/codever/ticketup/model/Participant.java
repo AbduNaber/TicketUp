@@ -37,17 +37,8 @@ public class Participant {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "company_name")
-    private String companyName;
-
-    @Column(name = "title")
-    private String title;
-
-    @Column(name = "company_url")
-    private String companyUrl;
-
-    @Column(name = "city")
-    private String city;
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "is_first_time")
     private boolean isFirstTime;
