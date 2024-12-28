@@ -34,8 +34,11 @@ function Login() {
        
       navigate(`/organizer`);
     } catch (error) {
-      toast.error("Incorrect password or email. Please try again.");
-      console.log(error.message)
+      if (error.response) {
+        toast.error(error.response.data); // Backend'den gelen hata mesajı
+    } else {
+        toast.error("An unexpected error occurred. Please try again.");
+    }
     }
   };
 

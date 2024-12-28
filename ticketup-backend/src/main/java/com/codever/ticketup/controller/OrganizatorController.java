@@ -27,9 +27,19 @@ public class OrganizatorController {
 
     @PostMapping(path = "/login")
     public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto) {
-        String token = organizatorService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
-        System.out.println("Login called");
-        return ResponseEntity.ok(token);
+        try {
+            String token = organizatorService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
+            return ResponseEntity.ok(token);
+        } catch (RuntimeException ex) {
+            // Fırlatılan mesajlara göre uygun HTTP kodu döndür
+            if (ex.getMessage().contains("Email is not verified")) {
+                return ResponseEntity.status(403).body(ex.getMessage()); // Forbidden
+            } else if (ex.getMessage().contains("Invalid email or password")) {
+                return ResponseEntity.status(400).body(ex.getMessage()); // Bad Request
+            } else {
+                return ResponseEntity.status(500).body("An unexpected error occurred."); // Internal Server Error
+            }
+        }
     }
 
     @GetMapping(path = "/list")
