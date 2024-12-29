@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Footer from "../../components/Footer";
+import TopBar from "../../components/TopBar"
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const EventForm = () => {
   const location = useLocation();
   const eventID = location.state?.eventID;
   const imageLink = location.state?.imageLink;
+  const eventName = location.state?.eventName;
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -24,9 +29,27 @@ const EventForm = () => {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.terms) {
+      toast.error("Lütfen KVKK onayını kabul ediniz!");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.mailAddress)) {
+        toast.error("Geçerli bir e-posta adresi giriniz!");
+      return;
+    } 
+
+    if (formData.phoneNumber.length !== 10 || isNaN(formData.phoneNumber)) {
+      toast.error("Telefon numarası 10 haneli olmalı ve sadece rakam içermelidir!");
+      return;
+    }
+
     try {
       const requestBody = {
         eventId: eventID,
@@ -44,8 +67,6 @@ const EventForm = () => {
         },
       });
 
-      console.log("Participant ID: ", participantResponse.data);
-
       const ticketRequest = {
         eventId: eventID,
         participantId: participantResponse.data,
@@ -57,31 +78,39 @@ const EventForm = () => {
         },
       })
 
-      console.log("Ticket ID: ", ticketResponse.data);
-      console.log("Ticket Request: ", ticketRequest);
-
       navigate(`/ticket/${ticketResponse.data}`);
     } catch (error) {
-      console.error(error);
+      if(error.response){
+        toast.error(error.response.data || "Bir hata oluştu");
+        console.error(error);
+      }else{
+        toast.error("Beklenmedik Bir hata oluştu");
+        console.error(error);
+      }    
     }
   };
 
   const handleReset = () => {
-    setFormData({
-      name: "",
-      surname: "",
-      mailAddress: "",
-      phoneNumber: "",
-      description: "",
-      terms: false,
-    });
-    console.log("Form reset");
+    const userConfirmed = window.confirm("Tüm Bilgileri Temizlemek İstediğinize Emin Misiniz");
+    if(userConfirmed){
+      setFormData({
+        name: "",
+        surname: "",
+        mailAddress: "",
+        phoneNumber: "",
+        description: "",
+        terms: false,
+      });
+    }
   };
 
   return (
     <div className="flex flex-col items-center bg-gray-100 min-h-screen">
-      <img className="my-5 h-[40vh] w-auto" src={imageLink} alt="Event" />
-      <div className="flex flex-col items-center w-[50vw] bg-white shadow-md p-6 mb-[50vh]">
+      <TopBar></TopBar>
+      
+      <div className="mt-[5vh] flex flex-col items-center w-[50vw] bg-white shadow-md p-6 mb-[5vh] rounded-md">
+      <h3 className="text-2xl font-bold">{eventName}</h3>
+      <img className="my-5 h-[35vh] w-auto mb-[5vh] rounded-md" src={imageLink} alt="Event" />
         <form className="flex flex-col w-[40vw]" onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div>
@@ -141,7 +170,8 @@ const EventForm = () => {
                 id="phone-number"
                 name="phoneNumber"
                 required
-                placeholder="05XXXXXXXX"
+                placeholder="(5 - - ) - - -  - -  - -"
+                maxLength={10}
                 value={formData.phoneNumber}
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-300 rounded"
@@ -156,7 +186,6 @@ const EventForm = () => {
                 
                 id="description"
                 name="description"
-                required
                 placeholder="buraya yazınız."
                 value={formData.description}
                 onChange={handleChange}
@@ -195,6 +224,8 @@ const EventForm = () => {
           </div>
         </form>
       </div>
+      <Footer></Footer>
+      <ToastContainer></ToastContainer>
     </div>
   );
 };

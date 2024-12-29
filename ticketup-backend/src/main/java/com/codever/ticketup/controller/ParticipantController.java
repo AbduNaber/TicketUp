@@ -3,6 +3,8 @@ package com.codever.ticketup.controller;
 import com.codever.ticketup.model.Participant;
 import com.codever.ticketup.service.ParticipantService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,8 +33,15 @@ public class ParticipantController {
     }
 
     @PostMapping(path = "/create")
-    public UUID createParticipant(@RequestBody Participant participant) {
-        return participantService.add(participant);
+    public ResponseEntity<?> createParticipant(@RequestBody Participant participant) {
+        try{
+            UUID participantID = participantService.add(participant);
+            return ResponseEntity.ok(participantID);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
     }
 
     @DeleteMapping(path = "/delete/{id}")
