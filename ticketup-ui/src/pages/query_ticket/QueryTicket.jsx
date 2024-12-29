@@ -18,7 +18,7 @@ const TicketQuery = () => {
           <a href="#" className="text-sm hover:underline">Bizimle İletişime Geçin</a>
         </div>
         <div className="flex items-center gap-4 flex-1 justify-end">
-          <GradientButton text="Biletini Sorgula" onClick={() => {}} />
+          <GradientButton text="Biletini Sorgula" onClick={() => { }} />
           <a href="https://www.example.com">
             <img src="/src/assets/icons/account.png" alt="Profile" className="w-10 h-10 rounded-full" />
           </a>
@@ -51,19 +51,10 @@ const TicketQuery = () => {
           </div>
         </div>
 
-        {/* Buton 
-        <div className="flex mt-8">
-          <button
-            onClick={handleSubmit}
-            type="submit"
-            disabled={!validateForm()}
-            className={`bg-gradient-to-r from-pink-500 to-orange-500 text-black font-bold py-3 px-4 rounded-full hover:bg-green-500 transition ${!isFormValid ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
-          >
-            Etkinlik Oluştur
-          </button>
+        <div className="flex mt-20">
+          <GradientButton text="Biletini Sorgula" onClick={() => alert("Sorgula")} />
         </div>
-        */}
+
       </div>
 
       <Footer />

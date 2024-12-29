@@ -12,6 +12,8 @@ import CreatePreview from './pages/create_preview/CreatePreview';
 import Auth from './pages/auth_page/Auth';
 import OrganizerPage from './pages/organiser_page/OrganiserPage';
 import TicketQuery from './pages/query_ticket/QueryTicket';
+import ContactUs from './pages/contact_us/ContactUs';
+import WhyUs from './pages/why_us/WhyUs';
 import "./index.css";
 
 function App() {
@@ -29,6 +31,8 @@ function App() {
         <Route path="/form" element={<EventForm />} />
         <Route path="/create" element={<CreateEvent />} />
         <Route path="/create/preview" element={<CreatePreview />} />
+        <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/why-us" element={<WhyUs />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/organizer" element={<OrganizerPage/>} />
       </Routes>
