@@ -3,26 +3,28 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const EventList = ({ events, token, setEvents, fetchEvents ,isActive}) => {
+const EventList = ({ events, token, setEvents, fetchEvents ,isActive, selectedEvent , setSelectedEvent, setActiveItem}) => {
     
     const filteredEvents = isActive === 2 
     ? events.filter((event) => event.eventStatus === "AKTİF") 
-    : events;
+    : events.filter((event) => event.eventStatus === "PASİF");
+    
 
     const [popupVisible, setPopupVisible] = useState(false);
-    const [selectedEvent, setSelectedEvent] = useState(null);
+    
 
 
     const [isAllSelected, setIsAllSelected] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [eventToDelete, setEventToDelete] = useState(null);
-  const handleView = (event) => {
-    setSelectedEvent(event);
-    setPopupVisible(true);
-  };
+    const handleView = (event) => {
+      setSelectedEvent(event);
+      
+      setPopupVisible(true);
+    };
   const closePopup = () => {
       setPopupVisible(false);
-      setSelectedEvent(null);
+      
     };
   
     const goToEventPage = () => {
@@ -33,7 +35,8 @@ const EventList = ({ events, token, setEvents, fetchEvents ,isActive}) => {
   
     const goToParticipantList = () => {
       if (selectedEvent) {
-        window.location.href = `/event/${selectedEvent.id}/participants`;
+       
+        setActiveItem(8);
       }
     };
   
