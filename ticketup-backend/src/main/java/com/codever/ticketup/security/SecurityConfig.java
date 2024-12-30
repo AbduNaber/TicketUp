@@ -35,7 +35,7 @@ public class SecurityConfig {
                 authorizeHttpRequests(request->request
                         .requestMatchers("/ticketup/organizators/login", "/ticketup/organizators/register", "/ticketup/events/list/{id}",
                                 "/ticketup/participants/create", "/ticketup/tickets/create", "/ticketup/tickets/list/{id}", "ticketup/participants/list/{id}",
-                                "ticketup/tickets/sendEmail", "ticketup/auth/verify-email")
+                                "/ticketup/tickets/sendEmail", "/ticketup/auth/verify-email", "/ticketup/participants/delete/{id}", "/ticketup/tickets/delete/{id}")
                         .permitAll().anyRequest().authenticated())
                 .httpBasic(withDefaults())
                 .sessionManagement(session->session.sessionCreationPolicy(STATELESS))

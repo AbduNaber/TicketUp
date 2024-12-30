@@ -12,6 +12,9 @@ import Auth from './pages/auth_page/Auth';
 import OrganizerPage from './pages/organiser_page/OrganiserPage';
 import "./index.css";
 import VerifyEmail from './pages/verify_email/VerifyEmail';
+import WhyUs from './pages/why_us/WhyUs';
+import ContactUs from './pages/contact_us/ContactUs';
+import TicketQuery from './pages/query_ticket/QueryTicket';
 
 function App() {
   return (
@@ -29,6 +32,9 @@ function App() {
         <Route path="/auth" element={<Auth />} />
         <Route path="/organizer" element={<OrganizerPage/>} />
         <Route path="/verify-email" element={<VerifyEmail></VerifyEmail>}></Route>
+        <Route path="/why-us" element={<WhyUs></WhyUs>}></Route>
+        <Route path="/contact-ticketup" element={<ContactUs></ContactUs>}></Route>
+        <Route path="/query-ticket" element={<TicketQuery></TicketQuery>}></Route>
       </Routes>
     </Router>
   );
