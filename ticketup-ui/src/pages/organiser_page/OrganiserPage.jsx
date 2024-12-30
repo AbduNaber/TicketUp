@@ -4,16 +4,18 @@ import { jwtDecode } from "jwt-decode";
 import EventList from "./EventList";
 import CreateEvent from '../event_create/CreateEvent';
 import ConfirmationModal from "./ConfirmationModal";
+import ParticipantList from "./ParticipantList";
 import axios from "axios";
-import ParticipantList from "../participant_page/ParticipantList";
 
 
 const OrganizerPage = () => {
  
   const [events, setEvents] = useState([]);
+  
+ 
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const [forceUpdate, setForceUpdate] = useState(false);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-
   const token = sessionStorage.getItem("token");
   const parsedToken = token ? jwtDecode(token) : null;
   const [isLocked, setIsLocked] = useState(false);
@@ -61,7 +63,11 @@ const OrganizerPage = () => {
     
 
     fetchEvents();
+
   }, [token]);
+
+
+
 
   const handleMenuClick = (item) => {
     if (isLocked && item.id !== 4) {
@@ -116,14 +122,19 @@ const OrganizerPage = () => {
   };
 
 
+
+
+
+
   const pageComponents = {
     2: 
-    <EventList events={events} token={token} setEvents={setEvents} fetchEvents={fetchEvents} isActive={2} />
+    <EventList events={events} token={token} setEvents={setEvents} fetchEvents={fetchEvents} isActive={2} selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} setActiveItem={setActiveItem}  />
     ,
     3: <EventList events={events} token={token} setEvents={setEvents} fetchEvents={fetchEvents} isActive={3} />,
     4: <CreateEvent onEventCreated={handleEventCreated} />,
+    8: <ParticipantList token={token} selectedEvent={ selectedEvent} />
   };
-  
+  console.log(selectedEvent);
   return (
     <div className="flex h-screen bg-gray-100 font-sans">
       {/* Sidebar */}
@@ -190,103 +201,10 @@ const OrganizerPage = () => {
         </div>
 
         {/* Event List */}
-        <div className="p-5 flex-1 flex flex-col overflow-hidden">
-          <h2 className="mb-4 text-lg font-medium">EVENTLER</h2>
-          <div className="grid grid-cols-[40px_2fr_1fr_1fr_1fr_1fr_1fr] gap-2 items-center font-bold border-b-2 border-gray-300 bg-gray-50 py-2">
-          <span className="flex justify-center items-center ml-2">
-            <img
-              onClick={handleToggleAll}
-              src={
-              isAllSelected
-              ? "/src/assets/icons/selected-checkbox.svg"
-              : "/src/assets/icons/checkbox.svg"
-              }
-              alt="Checkbox"
-              className="w-5 h-4 cursor-pointer"
-            />
-          </span>
-            
-            <span>Event Name</span>
-            <span>Event Type</span>
-            <span>Date</span>
-            <span>Status</span>
-            <span>Created Date</span>
-            <span>Quick Actions</span>
-          </div>
-
-          <div className="flex-1 overflow-y-auto bg-white border border-gray-300 rounded">
-            {filteredEvents.map((event, index) => (
-              <div
-                key={index}
-                className="grid grid-cols-[40px_2fr_1fr_1fr_1fr_1fr_1fr] gap-2 items-center py-3 border-b border-gray-200 text-sm hover:bg-gray-50 transition"
-              >
-                <span className="flex justify-center items-center ml-2">
-                  <img
-                      onClick={handleToggleAll}
-                      src={
-                      isAllSelected
-                      ? "/src/assets/icons/selected-checkbox.svg"
-                      : "/src/assets/icons/checkbox.svg"
-                      }
-                      alt="Checkbox"
-                      className="w-5 h-4 cursor-pointer"
-                  />
-                </span>
-                <span className="truncate">{event.name}</span>
-                <span className="truncate">{event.type}</span>
-                <span>{formatDate(event.eventDate)}</span>
-                <span>{event.status}</span>
-                <span>{formatDate(event.createdDate)}</span>
-                <div className="flex gap-1">
-                  <button
-                    className="bg-gray-50 border border-blue-700 text-blue-700 rounded text-xs px-2 py-1 hover:bg-blue-700 hover:text-white"
-                    onClick={() => handleView(event)}
-                  >
-                    View
-                  </button>
-                  <button className="bg-gray-50 border border-cyan-600 text-cyan-600 rounded text-xs px-2 py-1 hover:bg-cyan-600 hover:text-white">
-                    Edit
-                  </button>
-                  <button
-                    className="bg-gray-50 border border-red-600 text-red-600 rounded text-xs px-2 py-1 hover:bg-red-600 hover:text-white"
-                    onClick={() => handleDelete(event.id)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+        {activeItem && (
+        <div key={`${activeItem}-${forceUpdate}`} className="flex-1 flex flex-col overflow-auto">
+          {pageComponents[activeItem]}
         </div>
-
-        {popupVisible && selectedEvent && (
-          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-60 flex justify-center items-center z-50">
-            <div className="bg-white p-5 rounded-lg max-w-md w-11/12 relative">
-              <button className="absolute top-2 right-2 bg-none border-none text-2xl cursor-pointer leading-none" onClick={closePopup}>
-                &times;
-              </button>
-              <h3 className="mt-0 text-xl text-center">Event Details</h3>
-              {selectedEvent ? (
-                <>
-                  <p><strong>Name: </strong> {selectedEvent.name}</p>
-                  <p><strong>Type: </strong> {selectedEvent.type}</p>
-                  <p><strong>Date: </strong> {formatDate(selectedEvent.eventDate)}</p>
-                  <p><strong>Status: </strong> {selectedEvent.status}</p>
-                  <p><strong>Created Date: </strong> {formatDate(selectedEvent.createdDate)}</p>
-                </>
-              ) : (
-                <p>Loading event details...</p>
-              )}
-              <div className="flex justify-between mt-5">
-                <button className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700" onClick={goToEventPage}>
-                  Event Page
-                </button>
-                <button className="px-3 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300" onClick={goToParticipantList}>
-                  Participants
-                </button>
-              </div>
-            </div>
-          </div>
         )}
         
         
