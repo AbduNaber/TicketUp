@@ -27,6 +27,11 @@ public class ParticipantController {
         return participantService.getPartipantById(id);
     }
 
+    @GetMapping(path="/event/{id}")
+    public List<Participant> getParticipantsByEvent(@PathVariable(name = "id") UUID id) {
+        return participantService.getParticipantByEvent(id);
+    }
+
     @PutMapping(path = "/update")
     public void updateParticipant(@RequestBody Participant participant) {
         participantService.updateParticipant(participant);

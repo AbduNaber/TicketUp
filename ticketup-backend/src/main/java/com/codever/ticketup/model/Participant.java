@@ -43,4 +43,7 @@ public class Participant {
     @Column(name = "is_first_time")
     private boolean isFirstTime;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt = LocalDateTime.now();
+
 }

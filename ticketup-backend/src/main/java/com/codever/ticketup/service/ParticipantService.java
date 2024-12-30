@@ -27,7 +27,8 @@ public class ParticipantService {
     public Participant getPartipantById(UUID id) {
         return participantRepository.findById(id).orElse(null);
     }
-     public Participant updateParticipant(Participant participant) {
+
+    public Participant updateParticipant(Participant participant) {
         return participantRepository.findById(participant.getId()).map(
                 participant1 -> {
                     participant1.setId(participant.getId());
@@ -35,6 +36,12 @@ public class ParticipantService {
                 }
         ).orElseThrow(() -> new RuntimeException("Participant not found with id: " + participant.getId()));
      }
+
+
+    public List<Participant> getParticipantByEvent(UUID eventId) {
+        return participantRepository.findByEventId(eventId);
+    }
+
      public void deleteParticipant(UUID id) {
         participantRepository.deleteById(id);
      }
