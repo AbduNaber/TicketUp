@@ -4,7 +4,6 @@ import { jwtDecode } from "jwt-decode";
 import EventList from "./EventList";
 import CreateEvent from '../event_create/CreateEvent';
 import ConfirmationModal from "./ConfirmationModal";
-import ParticipantList from "./ParticipantList";
 import axios from "axios";
 import ParticipantList from "../participant_page/ParticipantList";
 
@@ -12,9 +11,6 @@ import ParticipantList from "../participant_page/ParticipantList";
 const OrganizerPage = () => {
  
   const [events, setEvents] = useState([]);
-  
- 
-  const [selectedEvent, setSelectedEvent] = useState(null);
   const [forceUpdate, setForceUpdate] = useState(false);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
@@ -65,11 +61,7 @@ const OrganizerPage = () => {
     
 
     fetchEvents();
-
   }, [token]);
-
-
-
 
   const handleMenuClick = (item) => {
     if (isLocked && item.id !== 4) {
@@ -124,19 +116,14 @@ const OrganizerPage = () => {
   };
 
 
-
-
-
-
   const pageComponents = {
     2: 
-    <EventList events={events} token={token} setEvents={setEvents} fetchEvents={fetchEvents} isActive={2} selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} setActiveItem={setActiveItem}  />
+    <EventList events={events} token={token} setEvents={setEvents} fetchEvents={fetchEvents} isActive={2} />
     ,
     3: <EventList events={events} token={token} setEvents={setEvents} fetchEvents={fetchEvents} isActive={3} />,
     4: <CreateEvent onEventCreated={handleEventCreated} />,
-    8: <ParticipantList token={token} selectedEvent={ selectedEvent} />
   };
-  console.log(selectedEvent);
+  
   return (
     <div className="flex h-screen bg-gray-100 font-sans">
       {/* Sidebar */}
