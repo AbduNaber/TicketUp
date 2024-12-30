@@ -6,6 +6,7 @@ import CreateEvent from '../event_create/CreateEvent';
 import ConfirmationModal from "./ConfirmationModal";
 import ParticipantList from "./ParticipantList";
 import axios from "axios";
+import EditOrganizator from "./EditOrganizator";
 
 
 const OrganizerPage = () => {
@@ -132,7 +133,8 @@ const OrganizerPage = () => {
     ,
     3: <EventList events={events} token={token} setEvents={setEvents} fetchEvents={fetchEvents} isActive={3} />,
     4: <CreateEvent onEventCreated={handleEventCreated} />,
-    8: <ParticipantList token={token} selectedEvent={ selectedEvent} />
+    8: <ParticipantList token={token} selectedEvent={ selectedEvent} />,
+    9: <EditOrganizator />
   };
   console.log(selectedEvent);
   return (
@@ -186,7 +188,8 @@ const OrganizerPage = () => {
         </button>
         {isDropdownVisible && (
         <div className="absolute top-10 right-0 bg-white border border-gray-300 shadow-lg flex flex-col p-0 w-36 z-50">
-        <button className="text-left p-3 text-sm text-gray-800 hover:bg-gray-100">
+        <button className="text-left p-3 text-sm text-gray-800 hover:bg-gray-100" onClick={() => setActiveItem(9) }>
+        
           View Profile
         </button>
         <button
