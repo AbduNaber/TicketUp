@@ -107,7 +107,7 @@ const EventList = ({ events, token, setEvents, fetchEvents ,isActive, selectedEv
       
   return (
     <div className="p-5 flex-1 flex flex-col overflow-hidden">
-      <h2 className="mb-4 text-lg font-medium">EVENTLER</h2>
+      <h2 className="mb-4 text-lg font-medium">Etkinlikler</h2>
       <div className="grid grid-cols-[40px_2fr_1fr_1fr_1fr_1fr_1fr] gap-2 items-center font-bold border-b-2 border-gray-300 bg-gray-50 py-2">
         <span className="flex justify-center items-center ml-2">
           <img
@@ -122,12 +122,12 @@ const EventList = ({ events, token, setEvents, fetchEvents ,isActive, selectedEv
           />
         </span>
 
-        <span>Event Name</span>
-        <span>Event Type</span>
-        <span>Date</span>
-        <span>Status</span>
-        <span>Created Date</span>
-        <span>Quick Actions</span>
+        <span>Ekinlik Adı </span>
+        <span>Tipi</span>
+        <span>Tarihi</span>
+        <span>Durumu</span>
+        <span>Ne Zaman Oluşturuldu</span>
+        <span>Hızlı Aksiyonlar</span>
       </div>
 
       <div className="flex-1 overflow-y-auto bg-white border border-gray-300 rounded">
@@ -155,38 +155,39 @@ const EventList = ({ events, token, setEvents, fetchEvents ,isActive, selectedEv
             <span>{formatDate(event.createdDate)}</span>
             <div className="flex gap-1">
               <button
-                className="bg-gray-50 border border-blue-700 text-blue-700 rounded text-xs px-2 py-1 hover:bg-blue-700 hover:text-white"
+                className="bg-gray-50 border border-blue-700 text-blue-700 rounded text-xs px-3 py-1 hover:bg-blue-700 hover:text-white"
                 onClick={() => handleView(event)}
               >
-                View
+                Görüntüle
               </button>
-              <button className="bg-gray-50 border border-cyan-600 text-cyan-600 rounded text-xs px-2 py-1 hover:bg-cyan-600 hover:text-white">
-                Edit
+              <button className="bg-gray-50 border border-cyan-600 text-cyan-600 rounded text-xs px-3 py-1 hover:bg-cyan-600 hover:text-white">
+                Düzenle
               </button>
               <button
-        className="bg-gray-50 border border-red-600 text-red-600 rounded text-xs px-2 py-1 hover:bg-red-600 hover:text-white"
+        className="bg-gray-50 border border-red-600 text-red-600 rounded text-xs px-3 py-1 hover:bg-red-600 hover:text-white"
         onClick={() => openDeleteModal(event.id)}
       >
-        Delete
+        Sil
       </button>
 
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white rounded-lg p-6 w-1/3">
-            <h2 className="text-lg font-bold mb-4">Confirm Delete</h2>
-            <p className="mb-6">Are you sure you want to delete this event?</p>
+            <h2 className="text-lg font-bold mb-4">Silmek İstiyor musun ?</h2>
+            <p className="">Etkinliği silmek gerçekten istiyor musun? </p>
+            <p className="mb-6">(Silinmiş Etkinlikler Kapanmış Etkinliklere düşer)</p>
             <div className="flex justify-end">
               <button
                 className="bg-gray-200 text-gray-800 px-4 py-2 rounded mr-2"
                 onClick={closeModal}
               >
-                Cancel
+                İptal Et
               </button>
               <button
                 className="bg-red-600 text-white px-4 py-2 rounded"
                 onClick={() => handleDelete(eventToDelete)}
               >
-                Delete
+                Sil
               </button>
             </div>
           </div>
@@ -203,16 +204,16 @@ const EventList = ({ events, token, setEvents, fetchEvents ,isActive, selectedEv
               <button className="absolute top-2 right-2 bg-none border-none text-2xl cursor-pointer leading-none" onClick={closePopup}>
                 &times;
               </button>
-              <h3 className="mt-0 text-xl text-center">Event Details</h3>
+              <h3 className="mt-0 text-xl text-center">Etkinlik Detayları</h3>
               {selectedEvent ? (
                 <>
-                  <p><strong>Name: </strong> {selectedEvent.name}</p>
-                  <p><strong>Type: </strong> {selectedEvent.eventType}</p>
-                  <p><strong>Date: </strong> {formatDate(selectedEvent.startDate)}</p>
-                  <p><strong>Status: </strong> {selectedEvent.eventStatus}</p>
-                  <p><strong>Created Date: </strong> {formatDate(selectedEvent.createdDate)}</p>
+                  <p><strong>Adı: </strong> {selectedEvent.name}</p>
+                  <p><strong>Tipi: </strong> {selectedEvent.eventType}</p>
+                  <p><strong>Tarihi: </strong> {formatDate(selectedEvent.startDate)}</p>
+                  <p><strong>Durumu: </strong> {selectedEvent.eventStatus}</p>
+                  <p><strong>Oluşturulma Tarihi: </strong> {formatDate(selectedEvent.createdDate)}</p>
                   <p>
-                    <strong>Event Link: </strong>
+                    <strong>Etkinlik Linki: </strong>
                     <a
                       href={`http://localhost:3000/event/${selectedEvent.id}`}
                       target="_blank"
@@ -224,14 +225,14 @@ const EventList = ({ events, token, setEvents, fetchEvents ,isActive, selectedEv
                   </p>
                 </>
               ) : (
-                <p>Loading event details...</p>
+                <p>Etkinlik Detayları Yükleniyor...</p>
               )}
               <div className="flex justify-between mt-5">
                 <button className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700" onClick={goToEventPage}>
-                  Event Page
+                  Etkinlik Sayfası
                 </button>
                 <button className="px-3 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300" onClick={goToParticipantList}>
-                  Participants
+                 Katılımcıları Göster
                 </button>
               </div>
             </div>
