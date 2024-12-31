@@ -18,7 +18,10 @@ import java.nio.file.StandardCopyOption;
 @RestController
 @RequestMapping("ticketup/files")
 public class FileUploadController {
-    private static final String UPLOAD_DIR = "(/home/ticketup/TicketUp/ticketup-ui/public/db_images/";
+    private static final String UPLOAD_DIR = "ticketup-ui/public/db_images/";
+    private static final String UPLOAD_PROFILE_DIR = "ticketup-ui/public/db_pp_images/";
+
+
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
@@ -33,6 +36,25 @@ public class FileUploadController {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
             String fileUrl = "/db_images/" + fileName;
+            return ResponseEntity.ok().body("{\"url\": \"" + fileUrl + "\"}");
+        }catch (IOException e){
+            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"Dosya yüklenirken hata oluştu.\"}");
+        }
+    }
+
+    @PostMapping("/upload-pp")
+    public ResponseEntity<?> uploadProfilePhoto(@RequestParam("file") MultipartFile file) {
+        try {
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            Path filePath = Paths.get(UPLOAD_PROFILE_DIR + fileName);
+
+            if(!Files.exists(Paths.get(UPLOAD_PROFILE_DIR))) {
+                Files.createDirectories(Paths.get(UPLOAD_PROFILE_DIR));
+            }
+
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            String fileUrl = "/db_pp_images/" + fileName;
             return ResponseEntity.ok().body("{\"url\": \"" + fileUrl + "\"}");
         }catch (IOException e){
             return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"Dosya yüklenirken hata oluştu.\"}");
