@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -6,19 +6,58 @@ import { Label } from "@/components/ui/label";
 
 import { Pencil, Upload, Save } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const EditOrganizator = () => {
-  const [profilePic, setProfilePic] = useState("https://via.placeholder.com/150");
   const [editableField, setEditableField] = useState(null);
   const [formData, setFormData] = useState({
-    organizatorName: "Sinan Eryiğit",
-    email: "info@upista.com",
-    firstName: "Sinan",
-    lastName: "Eriğit",
-    companyName: "Upista LTD",
-    password: ""
+    organizatorName: "",
+    email: "",
+    firstName: "",
+    lastName: "",
+    companyName: "",
+    password: "",
+    profilePic: "",
     
   });
+
+  const token = sessionStorage.getItem("token");
+  const parsedToken = token ? jwtDecode(token): null;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchOrganizerData = async () => {
+      try{
+        const response = await axios.get(`http://localhost:8080/ticketup/organizators/list/${parsedToken.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        const organizator = response.data;
+
+        setFormData({
+          organizatorName: `${organizator.name || ""} ${organizator.surname || ""}`,
+          email: organizator.email || "",
+          firstName: organizator.name || "",
+          lastName: organizator.surname || "",
+          companyName: organizator.organizationName || "",
+          password: "",
+          profilePic: organizator.profilePicture || "",
+        });
+
+      }catch(error){
+        console.error("Veri çekilirken hata oluştu", error);
+        toast.error("Organizatör bilgileri alınamadı. Lütfen Yeniden giriş yapın");
+        navigate("/login");
+      }
+    };
+
+    fetchOrganizerData();
+  },[token]);
 
   const handleProfilePicClick = () => {
     const fileInput = document.createElement("input");
@@ -29,9 +68,17 @@ const EditOrganizator = () => {
       if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
-          setProfilePic(e.target.result);
+          setFormData((prev) => ({
+            ...prev,
+            profilePic: e.target.result
+          }));
         };
         reader.readAsDataURL(file);
+
+        setFormData((prev) => ({
+          ...prev,
+          temporaryFile: file, // Sunucuya yüklemek için dosyayı kaydet
+        }));
       }
     };
     fileInput.click();
@@ -43,6 +90,63 @@ const EditOrganizator = () => {
       [fieldName]: value
     }));
   };
+
+  const handleSaveChanges = async () => {
+    try{
+      const {temporaryFile, password,  ...otherData} = formData;
+      let uploadedUrl = formData.profilePic;
+
+      if(temporaryFile){
+        const formDataToUpload = new FormData();
+        formDataToUpload.append("file", temporaryFile);
+
+        const response = await axios.post(
+          "http://localhost:8080/ticketup/files/upload-pp",
+          formDataToUpload,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token},`
+            },
+          }
+        );
+
+        const data = response.data;
+        uploadedUrl = data.url;
+      }
+
+      
+
+      console.log(otherData.password || "pasword is null");
+      const passwordToSend = password ? password: null;
+      
+
+       await axios.put(
+         `http://localhost:8080/ticketup/organizators/update/${parsedToken.id}`, {
+           name: otherData.firstName,
+           surname: otherData.lastName,
+           organizationName: otherData.companyName,
+           email: otherData.email,
+           passwordHash: passwordToSend,
+           profilePicture: uploadedUrl,
+         },
+         {
+           headers: {
+             Authorization: `Bearer ${token}`,
+             "Content-Type": "application/json",
+          }
+        }
+      )
+
+
+
+      toast.success("Değişiklikler Başarıyla Kaydedildi.");
+    }catch(error){
+      console.error("Kaydetme Sırasında Bir Hata Oluştu:",error);
+      toast.error("Değişiklikler Kaydedilirken Bir Hata Oluştu. Lütfen Tekrar Deneyin");
+    }
+  };
+  
 
   const renderField = (fieldName, label, type = "text", placeholder) => (
     <div className="relative space-y-2">
@@ -81,7 +185,7 @@ const EditOrganizator = () => {
             <Label className="font-medium">Profil Resmi</Label>
             <div className="relative group">
               <Avatar className="h-24 w-24 cursor-pointer">
-                <AvatarImage src={profilePic} alt="Profile" />
+                <AvatarImage src={formData.profilePic ||  "/src/assets/icons/upload_pp.svg"} alt="Profile" />
                 <AvatarFallback>JD</AvatarFallback>
               </Avatar>
               <div
@@ -113,7 +217,7 @@ const EditOrganizator = () => {
         {/* Action Buttons */}
         <div className="flex justify-end space-x-3 pt-4">
           <Button variant="outline">İptal</Button>
-          <Button className="space-x-2">
+          <Button className="space-x-2" onClick={handleSaveChanges}>
             <Save className="h-4 w-4" />
             <span>Değişikleri Kaydet</span>
           </Button>

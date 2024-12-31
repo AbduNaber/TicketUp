@@ -60,9 +60,9 @@ public class OrganizatorController {
         return organizatorService.getOrganizatorByEmail(id);
     }
 
-    @PutMapping(path = "/update")
-    public Organizator updateOrganizator(@RequestBody Organizator organizator) {
-        return organizatorService.updateOrganizator(organizator);
+    @PutMapping(path = "/update/{id}")
+    public OrganizatorDto updateOrganizator(@PathVariable UUID id,@RequestBody OrganizatorDtoIU organizatorDtoIU) {
+        return organizatorService.updateOrganizator(id,organizatorDtoIU);
     }
 
     @DeleteMapping(path = "/delete/{id}")
