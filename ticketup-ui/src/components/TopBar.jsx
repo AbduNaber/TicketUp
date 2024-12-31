@@ -25,7 +25,7 @@ const TopBar = () => {
         <div className="flex-1">
           <a href="https://www.example.com">
             <img
-              src="/src/assets/icons/ticketup_icon_full.png"
+              src="/src/assets/icons/ticketup_logo_wh.png"
               alt="Logo"
               className="w-[200px]"
             />
