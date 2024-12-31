@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {Type, Image as ImageIcon, Info } from 'lucide-react';
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -8,36 +8,36 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import sanitizeHtml from "sanitize-html";
 import { toast } from "react-toastify";
+import { useNavigate } from 'react-router-dom';
 
 
-  const CreateEvent = ({ onEventCreated , setActiveItem}) => {
+const CreateEvent = () => {
 
-    const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
-    const [coordinates, setCoordinates] = useState({ lat: 37.7749, lng: -122.4194 }); // Default coordinates
-    const [inputValue, setInputValue] = useState(`${coordinates.lat}, ${coordinates.lng}`);
-    const [description, setDescription] = useState("");
-    const [eventTitle, setEventTitle] = useState("");
-    const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
-    const [startTime, setStartTime] = useState("");
-    const [endTime, setEndTime] = useState("");
-    const [eventType, setEventType] = useState("");
-    const [eventLocation, setEventLocation] = useState("");
-    const [isFormValid, setIsFormValid] = useState(false);
-    const [uploadedImageUrl, setUploadedImageURl] = useState("");
-    const token = sessionStorage.getItem("token");
-    const parsedToken = token ? jwtDecode(token) : null;
-    const [apiLoaded, setApiLoaded] = useState(false);
+  const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+  const [coordinates, setCoordinates] = useState({ lat: 37.7749, lng: -122.4194 }); // Default coordinates
+  const [inputValue, setInputValue] = useState(`${coordinates.lat}, ${coordinates.lng}`);
+  const [description, setDescription] = useState("");
+  const [eventTitle, setEventTitle] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [eventType, setEventType] = useState("");
+  const [eventLocation, setEventLocation] = useState("");
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [uploadedImageUrl, setUploadedImageURl] = useState("");
+  const token = sessionStorage.getItem("token");
+  const parsedToken = token ? jwtDecode(token) : null;
+  const [apiLoaded, setApiLoaded] = useState(false);
+  const navigate = useNavigate();
     
     
-    
-
-    const handleMapClick = (event) => {
-    const lat = event.latLng.lat();
-    const lng = event.latLng.lng();
-    setCoordinates({ lat, lng });
-    setInputValue(`${lat}, ${lng}`);
-    };
+  const handleMapClick = (event) => {
+  const lat = event.latLng.lat();
+  const lng = event.latLng.lng();
+  setCoordinates({ lat, lng });
+  setInputValue(`${lat}, ${lng}`);
+  };
 
 
 
@@ -45,7 +45,6 @@ import { toast } from "react-toastify";
   const handleDescriptionChange = (value) => {
     setDescription(value);
   };
-
 
 
   const validateForm = () => {
@@ -106,7 +105,6 @@ import { toast } from "react-toastify";
     }
 
     try{
-
       const organizer =  await axios.get(
         `http://localhost:8080/ticketup/organizators/list/${parsedToken.id}`,
         {
@@ -117,8 +115,8 @@ import { toast } from "react-toastify";
       );
 
       const sanitizedDescription = sanitizeHtml(description, {
-        allowedTags: [], // Hiçbir HTML etiketine izin verme
-        allowedAttributes: {}, // Hiçbir HTML özelliğine izin verme
+        allowedTags: [],
+        allowedAttributes: {}, 
       });
 
       const requestBody = {
@@ -138,15 +136,7 @@ import { toast } from "react-toastify";
         eventType: eventType,
       };
 
-      await axios.post("http://localhost:8080/ticketup/events/create", requestBody, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-       toast.success("Etkinlik başarıyla oluşturuldu."); 
-      onEventCreated();
-      setActiveItem(10);
+      navigate("/event-preview", {state: {event: requestBody}});
     }catch(error){
       console.error(error);
     }
