@@ -10,7 +10,7 @@ import sanitizeHtml from "sanitize-html";
 import { toast } from "react-toastify";
 
 
-  const CreateEvent = ({ onEventCreated }) => {
+  const CreateEvent = ({ onEventCreated , setActiveItem}) => {
 
     const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
     const [coordinates, setCoordinates] = useState({ lat: 37.7749, lng: -122.4194 }); // Default coordinates
@@ -146,6 +146,7 @@ import { toast } from "react-toastify";
       });
        toast.success("Etkinlik başarıyla oluşturuldu."); 
       onEventCreated();
+      setActiveItem(10);
     }catch(error){
       console.error(error);
     }

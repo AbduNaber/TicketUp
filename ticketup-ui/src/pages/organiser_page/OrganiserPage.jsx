@@ -8,6 +8,7 @@ import ParticipantList from "./ParticipantList";
 import EditOrganizator from "./EditOrganizator";
 import { Calendar, Users, PlusCircle, FileText, Settings, MessageCircle, LogOut, ChevronDown, Menu } from "lucide-react";
 import axios from "axios";
+import EventPreview from "../event_create/EventPreview";
 
 const OrganizerPage = () => {
   const [events, setEvents] = useState([]);
@@ -113,9 +114,10 @@ const OrganizerPage = () => {
   const pageComponents = {
     2: <EventList events={events} token={token} setEvents={setEvents} fetchEvents={fetchEvents} isActive={2} selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} setActiveItem={setActiveItem} />,
     3: <EventList events={events} token={token} setEvents={setEvents} fetchEvents={fetchEvents} isActive={3} />,
-    4: <CreateEvent onEventCreated={handleEventCreated} />,
+    4: <CreateEvent onEventCreated={handleEventCreated}  setActiveItem={setActiveItem} />,
     8: <ParticipantList token={token} selectedEvent={selectedEvent} />,
-    9: <EditOrganizator />
+    9: <EditOrganizator />,
+    10: <EventPreview event1={selectedEvent}  setActiveItem={setActiveItem}/>
   };
 
   return (
