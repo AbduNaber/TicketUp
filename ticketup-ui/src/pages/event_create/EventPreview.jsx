@@ -1,36 +1,62 @@
-import React from "react";
 import Footer from "../../components/Footer";
-import { GoogleMap, LoadScript, MarkerF } from "@react-google-maps/api";
+import { GoogleMap,MarkerF, useJsApiLoader } from "@react-google-maps/api";
 import GradientButton from "../../components/GradientButton";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import axios from "axios";
 
-const EventPreview = ({event1 , setActiveItem} ) => {
-  const apiKey = "YOUR_GOOGLE_MAPS_API_KEY";
+const EventPreview = () => {
+  const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
   const containerStyle = { width: "100%", height: "275px" };
-  const center = { lat: -3.745, lng: -38.523 };
-  const url = "https://www.google.com/maps";
+  const location = useLocation();
+  const event = location.state?.event;
+  const token = sessionStorage.getItem("token")
+  const navigate = useNavigate();  
 
-  const event = {
-    imgUrl: "https://via.placeholder.com/600x400",
-    name: "Etkinlik Adı",
-    description: "Etkinlik açıklaması burada yer alacak.",
-    startDate: "2024-12-25",
-    startTime: "18:00",
-    endDate: "2024-12-26",
-    endTime: "23:00",
-    organizatorName: "Organizatör İsmi",
-    organizatorCompany: "Organizatör Şirketi",
-    location: "Etkinlik Konumu"
-  };
+  const center = event
+    ? { lat: event.latitude, lng: event.longitude }
+    : { lat: -3.745, lng: -38.523 };
+    console.log(center);
 
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: apiKey,
+  });
+
+  const url = `https://www.google.com/maps/search/?api=1&query=${center.lat},${center.lng}`;
+
+  
   const formatDate = (date) => new Date(date).toLocaleDateString();
   const formatTime = (time) => time;
 
-  const save = () => {
-    console.log("Kaydet");
+  const returnBack = () => {
+    navigate("/organizer")
   };
 
-  const saveAndPublish = () => {
-    console.log("Kaydet ve Yayınla");
+  const saveAndPublish = async () => {
+    if(!token){
+      console.error("No token found. Redirecting to login.");
+      window.location.href = "/login";
+    }
+
+    if(!event){
+      toast.error("Lütfen Etkinlik Detaylarını Kontrol Edin")
+      return
+    }
+
+    try{
+      await axios.post("http://localhost:8080/ticketup/events/create", event, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      toast.success("Etkinlik Başarıyla Oluşturuldu.");
+      navigate("/organizer");
+    }catch(error){
+      console.error("Etkinlik Oluşturulurken Bir hata oluştu", error);
+      toast.error("Etkinlik Oluşturulamadı, Lütfen tekrar deneyin.")
+    }
   };
 
   return (
@@ -143,11 +169,13 @@ const EventPreview = ({event1 , setActiveItem} ) => {
                 </p>
               </div>
               <div className="mt-6 w-full h-[275px] bg-gray-300 flex justify-center items-center rounded">
-                <LoadScript googleMapsApiKey={apiKey}>
+              {!isLoaded ? (
+                  <p className="text-gray-500">Harita yükleniyor...</p>
+                ) : (
                   <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={15}>
-                    <MarkerF position={center} onClick={() => window.open(url, "_blank")} />
+                    <MarkerF position={center} onClick={() => window.open(url, "_blank")}/>
                   </GoogleMap>
-                </LoadScript>
+                )}
               </div>
             </div>
           </div>
@@ -159,7 +187,7 @@ const EventPreview = ({event1 , setActiveItem} ) => {
           <div className="flex justify-end w-full mt-8">
             <button
               className="px-4 py-2 text-sm font-bold text-white bg-gradient-to-r from-pink-500 to-orange-400 rounded-lg"
-              onClick={save}
+              onClick={returnBack}
             >
               Geri Dön
             </button>

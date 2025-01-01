@@ -48,4 +48,7 @@ public class Organizator {
 
     @Column(name = "token_expiry")
     private LocalDateTime tokenExpiry;
+
+    @Column(name = "profile_picture")
+    private String profilePicture = "";
 }

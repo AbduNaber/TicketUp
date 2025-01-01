@@ -17,4 +17,5 @@ public class OrganizatorDtoIU {
     private String organizationName;
     private String email;
     private String passwordHash;
+    private String profilePicture;
 }

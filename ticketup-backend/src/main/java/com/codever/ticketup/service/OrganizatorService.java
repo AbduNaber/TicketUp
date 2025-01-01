@@ -113,19 +113,28 @@ public class OrganizatorService {
 
 
     //TODO: Change this method with DTO
-    public Organizator updateOrganizator(Organizator organizator) {
-        return organizatorRepository.findById(organizator.getId()).map(
-                organizator1 -> {
-                    organizator1.setId(organizator.getId());
-                    organizator1.setEmail(organizator.getEmail());
-                    organizator1.setPasswordHash(organizator.getPasswordHash());
-                    organizator1.setCreatedAt(organizator.getCreatedAt());
-                    // todo add new variable in model
-                    return organizatorRepository.save(organizator1);
-
-                }
-        ).orElseThrow( () -> new RuntimeException(" Organizator not found with id: " + organizator.getId()));
+    public OrganizatorDto updateOrganizator(UUID id,OrganizatorDtoIU organizatorDtoIU) {
+        return organizatorRepository.findById(id)
+                .map(existtingOrganizator -> {
+                    existtingOrganizator.setName(organizatorDtoIU.getName());
+                    existtingOrganizator.setSurname(organizatorDtoIU.getSurname());
+                    existtingOrganizator.setOrganizationName(organizatorDtoIU.getOrganizationName());
+                    existtingOrganizator.setEmail(organizatorDtoIU.getEmail());
+                    if(organizatorDtoIU.getPasswordHash() != null) {
+                        existtingOrganizator.setPasswordHash(encoder.encode(organizatorDtoIU.getPasswordHash()));
+                    }
+                    existtingOrganizator.setProfilePicture(organizatorDtoIU.getProfilePicture());
+                    Organizator updated = organizatorRepository.save(existtingOrganizator);
+                    return convertToDto(updated);
+                })
+                .orElseThrow(() ->new RuntimeException("Organizator Not Found With id" + id));
     }
+
+    private OrganizatorDto convertToDto(Organizator organizator) {
+        OrganizatorDto organizatorDto = new OrganizatorDto();
+        BeanUtils.copyProperties(organizator, organizatorDto);
+        return organizatorDto;
+    };
 
     public void deleteOrganizator(UUID id) {
         organizatorRepository.deleteById(id);
