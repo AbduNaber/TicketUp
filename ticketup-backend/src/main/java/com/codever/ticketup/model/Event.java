@@ -29,12 +29,6 @@ public class Event {
     @Column(name = "organizator_id", columnDefinition = "UUID")
     private UUID organizatorId;
 
-    @Column(name = "organizator_name")
-    private String organizatorName;
-
-    @Column(name = "organizatorCompany")
-    private String organizatorCompany;
-
     @Column(name = "location")
     private String location;
 

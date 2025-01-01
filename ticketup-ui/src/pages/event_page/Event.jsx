@@ -20,7 +20,18 @@ const containerStyle = {
 const Event = () => {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
+  const [organizator, setOrganizator] = useState(null);
   const navigate = useNavigate();
+
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const handlePopupOpen = () => {
+    setIsPopupOpen(true);
+  };
+
+  const handlePopupClose = () => {
+    setIsPopupOpen(false);
+  };
 
   const handleGoToForm = () => {
     console.log("res");
@@ -75,7 +86,7 @@ const Event = () => {
             `http://localhost:8080/ticketup/events/list/${id}`
         );
         setEvent(response.data);
-        console.log("Event Fetched");
+        
       } catch (error) {
         console.error("Error fetching event:", error.response?.data || error.message);
         alert("Event Bigleri yüklenemedi.");
@@ -84,6 +95,25 @@ const Event = () => {
 
     fetchEvent();
   }, [id]);
+
+  useEffect(() => {
+    const fetchOrganizator = async () => {
+      try{
+        const organizatorResonse = await axios.get(
+          `http://localhost:8080/ticketup/organizators/list/${event?.organizatorId}`
+        );
+        setOrganizator(organizatorResonse.data);
+        console.log("organizator fetched");
+      }catch(error){
+        console.error("Error fetching organizator: ", error.response?.data || error.message);
+        alert("Organizatör Bilgileri Yüklenemedi.");
+      }
+    };
+
+    if(event?.organizatorId){
+      fetchOrganizator();
+    }
+  }, [event])
 
   const formatDate = (dateString) => {
     if (!dateString) return "Geçersiz Tarih";
@@ -187,26 +217,31 @@ const Event = () => {
               <h3 className="text-lg font-bold text-gray-800 mt-6">Organizatör</h3>
               <div className="flex items-center gap-6 p-4 border border-gray-300 rounded-lg shadow-sm w-fit">
                 <img
-                    src={event?.organizator_pp || "/src/assets/icons/profile_icon.svg"}
+                    src={organizator?.profilePicture || "/src/assets/icons/profile_icon.svg"}
                     alt="Organizer Icon"
                     className="w-16 h-16 rounded-full border border-gray-300 shadow-sm"
                 />
                 <div className="flex flex-col">
                   <p className="font-bold text-gray-800">
-                    {event?.organizatorName || "Organizatör Bilgisi Yükleniyor..."}
+                  {organizator
+                    ? `${organizator.name.toLocaleUpperCase('tr-TR')} ${organizator.surname.toLocaleUpperCase('tr-TR')}`
+                    : "Organizatör Bilgisi Yükleniyor..."}
                   </p>
                   <p className="text-gray-600">
-                    {event?.organizatorCompany || "Organizatör Bilgisi Yükleniyor..."}
+                    {organizator?.organizationName || "Organizatör Bilgisi Yükleniyor..."}
                   </p>
-                  <a
-                      href="#"
+                  <button
+                      //href="#"
+                      onClick={handlePopupOpen}
                       className="inline-block px-4 py-2 mt-2 text-sm text-white bg-blue-600 rounded-full hover:bg-blue-700"
                   >
                     İletişime Geç
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
+
+            
 
             {/* Right Section */}
             <div className="w-[48%]">
@@ -227,6 +262,21 @@ const Event = () => {
             </div>
           </div>
         </div>
+
+        {isPopupOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-lg font-bold mb-4">Organizatör İletişim</h2>
+            <p className="text-gray-800">{organizator?.email || "Email bilgisi mevcut değil."}</p>
+            <button
+              onClick={handlePopupClose}
+              className="mt-4 px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-700"
+            >
+              Kapat
+            </button>
+          </div>
+        </div>
+      )}
 
         <Footer />
       </div>
