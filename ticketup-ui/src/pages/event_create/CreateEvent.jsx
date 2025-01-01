@@ -124,6 +124,7 @@ const CreateEvent = () => {
         organizatorId: parsedToken.id,
         organizatorName: organizer.data.name,
         organizatorCompany: organizer.data.organizationName,
+        organizatorPicture: organizer.data.profilePicture,
         location: eventLocation,
         description: sanitizedDescription,
         startDate: startDate,

@@ -59,6 +59,7 @@ const EventPreview = () => {
     }
   };
 
+  
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
      
@@ -127,9 +128,7 @@ const EventPreview = () => {
                 </div>
               </div>
               <a
-                  href="#"
-                  
-                  className="text-blue-600 hover:underline self-start mt-2"
+                className="text-blue-600 hover:underline self-start mt-2"
               >
                 + Takvime Ekle
               </a>
@@ -138,19 +137,20 @@ const EventPreview = () => {
               <h3 className="text-lg font-bold text-gray-800 mt-6">Organizatör</h3>
               <div className="flex items-center gap-6 p-4 border border-gray-300 rounded-lg shadow-sm w-fit">
                 <img
-                    src={event?.organizator_pp || "/src/assets/icons/profile_icon.svg"}
+                    src={event?.organizatorPicture || "/src/assets/icons/profile_icon.svg"}
                     alt="Organizer Icon"
                     className="w-16 h-16 rounded-full border border-gray-300 shadow-sm"
                 />
                 <div className="flex flex-col">
                   <p className="font-bold text-gray-800">
-                    {event?.organizatorName || "Organizatör Bilgisi Yükleniyor..."}
+                  {event
+                    ? `${event?.organizatorName.toLocaleUpperCase('tr-TR')} `
+                    : "Organizatör Bilgisi Yükleniyor..."}
                   </p>
                   <p className="text-gray-600">
                     {event?.organizatorCompany || "Organizatör Bilgisi Yükleniyor..."}
                   </p>
                   <a
-                      href="#"
                       className="inline-block px-4 py-2 mt-2 text-sm text-white bg-blue-600 rounded-full hover:bg-blue-700"
                   >
                     İletişime Geç
