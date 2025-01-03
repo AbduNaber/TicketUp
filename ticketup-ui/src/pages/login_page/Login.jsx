@@ -34,8 +34,11 @@ function Login() {
        
       navigate(`/organizer`);
     } catch (error) {
-      toast.error("Incorrect password or email. Please try again.");
-      console.log(error.message)
+      if (error.response) {
+        toast.error(error.response.data); // Backend'den gelen hata mesajı
+    } else {
+        toast.error("An unexpected error occurred. Please try again.");
+    }
     }
   };
 
@@ -50,8 +53,12 @@ function Login() {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
+
     if (params.get("loggedOut") === "true") {
-      toast.info("You have been logged out successfully.");
+      toast.info("Başarıyla çıkış yaptınız.");
+    }
+    if (params.get("registered") === "true") {
+      toast.success("Başarıyla kayıt oldunuz. Giriş yapabilirsiniz.");
     }
   }, [location.search]);
 

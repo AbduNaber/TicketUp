@@ -1,138 +1,89 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
+import EventList from "./EventList";
+import CreateEvent from '../event_create/CreateEvent';
+import ConfirmationModal from "./ConfirmationModal";
+import ParticipantList from "./ParticipantList";
+import EditOrganizator from "./EditOrganizator";
+import { Calendar, Users, PlusCircle, FileText, Settings, MessageCircle, LogOut, ChevronDown, Menu } from "lucide-react";
 import axios from "axios";
-
+import EventPreview from "../event_create/EventPreview";
 
 const OrganizerPage = () => {
-  const navigate = useNavigate();
   const [events, setEvents] = useState([]);
-  const [filteredEvents, setFilteredEvents] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [popupVisible, setPopupVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [forceUpdate, setForceUpdate] = useState(false);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const token = sessionStorage.getItem("token");
   const parsedToken = token ? jwtDecode(token) : null;
-
+  const [isLocked, setIsLocked] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [activeItem, setActiveItem] = useState(2);
-  const [isAllSelected, setIsAllSelected] = useState(false);
+  const [nextMenuItem, setNextMenuItem] = useState(null);
 
   const menuItems = [
-    { id: 2, label: "AKTİF ETKİNLİKLER", icon: "/src/assets/icons/participant-icon.svg" },
-    { id: 3, label: "KAPANMIŞ ETKİNLİKLER", icon: "/src/assets/icons/participant-icon.svg" },
-    { id: 4, label: "ETKİNLİK OLUŞTUR", icon: "/src/assets/icons/participant-icon.svg" },
-    { id: 5, label: "LOG KAYITLARI", icon: "/src/assets/icons/participant-icon.svg" },
-    { id: 6, label: "ORGANIZATOR İŞLEMLERİ", icon: "/src/assets/icons/participant-icon.svg" },
-    { id: 7, label: "TicketUp'a Ulaş", icon: "/src/assets/icons/participant-icon.svg" }
+    { id: 2, label: "Aktif Etkinlikler", icon: <Calendar className="w-5 h-5" /> },
+    { id: 3, label: "Kapanmış Etkinlikler", icon: <Calendar className="w-5 h-5" /> },
+    { id: 4, label: "Etkinlik Oluştur", icon: <PlusCircle className="w-5 h-5" /> },
+    { id: 5, label: "Log Kayıtları", icon: <FileText className="w-5 h-5" /> },
+    { id: 6, label: "Organizatör İşlemleri", icon: <Settings className="w-5 h-5" /> },
+    { id: 7, label: "TicketUp'a Ulaş", icon: <MessageCircle className="w-5 h-5" /> }
   ];
 
-  const handleView = (event) => {
-    setSelectedEvent(event);
-    setPopupVisible(true);
-  };
-
-  const closePopup = () => {
-    setPopupVisible(false);
-    setSelectedEvent(null);
-  };
-
-  const goToEventPage = () => {
-    if (selectedEvent) {
-      window.location.href = `/event/${selectedEvent.id}`;
-    }
-  };
-
-  const goToParticipantList = () => {
-    if (selectedEvent) {
-      window.location.href = `/event/${selectedEvent.id}/participants`;
-    }
+  const handleEventCreated = () => {
+    setActiveItem(2);
+    fetchEvents();
   };
 
   const toggleDropdown = () => {
     setIsDropdownVisible(!isDropdownVisible);
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   useEffect(() => {
     if (!token) {
-      console.error("No token found. Redirecting to login.");
       window.location.href = "/login";
       return;
     }
 
     if (!parsedToken || !parsedToken.id) {
-      console.error("Invalid token. No user ID found.");
       window.location.href = "/login";
       return;
     }
 
-    const fetchOrganizers = async () => {
-      try {
-        const response = await axios.get(
-          `http://46.101.166.170:8080/ticketup/events/list-organizer-events/${parsedToken.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setEvents(response.data);
-        setFilteredEvents(response.data);
-      } catch (error) {
-        console.error("Error fetching events:", error.response?.data || error.message);
-        if (error.response?.status === 401) {
-          console.error("Unauthorized. Redirecting to login.");
-          window.location.href = "/login";
-        }
-      }
-    };
-
-    fetchOrganizers();
+    fetchEvents();
   }, [token]);
 
-  const handleToggle = (clickedEvent) => {
-    setEvents((prevEvents) =>
-      prevEvents.map((event) =>
-        event === clickedEvent
-          ? { ...event, isselected: !event.isselected }
-          : event
-      )
-    );
-  };
-
-  const handleToggleAll = () => {
-    setIsAllSelected((prev) => {
-      const newSelectedState = !prev;
-      setEvents((prevEvents) =>
-        prevEvents.map((event) => ({
-          ...event,
-          isselected: newSelectedState,
-        }))
-      );
-      return newSelectedState;
-    });
-  };
-
-  const handleDelete = async (eventId) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this event?");
-    if (!confirmDelete) return;
-
-    try {
-      await axios.delete(`http://46.101.166.170:8080/ticketup/events/delete/${eventId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setEvents((prev) => prev.filter((event) => event.id !== eventId));
-      setFilteredEvents((prev) => prev.filter((event) => event.id !== eventId));
-    } catch (error) {
-      console.error("Error deleting event:", error.response?.data || error.message);
-      if (error.response?.status === 401) {
-        window.location.href = "/login";
-      }
+  const handleMenuClick = (item) => {
+    if (isLocked && item.id !== 4) {
+      setNextMenuItem(item.id);
+      setShowConfirmation(true);
+      return;
     }
+
+    if (item.id === 4) {
+      setIsLocked(true);
+    }
+
+    setActiveItem(item.id);
+    setForceUpdate((prev) => !prev);
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleConfirmLeave = () => {
+    setShowConfirmation(false);
+    setIsLocked(false);
+    setActiveItem(nextMenuItem);
+    setForceUpdate((prev) => !prev);
+  };
+
+  const handleCancelLeave = () => {
+    setShowConfirmation(false);
   };
 
   const handleLogout = () => {
@@ -140,201 +91,148 @@ const OrganizerPage = () => {
     window.location.href = "/login?loggedOut=true";
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+  const fetchEvents = async () => {
+    try {
+      const response = await axios.get(
+        `http://46.101.166.170:8080/ticketup/events/list-organizer-events/${parsedToken.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setEvents(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching events:", error.response?.data || error.message);
+      if (error.response?.status === 401) {
+        window.location.href = "/login";
+      }
+    }
   };
 
-  useEffect(() => {
-    const filtered = events.filter((event) =>
-      event.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredEvents(filtered);
-  }, [searchTerm, events]);
+  const pageComponents = {
+    2: <EventList events={events} token={token} setEvents={setEvents} fetchEvents={fetchEvents} isActive={2} selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} setActiveItem={setActiveItem} />,
+    3: <EventList events={events} token={token} setEvents={setEvents} fetchEvents={fetchEvents} isActive={3} />,
+    4: <CreateEvent onEventCreated={handleEventCreated}  setActiveItem={setActiveItem} />,
+    8: <ParticipantList token={token} selectedEvent={selectedEvent} />,
+    9: <EditOrganizator />,
+    10: <EventPreview event1={selectedEvent}  setActiveItem={setActiveItem}/>
+  };
 
   return (
-    <div className="flex h-screen bg-gray-100 font-sans">
+    <div className="flex h-screen bg-gray-50">
+      {/* Mobile Menu Button */}
+      <button
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-md"
+        onClick={toggleMobileMenu}
+      >
+        <Menu className="w-6 h-6 text-gray-600" />
+      </button>
+
       {/* Sidebar */}
-      <div className="w-60 bg-white border-r border-gray-300 p-5 flex flex-col">
-        <div className="mb-10 text-center">
-          <img
-            src="/src/assets/icons/ticketUp-logo.svg"
-            alt="TicketUp Logo"
-            className="w-4/5 h-auto mx-auto"
-          />
-        </div>
-        <ul className="list-none p-0 m-0">
-          {menuItems.map((item) => (
-            <li
-              key={item.id}
-              className={`flex items-center gap-2 p-3 rounded-md cursor-pointer text-sm text-gray-800 transition-colors 
-              ${item.id === activeItem ? "bg-gray-200 font-bold" : "hover:bg-gray-100"}`}
-              onClick={() => {
-                setActiveItem(item.id);
-                if (item.id === 4) {
-                  navigate("/create");
-                }
-              }}
-              
+      <div className={`fixed lg:static inset-y-0 left-0 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-transform duration-200 ease-in-out w-64 bg-white shadow-lg lg:shadow-none z-40`}>
+        <div className="flex flex-col h-full">
+          <div className="p-6">
+            <img
+              src="/src/assets/icons/ticketUp-logo.svg"
+              alt="TicketUp Logo"
+              className="w-32 h-auto mx-auto"
+            />
+          </div>
+
+          <nav className="flex-1 px-4 pb-4">
+            {menuItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => handleMenuClick(item)}
+                className={`w-full flex items-center space-x-3 px-4 py-3 mb-2 rounded-lg transition-colors ${
+                  activeItem === item.id
+                    ? 'bg-blue-50 text-blue-600'
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                {item.icon}
+                <span className="text-sm font-medium">{item.label}</span>
+              </button>
+            ))}
+          </nav>
+
+          <div className="p-4 border-t">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
             >
-              <span className="w-5 h-5 flex-shrink-0">
-                <img src={item.icon} alt={item.label} />
-              </span>
-              <span>{item.label}</span>
-              {item.id === activeItem && (
-                <span className="ml-auto">
-                  <img src="/src/assets/icons/dashicons_arrow-right.svg" alt="Active" />
-                </span>
-              )}
-            </li>
-          ))}
-        </ul>
+              <LogOut className="w-5 h-5" />
+              <span className="text-sm font-medium">Çıkış Yap</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
         {/* Top Navigation Bar */}
-        <div className="flex justify-between items-center bg-white px-5 py-2 border-b border-gray-300 gap-1">
-        <input type="text" placeholder="Search events..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="flex mx-auto flex-1 max-w-sm p-1 border border-black rounded text-sm"
-          />
-          <div className="relative user-menu flex items-center gap-1">
-            <button
-              onClick={toggleDropdown}
-              className="bg-none border-none text-sm cursor-pointer p-2 rounded hover:bg-gray-100"
-            >
-              Organizator
-            </button>
-            {isDropdownVisible && (
-              <div className="absolute top-10 right-0 bg-white border border-gray-300 shadow-lg flex flex-col p-0 w-36 z-50">
-                <button className="text-left p-3 text-sm text-gray-800 hover:bg-gray-100">
-                  View Profile
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="text-left p-3 text-sm text-gray-800 hover:bg-gray-100"
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
+        <header className="bg-white shadow-sm">
+          <div className="h-16 px-4 flex items-center justify-between">
+            <h1 className="text-xl font-semibold text-gray-800">
+              {menuItems.find(item => item.id === activeItem)?.label}
+            </h1>
 
-        {/* Event List */}
-        <div className="p-5 flex-1 flex flex-col overflow-hidden">
-          <h2 className="mb-4 text-lg font-medium">EVENTLER</h2>
-          <div className="grid grid-cols-[40px_2fr_1fr_1fr_1fr_1fr_1fr] gap-2 items-center font-bold border-b-2 border-gray-300 bg-gray-50 py-2">
-          <span className="flex justify-center items-center ml-2">
-            <img
-              onClick={handleToggleAll}
-              src={
-              isAllSelected
-              ? "/src/assets/icons/selected-checkbox.svg"
-              : "/src/assets/icons/checkbox.svg"
-              }
-              alt="Checkbox"
-              className="w-5 h-4 cursor-pointer"
-            />
-          </span>
-            
-            <span>Event Name</span>
-            <span>Event Type</span>
-            <span>Date</span>
-            <span>Status</span>
-            <span>Created Date</span>
-            <span>Quick Actions</span>
-          </div>
-
-          <div className="flex-1 overflow-y-auto bg-white border border-gray-300 rounded">
-            {filteredEvents.map((event, index) => (
-              <div
-                key={index}
-                className="grid grid-cols-[40px_2fr_1fr_1fr_1fr_1fr_1fr] gap-2 items-center py-3 border-b border-gray-200 text-sm hover:bg-gray-50 transition"
+            <div className="relative">
+              <button
+                onClick={toggleDropdown}
+                className="flex items-center space-x-2 text-gray-700 hover:text-gray-900"
               >
-                <span className="flex justify-center items-center ml-2">
-                  <img
-                      onClick={handleToggleAll}
-                      src={
-                      isAllSelected
-                      ? "/src/assets/icons/selected-checkbox.svg"
-                      : "/src/assets/icons/checkbox.svg"
-                      }
-                      alt="Checkbox"
-                      className="w-5 h-4 cursor-pointer"
-                  />
-                </span>
-                <span className="truncate">{event.name}</span>
-                <span className="truncate">{event.eventType}</span>
-                <span>{formatDate(event.startDate)}</span>
-                <span>{event.status}</span>
-                <span>{formatDate(event.createdDate)}</span>
-                <div className="flex gap-1">
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                  <span className="text-sm font-medium text-blue-600">
+                    {parsedToken?.name?.[0] || 'O'}
+                  </span>
+                </div>
+                <span className="text-sm font-medium hidden sm:block">Organizatör</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+
+              {isDropdownVisible && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-50">
                   <button
-                    className="bg-gray-50 border border-blue-700 text-blue-700 rounded text-xs px-2 py-1 hover:bg-blue-700 hover:text-white"
-                    onClick={() => handleView(event)}
+                    onClick={() => {
+                      setActiveItem(9);
+                      setIsDropdownVisible(false);
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                   >
-                    View
-                  </button>
-                  <button className="bg-gray-50 border border-cyan-600 text-cyan-600 rounded text-xs px-2 py-1 hover:bg-cyan-600 hover:text-white">
-                    Edit
+                    Profili Görüntüle
                   </button>
                   <button
-                    className="bg-gray-50 border border-red-600 text-red-600 rounded text-xs px-2 py-1 hover:bg-red-600 hover:text-white"
-                    onClick={() => handleDelete(event.id)}
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                   >
-                    Delete
+                    Çıkış Yap!
                   </button>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {popupVisible && selectedEvent && (
-          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-60 flex justify-center items-center z-50">
-            <div className="bg-white p-5 rounded-lg max-w-md w-11/12 relative">
-              <button className="absolute top-2 right-2 bg-none border-none text-2xl cursor-pointer leading-none" onClick={closePopup}>
-                &times;
-              </button>
-              <h3 className="mt-0 text-xl text-center">Event Details</h3>
-              {selectedEvent ? (
-                <>
-                  <p><strong>Name: </strong> {selectedEvent.name}</p>
-                  <p><strong>Type: </strong> {selectedEvent.eventType}</p>
-                  <p><strong>Date: </strong> {formatDate(selectedEvent.startDate)}</p>
-                  <p><strong>Status: </strong> {selectedEvent.status}</p>
-                  <p><strong>Created Date: </strong> {formatDate(selectedEvent.createdDate)}</p>
-                  <p>
-                    <strong>Event Link: </strong>
-                    <a
-                      href={`http://46.101.166.170:5173/event/${selectedEvent.id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ textDecoration: "none", color: "#6c5ce7", fontWeight: "bold" }}
-                    >
-                      {`http://46.101.166.170:5173/event/${selectedEvent.id}`}
-                    </a>      
-                  </p>
-                </>
-              ) : (
-                <p>Loading event details...</p>
               )}
-              <div className="flex justify-between mt-5">
-                <button className="px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700" onClick={goToEventPage}>
-                  Event Page
-                </button>
-                <button className="px-3 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300" onClick={goToParticipantList}>
-                  Participants
-                </button>
-              </div>
             </div>
           </div>
-        )}
+        </header>
+
+        {/* Main Content Area */}
+        <main className="flex-1 overflow-auto bg-gray-50 p-6">
+          {activeItem && (
+            <div key={`${activeItem}-${forceUpdate}`} className="h-full">
+              {pageComponents[activeItem]}
+            </div>
+          )}
+        </main>
       </div>
+
       <ToastContainer />
+      <ConfirmationModal
+        isOpen={showConfirmation}
+        onConfirm={handleConfirmLeave}
+        onCancel={handleCancelLeave}
+        message="Etkinliği oluşturmadın. Çıkmak istediğine emin misin?"
+      />
     </div>
   );
 };

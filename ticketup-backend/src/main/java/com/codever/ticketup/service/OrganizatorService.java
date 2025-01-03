@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -35,6 +36,8 @@ public class OrganizatorService {
 
     private final AuthenticationManager authenticationManager;
 
+    private final EmailService emailService;
+
     public void register(@NotNull OrganizatorDtoIU organizatorDtoIU) {
         if(organizatorRepository.findByEmail(organizatorDtoIU.getEmail()) != null) {
             throw new RuntimeException("Email already exists");
@@ -43,18 +46,38 @@ public class OrganizatorService {
         Organizator organizator = new Organizator();
         BeanUtils.copyProperties(organizatorDtoIU, organizator);
         organizator.setPasswordHash(encoder.encode(organizatorDtoIU.getPasswordHash()));
+        String token = UUID.randomUUID().toString();
+        organizator.setVerificationToken(token);
+        organizator.setTokenExpiry(LocalDateTime.now().plusHours(24));
+        organizator.setVerified(false);
         organizatorRepository.save(organizator);
+
+        emailService.sendVerificationEmail(organizator.getEmail(), token);
+        System.out.println("Organizator Registration Successful");
+
+
 
     }
 
     public String login(String email, String password) {
         Organizator organizator = organizatorRepository.findByEmail(email);
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-        if (organizator != null && authentication.isAuthenticated()) {
-            return jwtService.generateToken(organizator.getEmail(), organizator.getId());
-        } else {
+
+        if(organizator == null) {
             throw new RuntimeException("Invalid email or password");
         }
+
+        if(!organizator.isVerified()){
+            throw new RuntimeException("Email is not verified. Please verify your email");
+        }
+
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+
+        if(authentication.isAuthenticated()){
+            return jwtService.generateToken(organizator.getEmail(), organizator.getId());
+        }else {
+            throw new RuntimeException("Invalid email or password");
+        }
+
 
     }
 
@@ -90,19 +113,28 @@ public class OrganizatorService {
 
 
     //TODO: Change this method with DTO
-    public Organizator updateOrganizator(Organizator organizator) {
-        return organizatorRepository.findById(organizator.getId()).map(
-                organizator1 -> {
-                    organizator1.setId(organizator.getId());
-                    organizator1.setEmail(organizator.getEmail());
-                    organizator1.setPasswordHash(organizator.getPasswordHash());
-                    organizator1.setCreatedAt(organizator.getCreatedAt());
-                    // todo add new variable in model
-                    return organizatorRepository.save(organizator1);
-
-                }
-        ).orElseThrow( () -> new RuntimeException(" Organizator not found with id: " + organizator.getId()));
+    public OrganizatorDto updateOrganizator(UUID id,OrganizatorDtoIU organizatorDtoIU) {
+        return organizatorRepository.findById(id)
+                .map(existtingOrganizator -> {
+                    existtingOrganizator.setName(organizatorDtoIU.getName());
+                    existtingOrganizator.setSurname(organizatorDtoIU.getSurname());
+                    existtingOrganizator.setOrganizationName(organizatorDtoIU.getOrganizationName());
+                    existtingOrganizator.setEmail(organizatorDtoIU.getEmail());
+                    if(organizatorDtoIU.getPasswordHash() != null) {
+                        existtingOrganizator.setPasswordHash(encoder.encode(organizatorDtoIU.getPasswordHash()));
+                    }
+                    existtingOrganizator.setProfilePicture(organizatorDtoIU.getProfilePicture());
+                    Organizator updated = organizatorRepository.save(existtingOrganizator);
+                    return convertToDto(updated);
+                })
+                .orElseThrow(() ->new RuntimeException("Organizator Not Found With id" + id));
     }
+
+    private OrganizatorDto convertToDto(Organizator organizator) {
+        OrganizatorDto organizatorDto = new OrganizatorDto();
+        BeanUtils.copyProperties(organizator, organizatorDto);
+        return organizatorDto;
+    };
 
     public void deleteOrganizator(UUID id) {
         organizatorRepository.deleteById(id);

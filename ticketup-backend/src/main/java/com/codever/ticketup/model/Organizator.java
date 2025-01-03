@@ -39,4 +39,16 @@ public class Organizator {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "is_verified")
+    private boolean isVerified = false;
+
+    @Column(name = "verification_token")
+    private String verificationToken;
+
+    @Column(name = "token_expiry")
+    private LocalDateTime tokenExpiry;
+
+    @Column(name = "profile_picture")
+    private String profilePicture = "";
 }

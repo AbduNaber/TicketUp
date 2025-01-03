@@ -14,4 +14,5 @@ public class OrganizatorDto {
     private String surname;
     private String organizationName;
     private String email;
+    private String profilePicture;
 }

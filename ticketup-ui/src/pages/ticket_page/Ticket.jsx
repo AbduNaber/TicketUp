@@ -4,15 +4,18 @@ import Footer from "../../components/Footer";
 import EmptyBox from "../../components/empty_box";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import TopBar from "../../components/TopBar";
+import { toast } from "react-toastify";
 
 const Ticket = () => {
   const {id} = useParams();
   const [ticket, setTicket] = useState(null);
   const [participant, setParticipant] = useState(null);
   const [event, setEvent] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTicket = async () => {
@@ -62,13 +65,33 @@ const Ticket = () => {
     buttons.forEach(button => (button.style.visibility = "hidden"));
 
     html2canvas(input, { scale: 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
+      const imgData = canvas.toDataURL("image/jpeg", 0.8);
       const pdf = new jsPDF("p", "mm", "a4");
       const imgWidth = 210;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+      pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight);
       pdf.save("bilet.pdf");
+
+      const pdfBlob = new Blob([pdf.output("blob")], {type: "application/pdf"});
+
+
+      console.log("Participant Email is: ", participant.email);
+      
+       const formData = new FormData();
+       formData.append("email", participant.email);
+       formData.append("file", pdfBlob);
+
+       axios.post("http://46.101.166.170:8080/ticketup/tickets/sendEmail", formData, {
+         headers: {
+           "Content-Type": "multipart/form-data",
+         },
+       })
+       .then((response) => {
+         console.log("Email Sent Succesfully:", response.data);
+       })
+       .catch((error => {
+         console.error("Error Sending Email:", error.response?.data || error.message); 
+      }));
 
       // Butonları geri görünür yapma
       buttons.forEach(button => (button.style.visibility = "visible"));
@@ -92,51 +115,58 @@ const Ticket = () => {
     return `${day} ${month} ${year}`;
   };
 
+  const formatTime = (timeString) => {
+    if (!timeString) return "Saat Bilgisi Yükleniyor...";
+
+    const time = new Date(`1970-01-01T${timeString}`);
+    return time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
+
+  const deleteTicket = async () => {
+    const userConfirmed = window.confirm("Biletinizi silmek istediğinize emin misiniz.");
+    if(userConfirmed){
+      try{
+        await axios.delete(`http://46.101.166.170:8080/ticketup/participants/delete/${participant.id}`);
+        console.log("Participant deleted");
+
+        await axios.delete(`http://46.101.166.170:8080/ticketup/tickets/delete/${id}`);
+        console.log("Ticket deleted");
+
+        toast.success("Bilet Silindi");
+        navigate("/why-us");
+      }catch(error){
+        console.error("Hata oluştu:", error.response?.data || error.message);
+        toast.error("Bilet Silinirken Bir Hata Oluştu");
+      }
+    }
+  }
+
 
   return (
     <div className="flex flex-col min-h-screen bg-white overflow-y-auto">
       {/* Top Bar */}
-      <div className="flex justify-between items-center px-5 py-2 bg-gray-800 text-white">
-        <div>
-          <a href="https://www.example.com">
-            <img src="/src/assets/icons/ticketup_icon_full.png" alt="Logo" className="w-52" />
-          </a>
-        </div>
-        <div className="flex gap-6">
-          <a href="#" className="text-sm hover:underline">Ana Sayfa</a>
-          <a href="#" className="text-sm hover:underline">Neden Biz</a>
-          <a href="#" className="text-sm hover:underline">Bizimle İletişime Geçin</a>
-        </div>
-        <div className="flex items-center gap-4">
-          <GradientButton text="Biletini Sorgula" onClick={() => { }} />
-          <a href="https://www.example.com">
-            <img src="/src/assets/icons/account.png" alt="Profile" className="w-10 h-10 rounded-full" />
-          </a>
-        </div>
-      </div>
+      <TopBar></TopBar>
+
+
       {/* PDF İçeriği */}
-      <div id="pdf-content" className="bg-white w-full flex flex-col items-center">
+      <div id="pdf-content" className="bg-white w-full flex flex-col items-center flex-grow">
       {/* Title */}
       <h2 className="text-4xl text-black font-bold text-center mt-8">
         {event?.name || "Yükleniyor..."}
       </h2>
 
       {/* QR Code Section */}
-      <div className="flex justify-between items-center mt-8 mx-auto w-4/5">
-        <div className="flex flex-col gap-4">
-          <EmptyBox width="180px" height="40px" />
-          <EmptyBox width="180px" height="40px" />
-        </div>
+      <div className="relative flex justify-center items-center mt-8 mx-auto w-full">
         <QRCodeCanvas
           value="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
           size={200}
           bgColor="#ffffff"
           fgColor="#000000"
         />
-        <div className="flex flex-col gap-4">
+        <div className="absolute right-[10vh] flex flex-col gap-4">
           <GradientButton text="Bileti Düzenle" onClick={() => { }} />
-          <GradientButton text="Bileti Sil" onClick={() => { }} />
-          <GradientButton text="Bileti İndir" onClick={downloadTicket} /> {/* Yeni Buton */}
+          <GradientButton text="Bileti Sil" onClick={deleteTicket} />
+          <GradientButton text="Bileti İndir" onClick={downloadTicket} /> 
         </div>
       </div>
 
@@ -145,14 +175,14 @@ const Ticket = () => {
         <p className="text-xl font-light text-black mt-6">Etkinlik Bilgileri</p>
         <p className="text-2xl font-extrabold text-black mt-2">{event?.name || "Bilet Bilgileri Yükleniyor..."}</p>
 
-        <div className="flex justify-between mt-4 w-2/5">
+        <div className="flex justify-between mt-4 w-2/3">
           <div className="flex flex-col items-center p-2 text-center">
             <p className="text-sm font-medium text-black">TARİH</p>
             <p className="text-sm font-bold text-black">{event?.startDate ? formatDate(event.startDate) : "Tarih yükleniyor..."}</p>
           </div>
           <div className="flex flex-col items-center p-2 text-center">
             <p className="text-sm font-medium text-black">SAAT</p>
-            <p className="text-sm font-bold text-black">{event?.startTime || "Saat Yükleniyor..."}</p>
+            <p className="text-sm font-bold text-black">{event?.startTime ? formatTime(event.startTime): "Yükleniyor..."}</p>
           </div>
           <div className="flex flex-col items-center p-2 text-center">
             <p className="text-sm font-medium text-black">KONUM</p>
@@ -167,22 +197,23 @@ const Ticket = () => {
         <div className="flex justify-between mt-4 w-2/5">
           <div className="flex flex-col items-center p-2 text-center">
             <p className="text-sm font-medium text-black">Ad-Soyad</p>
-            <p className="text-sm font-bold text-black">{participant?.name || "Katılımcı Bilgileri Yükleniyor..."} {participant?.surname || "Katılımcı Bilgileri Yükleniyor..."} </p>
+            <p className="text-sm font-bold text-black" style={{textTransform: "uppercase"}}>
+              {participant?.name || "Katılımcı Bilgileri Yükleniyor..."} {participant?.surname || "Katılımcı Bilgileri Yükleniyor..."} </p>
           </div>
           <div className="flex flex-col items-center p-2 text-center">
-            <p className="text-sm font-medium text-black">Ünvan</p>
-            <p className="text-sm font-bold text-black">{participant?.title}</p>
+            <p className="text-sm font-medium text-black">E-mail</p>
+            <p className="text-sm font-bold text-black">{participant?.email}</p>
           </div>
           <div className="flex flex-col items-center p-2 text-center">
-            <p className="text-sm font-medium text-black">Katılınılan İl</p>
-            <p className="text-sm font-bold text-black">{participant?.city}</p>
+            <p className="text-sm font-medium text-black">Telefon</p>
+            <p className="text-sm font-bold text-black">{participant?.phone}</p>
           </div>
         </div>
 
         {/* Additional Information */}
-        <p className="text-sm font-medium text-black mt-7">KATILIMCI ID</p>
+        <p className="text-sm font-medium text-black mt-7">BİLET NO</p>
         <p className="text-sm font-bold text-black mb-4">
-          {ticket?.participantId}
+          {id}
         </p>
         <p className="text-xl font-light text-black">Bilmeniz Gerekenler</p>
         <p className="text-sm font-light text-center text-black mt-2 w-1/5 leading-6">

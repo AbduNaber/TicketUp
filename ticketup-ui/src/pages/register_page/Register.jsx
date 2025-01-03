@@ -95,7 +95,7 @@ const Register = () => {
       };
       await axios.post('http://46.101.166.170:8080/ticketup/organizators/register', requestBody);
       toast.success('Kayıt başarılı. Giriş yapabilirsiniz.');
-      navigate('/login');
+      navigate('/login?registered=true');
     } catch (error) {
       if (error.response?.status === 409) {
         const errorMessage = error.response.data?.error ;
