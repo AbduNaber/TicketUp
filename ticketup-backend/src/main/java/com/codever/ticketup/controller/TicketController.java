@@ -16,7 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-
+// Bu satır test için
 @AllArgsConstructor
 @RestController
 @RequestMapping("ticketup/tickets")
