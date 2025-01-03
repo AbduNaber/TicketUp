@@ -31,7 +31,7 @@ public class EmailService {
     }
 
     public void sendVerificationEmail(String recipientEmail, String token) {
-        String verificationUrl = "http://localhost:3000/verify-email?token=" + token;
+        String verificationUrl = "http://46.101.166.170:5173/verify-email?token=" + token;
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(recipientEmail);

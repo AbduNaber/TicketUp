@@ -13,7 +13,7 @@ const VerifyEmail = () => {
 
     if (token) {
       axios
-        .get(`http://localhost:8080/ticketup/auth/verify-email`, {
+        .get(`http://46.101.166.170:8080/ticketup/auth/verify-email`, {
           params: {
             token: token, // Token'i query parametre olarak gönderiyoruz
           },

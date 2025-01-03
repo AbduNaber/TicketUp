@@ -94,7 +94,7 @@ const OrganizerPage = () => {
   const fetchEvents = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/ticketup/events/list-organizer-events/${parsedToken.id}`,
+        `http://46.101.166.170:8080/ticketup/events/list-organizer-events/${parsedToken.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

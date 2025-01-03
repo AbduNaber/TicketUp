@@ -83,7 +83,7 @@ const Event = () => {
     const fetchEvent = async () => {
       try {
         const response = await axios.get(
-            `http://localhost:8080/ticketup/events/list/${id}`
+            `http://46.101.166.170:8080/ticketup/events/list/${id}`
         );
         setEvent(response.data);
         
@@ -100,7 +100,7 @@ const Event = () => {
     const fetchOrganizator = async () => {
       try{
         const organizatorResonse = await axios.get(
-          `http://localhost:8080/ticketup/organizators/list/${event?.organizatorId}`
+          `http://46.101.166.170:8080/ticketup/organizators/list/${event?.organizatorId}`
         );
         setOrganizator(organizatorResonse.data);
         console.log("organizator fetched");

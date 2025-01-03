@@ -67,7 +67,7 @@ const EventList = ({ events, token, setEvents, fetchEvents ,isActive, selectedEv
         
     
         try {
-          await axios.delete(`http://localhost:8080/ticketup/events/delete/${eventId}`, {
+          await axios.delete(`http://46.101.166.170:8080/ticketup/events/delete/${eventId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -215,12 +215,12 @@ const EventList = ({ events, token, setEvents, fetchEvents ,isActive, selectedEv
                   <p>
                     <strong>Etkinlik Linki: </strong>
                     <a
-                      href={`http://localhost:3000/event/${selectedEvent.id}`}
+                      href={`http://46.101.166.170:5173/event/${selectedEvent.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{ textDecoration: "none", color: "#6c5ce7", fontWeight: "bold" }}
                     >
-                      {`http://localhost:3000/event/${selectedEvent.id}`}
+                      {`http://46.101.166.170:5173/event/${selectedEvent.id}`}
                     </a>      
                   </p>
                 </>

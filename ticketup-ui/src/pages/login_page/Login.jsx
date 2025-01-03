@@ -20,7 +20,7 @@ function Login() {
         toast.error('Invalid email address!');
         return;
       }
-      const response = await axios.post('http://localhost:8080/ticketup/organizators/login', {
+      const response = await axios.post('http://46.101.166.170:8080/ticketup/organizators/login', {
         email: username,
         password: password
       }, {
