@@ -1,10 +1,13 @@
 package com.codever.ticketup.controller;
 
+import com.codever.ticketup.dto.QueryTicketRequest;
 import com.codever.ticketup.model.Ticket;
 import com.codever.ticketup.service.EmailService;
 import com.codever.ticketup.service.TicketService;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -74,6 +77,25 @@ public class TicketController {
             fos.write(file.getBytes());
         }
         return convFile;
+    }
+
+    @PostMapping("/query")
+    public ResponseEntity<?> queryTicket(@RequestBody QueryTicketRequest request) {
+        // Biletin olup olmadığını kontrol et
+        Ticket ticket = ticketService.getTicketById(request.getTicketId());
+        if (ticket != null) {
+            // E-posta veya telefon numarası ile kontrol
+            boolean isParticipant = ticketService.isParticipantWithEmailOrPhone(
+                    request.getParticipantEmail(),
+                    request.getParticipantPhone(),
+                    ticket.getParticipantId()
+            );
+
+            if (isParticipant) {
+                return ResponseEntity.ok(ticket); // Eşleşme başarılı
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Bilet bulunamadı veya bilgiler eşleşmiyor.");
     }
 
 }
