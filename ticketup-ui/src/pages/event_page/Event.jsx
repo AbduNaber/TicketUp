@@ -23,8 +23,8 @@ const Event = () => {
   const [organizator, setOrganizator] = useState(null);
   const [message, setMessage] = useState("");
   const [name, setName] = useState('');
-const [surname, setSurname] = useState('');
-const [email, setEmail] = useState('');
+  const [surname, setSurname] = useState('');
+  const [email, setEmail] = useState('');
 
   const navigate = useNavigate();
 

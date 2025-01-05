@@ -24,13 +24,13 @@ const Register = () => {
     let formErrors = { ...errors }; // Preserve existing errors
   
     // Validate each field
-    if (name === 'name' && !/^[A-Za-z\s]+$/.test(value)) {
+    if (name === 'name' && !/^[A-Za-zÇçĞğİıÖöŞşÜü\s]+$/.test(value)) {
       formErrors.name = 'İsim geçerli olmalı (sadece harf ve boşluk)';
     } else {
       delete formErrors.name;
     }
   
-    if (name === 'surname' && !/^[A-Za-z\s]+$/.test(value)) {
+    if (name === 'surname' && !/^[A-Za-zÇçĞğİıÖöŞşÜü\s]+$/.test(value)) {
       formErrors.surname = 'Soyisim geçerli olmalı (sadece harf ve boşluk)';
     } else {
       delete formErrors.surname;
@@ -42,7 +42,7 @@ const Register = () => {
       delete formErrors.mailAddress;
     }
   
-    if (name === 'organizationName' && !/^[A-Za-z0-9\s]+$/.test(value)) {
+    if (name === 'organizationName' && !/^[A-Za-zÇçĞğİıÖöŞşÜü\s]+$/.test(value)) {
       formErrors.organizationName = 'Geçerli bir organizasyon adı giriniz';
     } else {
       delete formErrors.organizationName;
