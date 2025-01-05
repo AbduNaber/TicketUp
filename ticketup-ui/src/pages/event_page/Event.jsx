@@ -5,7 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import TopBar from "../../components/TopBar";
-
+import { ToastContainer, toast } from "react-toastify";
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
 if (!apiKey) {
@@ -21,6 +21,11 @@ const Event = () => {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [organizator, setOrganizator] = useState(null);
+  const [message, setMessage] = useState("");
+  const [name, setName] = useState('');
+const [surname, setSurname] = useState('');
+const [email, setEmail] = useState('');
+
   const navigate = useNavigate();
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -146,6 +151,43 @@ const Event = () => {
   const url = `https://www.google.com/maps/search/?api=1&query=${center.lat},${center.lng}`;
 
 
+
+  const handleSubmit = async (event) => {
+    event.preventDefault(); // Prevent default form submission behavior
+  
+    const payload = {
+      name: name, // Set from the name input field
+      surname: surname, // Set from the surname input field
+      email: email, // Set from the email input field
+      massage: message, // Set from the message textarea
+    };
+  
+    try {
+      const response = await fetch('http://localhost:8080/ticketup/organizator-messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Message successfully sent:', result);
+        toast.success('Mesaj başarıyla gönderildi!');
+        handlePopupClose(); // Close the popup after success
+      } else {
+        if (response.status === 500 ) {
+          console.error('Server error:', response.statusText);
+          toast.error('Aynı mesajı tekrar gönderemezsiniz. Lütfen farklı mesaj yazınız.');
+        }
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      toast.error('Bir ağ hatası oluştu. Lütfen tekrar deneyin.');
+    }
+  };
+  
   return (
       <div className="flex flex-col min-h-screen bg-white overflow-y-auto">
         {/* Top Bar */}
@@ -233,7 +275,7 @@ const Event = () => {
                   <button
                       //href="#"
                       onClick={handlePopupOpen}
-                      className="inline-block px-4 py-2 mt-2 text-sm text-white bg-blue-600 rounded-full hover:bg-blue-700"
+                      className="bg-gradient-to-r from-pink-500 to-orange-400 text-white text-sm font-bold rounded-full px-5 py-2 shadow-md hover:scale-105 hover:shadow-lg active:scale-95 transition-transform"
                   >
                     İletişime Geç
                   </button>
@@ -264,22 +306,103 @@ const Event = () => {
         </div>
 
         {isPopupOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-lg font-bold mb-4">Organizatör İletişim</h2>
-            <p className="text-gray-800">{organizator?.email || "Email bilgisi mevcut değil."}</p>
-            <button
-              onClick={handlePopupClose}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-700"
-            >
-              Kapat
-            </button>
-          </div>
-        </div>
-      )}
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
+      <button
+        className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+        aria-label="Close"
+        onClick={handlePopupClose}
+      >
+        ✖
+      </button>
+
+      <h2 className="text-xl font-semibold text-gray-900 mb-4 text-center">
+        Organizatör İletişim
+      </h2>
+
+      <div className="mb-6">
+        <p className="text-gray-700 text-center break-words">
+          Organizatör'e email göndermek için:
+        </p>
+        <p className="text-gray-700 text-center break-words">
+  {organizator?.email ? (
+    <a
+      href={`mailto:${organizator.email}`}
+      className="text-blue-600 underline hover:text-blue-800"
+    >
+      {organizator.email}
+    </a>
+  ) : (
+    "Email bilgisi mevcut değil."
+  )}
+</p>
+      </div>
+
+      <p className="text-gray-700 text-center break-words">
+        Ya da direkt mesaj iletmek için:
+      </p>
+
+      <form className="space-y-4" onSubmit={handleSubmit}>
+  <div className="space-y-3">
+    <input
+      type="text"
+      value={name}
+      onChange={(e) => setName(e.target.value)}
+      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:outline-none"
+      placeholder="Adınız"
+      required
+    />
+    <input
+      type="text"
+      value={surname}
+      onChange={(e) => setSurname(e.target.value)}
+      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:outline-none"
+      placeholder="Soyadınız"
+      required
+    />
+    <input
+      type="email"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:outline-none"
+      placeholder="E-posta Adresiniz"
+      required
+    />
+  </div>
+
+  <textarea
+    value={message}
+    onChange={(e) => setMessage(e.target.value)}
+    className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-600 focus:outline-none"
+    rows="4"
+    placeholder="Mesajınızı buraya yazın..."
+    required
+  />
+
+  <div className="flex justify-between items-center">
+    <button
+      type="button"
+      className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 focus:ring-2 focus:ring-gray-400 focus:outline-none"
+      onClick={handlePopupClose}
+    >
+      Kapat
+    </button>
+    <button
+      type="submit"
+      className="bg-gradient-to-r from-pink-500 to-orange-400 text-white text-sm font-bold rounded-full px-5 py-2 shadow-md hover:scale-105 hover:shadow-lg active:scale-95 transition-transform"
+    >
+      Gönder
+    </button>
+  </div>
+</form>
+    </div>
+  </div>
+)} 
 
         <Footer />
+        <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar closeOnClick pauseOnHover draggable pauseOnFocusLoss />
       </div>
+      
   );
 };
 
