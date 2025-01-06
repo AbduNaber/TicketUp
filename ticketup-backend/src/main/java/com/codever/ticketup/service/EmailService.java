@@ -40,5 +40,15 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    public void sendMessageFromUser(String toEmail, String subject, String body, String userEmail){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject(subject);
+        message.setText(body);
+        message.setFrom("info.ticketup@gmail.com");
+        message.setReplyTo(userEmail);
+        mailSender.send(message);
+    }
+
 
 }
