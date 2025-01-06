@@ -1,8 +1,39 @@
+import { useState } from "react";
 import Footer from "../../components/Footer";
 import GradientButton from "../../components/GradientButton";
 import TopBar from "../../components/TopBar";
+import axios from "axios";
 
 const ContactUs = () => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const contactData = {
+      firstName,
+      lastName,
+      email,
+      message,
+    };
+
+    try{
+      const response = await axios.post(
+        "http://localhost:8080/ticketup/contact/send-mail",
+        contactData
+      );
+
+      alert(response.data);
+    }catch(error){
+      console.error("Error sending mail", error);
+      alert("Mesaj Gönderilemedi");
+    }
+  };
+
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
       {/* Top Bar */}
@@ -27,16 +58,22 @@ const ContactUs = () => {
             <input
               type="text"
               placeholder="İsim"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
               className="w-full mb-9 p-3 border border-gray-300 rounded-md"
             />
             <input
-              type="email"
+              type="text"
               placeholder="Soyisim"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
               className="w-full mb-9 p-3 border border-gray-300 rounded-md"
             />
             <input
-              type="tel"
+              type="text"
               placeholder="E-posta veya Telefon Numarası"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full mb-4 p-3 border border-gray-300 rounded-md"
             />
           </div>
@@ -45,12 +82,14 @@ const ContactUs = () => {
           <div className="w-full md:w-1/2 p-4">
             <textarea
               placeholder="Mesajınız"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
               className="w-full h-[220px] p-3 border border-gray-300 rounded-md resize-none"
             ></textarea>
           </div>
         </div>
         <div className="flex justify-end mt-6">
-          <GradientButton text="Gönder" onClick={() => alert("Mesajınız gönderildi!")} />
+          <GradientButton text="Gönder" onClick={handleSubmit} />
         </div>
       </div>
 
@@ -60,11 +99,10 @@ const ContactUs = () => {
           {/* Left Side */}
           <div className="w-full md:w-1/2 p-4 flex flex-col items-center justify-center text-center">
             <h2 className="text-xl font-bold mb-2">ADRESİMİZ</h2>
-            <p className="text-gray-600">ESENTEPE MAH. ECZA SOK.</p>
-            <p className="text-gray-600">NO:4/1 ŞİŞLİ, İSTANBUL</p>
+            <p className="text-gray-600">Çok Yakında...</p>
             <div className="my-4"></div>
-            <h2 className="text-xl font-bold mb-2">TELEFON</h2>
-            <p className="text-gray-600">+90 850 307 1245</p>
+            <h2 className="text-xl font-bold mb-2">MAİL</h2>
+            <p className="text-gray-600">info.ticketup@gmail.com</p>
           </div>
 
           {/* Right Side */}
