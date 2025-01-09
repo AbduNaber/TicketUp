@@ -50,5 +50,13 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    public void sendPasswordResetEmail(String email, String token){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Şifre Sıfırlama Maili");
+        message.setText("Sifre sıfırlama bağlantınız: http://localhost:3000/reset-password/" + token);
+        mailSender.send(message);
+    }
+
 
 }
