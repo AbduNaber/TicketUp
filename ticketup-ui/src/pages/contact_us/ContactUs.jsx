@@ -3,12 +3,26 @@ import Footer from "../../components/Footer";
 import GradientButton from "../../components/GradientButton";
 import TopBar from "../../components/TopBar";
 import axios from "axios";
+import { GoogleMap,MarkerF, useJsApiLoader } from "@react-google-maps/api";
 
 const ContactUs = () => {
+  const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+  const containerStyle = { width: "100%", height: "275px" };
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+
+
+  const center = {
+    lat: 41.01245821746472, 
+    lng: 28.964103678040175,
+  }
+
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: apiKey,
+  });
+  const url = `https://www.google.com/maps/search/?api=1&query=${center.lat},${center.lng}`;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -107,11 +121,13 @@ const ContactUs = () => {
 
           {/* Right Side */}
           <div className="w-full md:w-1/2 p-4 flex items-center justify-center">
-            <img
-              src="https://via.placeholder.com/400x300"
-              alt="Placeholder"
-              className="w-full max-w-md rounded-md"
-            />
+          {!isLoaded ? (
+                  <p className="text-gray-500">Harita yükleniyor...</p>
+                ) : (
+                  <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={5}>
+                    <MarkerF position={center} onClick={() => window.open(url, "_blank")}/>
+                  </GoogleMap>
+                )}
           </div>
         </div>
       </div>
