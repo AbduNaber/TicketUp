@@ -101,7 +101,9 @@ function Login() {
               onClick={togglePasswordVisibility}
             />
           </div>
-          <a className="text-red-500 text-sm cursor-pointer mt-2">Şifremi unuttum</a>
+          <Link to="/forgot-password" className='text-red-500 text-sm cursor-pointer mt-2'>
+              <span>Şifremi Unuttum</span>
+          </Link>
           <Link to="/register" className="text-black text-sm mt-2 mb-2">
             <span className="text-black">Hesabın yok mu?</span>
             <span className="text-green-500"> Kayıt ol</span>
