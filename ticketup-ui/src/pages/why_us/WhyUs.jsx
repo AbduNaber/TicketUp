@@ -19,7 +19,7 @@ const WhyUs = () => {
           {/* Left Side */}
           <div className="w-full md:w-1/2 p-4">
             <img
-              src="https://via.placeholder.com/600x400"
+              src="/src/assets/images/login_bg.png"
               alt="Placeholder"
               className="w-full h-auto object-cover"
             />
