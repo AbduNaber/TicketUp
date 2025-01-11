@@ -14,6 +14,7 @@ public interface OrganizatorMessageRepository extends JpaRepository<OrganizatorM
 
     Optional<OrganizatorMessage> findByEmail(String email);
 
+    List<OrganizatorMessage> findByOrganizatorId(UUID id);
 
     List<OrganizatorMessage> findByName(String name);
 

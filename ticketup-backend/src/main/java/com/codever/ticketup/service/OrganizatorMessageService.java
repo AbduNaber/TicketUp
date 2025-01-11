@@ -23,6 +23,16 @@ public class OrganizatorMessageService {
                 new IllegalArgumentException("Message not found with ID: " + id));
     }
 
+    public List<OrganizatorMessage> getMessageByOrganizatorId(UUID id) {
+        List<OrganizatorMessage> messages = repository.findByOrganizatorId(id);
+
+        if (messages.isEmpty()) {
+            throw new IllegalArgumentException("Message not found with ID: " + id);
+        }
+        return repository.findByOrganizatorId(id);
+    }
+
+
     public List<OrganizatorMessage> getAllMessages() {
         return repository.findAll();
     }

@@ -1,6 +1,7 @@
 package com.codever.ticketup.controller;
 
 import com.codever.ticketup.model.OrganizatorMessage;
+import com.codever.ticketup.model.Participant;
 import com.codever.ticketup.service.OrganizatorMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,11 +37,11 @@ public class OrganizatorMessageController {
         return ResponseEntity.ok(message);
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<List<OrganizatorMessage>> getAllMessages() {
-        List<OrganizatorMessage> messages = service.getAllMessages();
-        return ResponseEntity.ok(messages);
+    @GetMapping(path = "/list/{id}")
+    public List<OrganizatorMessage> getMessageByOrganizatorId(@PathVariable(name = "id") UUID id) {
+        return service.getMessageByOrganizatorId(id);
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<OrganizatorMessage> updateMessage(
@@ -49,7 +50,7 @@ public class OrganizatorMessageController {
         return ResponseEntity.ok(message);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteMessage(@PathVariable UUID id) {
         service.deleteMessage(id);
         return ResponseEntity.noContent().build();

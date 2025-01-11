@@ -23,8 +23,8 @@ const Event = () => {
   const [organizator, setOrganizator] = useState(null);
   const [message, setMessage] = useState("");
   const [name, setName] = useState('');
-  const [surname, setSurname] = useState('');
-  const [email, setEmail] = useState('');
+const [surname, setSurname] = useState('');
+const [email, setEmail] = useState('');
 
   const navigate = useNavigate();
 
@@ -108,7 +108,7 @@ const Event = () => {
           `http://localhost:8080/ticketup/organizators/list/${event?.organizatorId}`
         );
         setOrganizator(organizatorResonse.data);
-        console.log("organizator fetched");
+        console.log(organizator);
       }catch(error){
         console.error("Error fetching organizator: ", error.response?.data || error.message);
         alert("Organizatör Bilgileri Yüklenemedi.");
@@ -154,12 +154,13 @@ const Event = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
-  
+    console.log('Form submitted:', { name, surname, email, message, organizator });
     const payload = {
       name: name, // Set from the name input field
       surname: surname, // Set from the surname input field
       email: email, // Set from the email input field
       massage: message, // Set from the message textarea
+      organizatorId: organizator.id, // Set from the organizator object
     };
   
     try {

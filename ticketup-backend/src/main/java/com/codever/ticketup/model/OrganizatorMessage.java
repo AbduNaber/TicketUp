@@ -33,4 +33,7 @@ public class OrganizatorMessage {
 
     @Column(name = "massage")
     private String massage;
+
+    @Column(name = "organizator_id", columnDefinition = "UUID")
+    private UUID organizatorId;
 }

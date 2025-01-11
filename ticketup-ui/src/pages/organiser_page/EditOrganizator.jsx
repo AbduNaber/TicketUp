@@ -11,7 +11,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-const EditOrganizator = () => {
+const EditOrganizator = ({setActiveItem}) => {
   const [editableField, setEditableField] = useState(null);
   const [formData, setFormData] = useState({
     organizatorName: "",
@@ -216,7 +216,9 @@ const EditOrganizator = () => {
 
         {/* Action Buttons */}
         <div className="flex justify-end space-x-3 pt-4">
-          <Button variant="outline">İptal</Button>
+          <Button variant="outline" onClick={
+            setActiveItem(1)
+          }>İptal</Button>
           <Button className="space-x-2" onClick={handleSaveChanges}>
             <Save className="h-4 w-4" />
             <span>Değişikleri Kaydet</span>
