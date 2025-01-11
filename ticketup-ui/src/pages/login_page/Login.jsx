@@ -60,6 +60,13 @@ function Login() {
     if (params.get("registered") === "true") {
       toast.success("Başarıyla kayıt oldunuz. Giriş yapabilirsiniz.");
     }
+
+    if (params.get("forget") === "true") {
+      toast.success("Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.");
+    }
+    if (params.get("reset") === "true") {
+      toast.success("Şifreniz başarıyla sıfırlandı. Giriş yapabilirsiniz.");
+    }
   }, [location.search]);
 
   return (

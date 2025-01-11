@@ -28,12 +28,18 @@ function ForgotPassword() {
         }
       );
 
-      toast.success(response.data);
+      if(response.status === 200){
+        
+        navigate("/login?forget=true");
+      }
+      else{
+        toast.error("Bir hata oluştu. Lütfen tekrar deneyin.");
+      }
     } catch (error) {
       if (error.response) {
         toast.error(error.response.data); // Backend'den gelen hata mesajı
     } else {
-        toast.error("An unexpected error occurred. Please try again.");
+        toast.error("Bir hata oluştu. Lütfen tekrar deneyin");
     }
     }
   };

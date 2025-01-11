@@ -45,4 +45,10 @@ public class EventController {
     public void deleteEvent(@PathVariable UUID id) {
         eventService.deleteEvent(id);
     }
+
+    @PostMapping(path = "/activate/{id}")
+    public void activateEvent(@PathVariable UUID id) {
+
+        eventService.activateEvent(id);
+    }
 }

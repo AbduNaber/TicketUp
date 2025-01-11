@@ -7,6 +7,7 @@ import ConfirmationModal from "./ConfirmationModal";
 import ParticipantList from "./ParticipantList";
 import EditOrganizator from "./EditOrganizator";
 import OrganizerMessage from "./OrganiserMessage";
+import SecurityPage from "./SecurityPage";
 import { CalendarX, Calendar , Users, PlusCircle, FileText, Settings, MessageCircle, LogOut, ChevronDown, Menu , Mail} from "lucide-react";
 import axios from "axios";
 import EventPreview from "../event_create/EventPreview";
@@ -29,7 +30,7 @@ const OrganizerPage = () => {
     { id: 3, label: "Kapanmış Etkinlikler", icon: <CalendarX className="w-5 h-5" /> },
     { id: 4, label: "Etkinlik Oluştur", icon: <PlusCircle className="w-5 h-5" /> },
     { id: 5, label: "Organizator Mesajları", icon: <Mail className="w-5 h-5" />},
-    { id: 6, label: "Organizatör İşlemleri", icon: <Settings className="w-5 h-5" /> },
+    { id: 6, label: "Güvenlik İşlemleri", icon: <Settings className="w-5 h-5" /> },
     { id: 7, label: "TicketUp'a Ulaş", icon: <MessageCircle className="w-5 h-5" /> }
   ];
 
@@ -119,7 +120,9 @@ const OrganizerPage = () => {
     5: <OrganizerMessage token={token} />,
     8: <ParticipantList token={token} selectedEvent={selectedEvent} />,
     9: <EditOrganizator setActiveItem={setActiveItem} />,
-    10: <EventPreview event1={selectedEvent}  setActiveItem={setActiveItem}/>
+    10: <EventPreview event1={selectedEvent}  setActiveItem={setActiveItem}/>  ,
+    6: <SecurityPage />,
+  
   };
 
   return (

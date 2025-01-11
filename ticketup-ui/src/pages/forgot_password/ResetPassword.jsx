@@ -22,15 +22,25 @@ function ResetPassword() {
         toast.error("Şifreler Eşleşmiyor");
         return
     }
+    
+      if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
+        toast.error("Şifre en az 8 karakter olmalı, 1 büyük harf, 1 küçük harf, 1 rakam içermelidir");
+        return;
+      }
 
+
+    
+    
     try {
+
+
         const response = await axios.post(`http://localhost:8080/ticketup/auth/reset-password`, {
             token: token,
             newPassword: password,
           });
 
         toast.success(response.data);
-        navigate("/login")
+        navigate("/login?reset=true");
       
     } catch (error) {
       if (error.response) {

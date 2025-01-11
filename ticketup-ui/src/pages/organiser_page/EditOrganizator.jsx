@@ -216,9 +216,9 @@ const EditOrganizator = ({setActiveItem}) => {
 
         {/* Action Buttons */}
         <div className="flex justify-end space-x-3 pt-4">
-          <Button variant="outline" onClick={
-            setActiveItem(1)
-          }>İptal</Button>
+        <Button variant="outline" onClick={() => setActiveItem(1)}>
+  İptal
+</Button>
           <Button className="space-x-2" onClick={handleSaveChanges}>
             <Save className="h-4 w-4" />
             <span>Değişikleri Kaydet</span>
