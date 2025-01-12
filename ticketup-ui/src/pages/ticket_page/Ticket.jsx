@@ -141,6 +141,10 @@ const Ticket = () => {
     }
   }
 
+  const updateTicket = () => {
+    navigate("/update-ticket", {state: {ticketID: id}});
+  }
+
 
   return (
     <div className="flex flex-col min-h-screen bg-white overflow-y-auto">
@@ -164,7 +168,7 @@ const Ticket = () => {
           fgColor="#000000"
         />
         <div className="absolute right-[10vh] flex flex-col gap-4">
-          <GradientButton text="Bileti Düzenle" onClick={() => { }} />
+          <GradientButton text="Bileti Düzenle" onClick={updateTicket} />
           <GradientButton text="Bileti Sil" onClick={deleteTicket} />
           <GradientButton text="Bileti İndir" onClick={downloadTicket} /> 
         </div>

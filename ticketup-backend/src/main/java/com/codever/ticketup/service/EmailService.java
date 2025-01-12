@@ -40,5 +40,23 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    public void sendMessageFromUser(String toEmail, String subject, String body, String userEmail){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject(subject);
+        message.setText(body);
+        message.setFrom("info.ticketup@gmail.com");
+        message.setReplyTo(userEmail);
+        mailSender.send(message);
+    }
+
+    public void sendPasswordResetEmail(String email, String token){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Şifre Sıfırlama Maili");
+        message.setText("Sifre sıfırlama bağlantınız: http://46.101.166.170:5173/reset-password/" + token);
+        mailSender.send(message);
+    }
+
 
 }

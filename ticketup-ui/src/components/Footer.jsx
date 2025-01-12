@@ -11,7 +11,7 @@ const Footer = () => {
       {/* Center Section */}
       <div className="text-center">
         <img
-          src="/src/assets/icons/ticketup_icon.png"
+          src="/src/assets/icons/ticketup_logo_wh.png"
           alt="Logo"
           className="h-11"
         />

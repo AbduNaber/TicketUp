@@ -104,6 +104,27 @@ const EventList = ({ events, token, setEvents, fetchEvents ,isActive, selectedEv
         setIsModalOpen(false);
         setEventToDelete(null);
       };
+
+      const activateEvent = async (eventId) => {
+        try {
+          await axios.post(
+            `http://46.101.166.170:8080/ticketup/events/activate/${eventId}`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          fetchEvents();
+          toast.success("Etkinlik başarıyla aktive edildi.");
+        } catch (error) {
+          console.error("Error activating event:", error.response?.data || error.message);
+          if (error.response?.status === 401) {
+            window.location.href = "/login";
+          }
+        }
+      };
       
   return (
     <div className="p-5 flex-1 flex flex-col overflow-hidden">
@@ -154,28 +175,41 @@ const EventList = ({ events, token, setEvents, fetchEvents ,isActive, selectedEv
             <span>{event.eventStatus}</span>
             <span>{formatDate(event.createdDate)}</span>
             <div className="flex gap-1">
-              <button
-                className="bg-gray-50 border border-blue-700 text-blue-700 rounded text-xs px-3 py-1 hover:bg-blue-700 hover:text-white"
-                onClick={() => handleView(event)}
-              >
-                Görüntüle
-              </button>
-              <button className="bg-gray-50 border border-cyan-600 text-cyan-600 rounded text-xs px-3 py-1 hover:bg-cyan-600 hover:text-white">
-                Düzenle
-              </button>
-              <button
-        className="bg-gray-50 border border-red-600 text-red-600 rounded text-xs px-3 py-1 hover:bg-red-600 hover:text-white"
-        onClick={() => openDeleteModal(event.id)}
-      >
-        Sil
-      </button>
+            {event.eventStatus === "AKTİF" ? (
+  <>
+    <button
+      className="bg-gray-50 border border-blue-700 text-blue-700 rounded text-xs px-3 py-1 hover:bg-blue-700 hover:text-white"
+      onClick={() => handleView(event)}
+    >
+      Görüntüle
+    </button>
+    <button
+      className="bg-gray-50 border border-cyan-600 text-cyan-600 rounded text-xs px-3 py-1 hover:bg-cyan-600 hover:text-white"
+    >
+      Düzenle
+    </button>
+  </>
+) : (
+  <button
+    className="bg-gray-50 border border-green-600 text-green-600 rounded text-xs px-3 py-1 hover:bg-green-600 hover:text-white"
+    onClick={() => activateEvent(event.id)}
+  >
+    Aktif Et
+  </button>
+)}
+<button
+  className="bg-gray-50 border border-red-600 text-red-600 rounded text-xs px-3 py-1 hover:bg-red-600 hover:text-white"
+  onClick={() => openDeleteModal(event.id)}
+>
+  {event.eventStatus === "AKTİF" ? "Kapat" : "Sil"}
+</button>
 
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="bg-white rounded-lg p-6 w-1/3">
             <h2 className="text-lg font-bold mb-4">Silmek İstiyor musun ?</h2>
-            <p className="">Etkinliği silmek gerçekten istiyor musun? </p>
-            <p className="mb-6">(Silinmiş Etkinlikler Kapanmış Etkinliklere düşer)</p>
+            <p className="">Etkinliği {event.eventStatus === "AKTİF" ? "kapatmak" : "silmek"} gerçekten istiyor musun? </p>
+            {event.eventStatus === "AKTİF" ? <p className="mb-6">(Silinmiş Etkinlikler Kapanmış Etkinliklere düşer)</p> : null}
             <div className="flex justify-end">
               <button
                 className="bg-gray-200 text-gray-800 px-4 py-2 rounded mr-2"
@@ -187,7 +221,7 @@ const EventList = ({ events, token, setEvents, fetchEvents ,isActive, selectedEv
                 className="bg-red-600 text-white px-4 py-2 rounded"
                 onClick={() => handleDelete(eventToDelete)}
               >
-                Sil
+              {event.eventStatus === "AKTİF" ? "Kapat" : "Sil"}
               </button>
             </div>
           </div>

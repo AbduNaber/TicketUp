@@ -16,6 +16,9 @@ import WhyUs from './pages/why_us/WhyUs';
 import ContactUs from './pages/contact_us/ContactUs';
 import TicketQuery from './pages/query_ticket/QueryTicket';
 import EventPreview  from './pages/event_create/EventPreview';
+import UpdateTicket from './pages/ticket_page/UpdateTicket';
+import ForgotPassword from './pages/forgot_password/ForgotPassword';
+import ResetPassword from './pages/forgot_password/ResetPassword';
 
 function App() {
   return (
@@ -30,13 +33,16 @@ function App() {
         <Route path="/ticket/edit" element={<TicketEdit />} />
         <Route path="/form" element={<EventForm />} />
         
-        <Route path="/auth" element={<Auth />} />
+        {/* <Route path="/auth" element={<Auth />} /> */}
         <Route path="/organizer" element={<OrganizerPage/>} />
         <Route path="/verify-email" element={<VerifyEmail></VerifyEmail>}></Route>
         <Route path="/why-us" element={<WhyUs></WhyUs>}></Route>
         <Route path="/contact-ticketup" element={<ContactUs></ContactUs>}></Route>
         <Route path="/query-ticket" element={<TicketQuery></TicketQuery>}></Route>
         <Route path="/event-preview" element={<EventPreview></EventPreview>}></Route>
+        <Route path="/update-ticket" element={<UpdateTicket></UpdateTicket>}></Route>
+        <Route path="/forgot-password"  element={<ForgotPassword></ForgotPassword>}></Route>
+        <Route path="/reset-password/:token" element={<ResetPassword></ResetPassword>}></Route>
       </Routes>
     </Router>
   );

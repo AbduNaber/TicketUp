@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -51,8 +52,17 @@ public class EventService {
         if (optionalEvent.isPresent()) {
             Event event = optionalEvent.get();
 
-            // Update the status of the event
-            event.setEventStatus("PASİF");
+
+
+            if(Objects.equals(event.getEventStatus(), "PASİF")){
+
+                eventRepository.delete(event);
+                return;
+            }
+            else{
+
+                event.setEventStatus("PASİF");
+            }
 
             // Save the updated event
             eventRepository.save(event);
@@ -68,4 +78,17 @@ public class EventService {
     public List<Event> getEventsByOrganizerId(UUID id) {
        return eventRepository.findByOrganizatorId(id);
     }
+
+    public void activateEvent(UUID id) {
+        Optional<Event> optionalEvent = eventRepository.findById(id);
+        if (optionalEvent.isPresent()) {
+            Event event = optionalEvent.get();
+            event.setEventStatus("AKTİF");
+            eventRepository.save(event);
+        }
+        else{
+            throw new EntityNotFoundException("Event with ID " + id + " not found.");
+        }
+    }
+
 }

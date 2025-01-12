@@ -32,9 +32,16 @@ public class ParticipantController {
         return participantService.getParticipantByEvent(id);
     }
 
-    @PutMapping(path = "/update")
-    public void updateParticipant(@RequestBody Participant participant) {
-        participantService.updateParticipant(participant);
+    @PutMapping(path = "/update/{id}")
+    public ResponseEntity<?> updateParticipant(@PathVariable UUID id,@RequestBody Participant participant) {
+        try{
+            Participant updatedParticipant = participantService.updateParticipant(id, participant);
+            return ResponseEntity.ok(updatedParticipant);
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
     }
 
     @PostMapping(path = "/create")
