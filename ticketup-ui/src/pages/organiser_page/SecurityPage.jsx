@@ -12,7 +12,7 @@ const SecurityPage = ({ token }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    const API_BASE = 'http://localhost:8080/ticketup/security-officers';
+    const API_BASE = 'http://46.101.166.170:8080/ticketup/security-officers';
     const parsedToken = jwtDecode(token);
 
     useEffect(() => {

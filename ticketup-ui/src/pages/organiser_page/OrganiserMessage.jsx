@@ -53,7 +53,7 @@ const OrganiserMessage = ({ token, selectedEvent }) => {
   const fetchMessages = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/ticketup/organizator-messages/list`,
+        `http://46.101.166.170:8080/ticketup/organizator-messages/list`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -72,7 +72,7 @@ const OrganiserMessage = ({ token, selectedEvent }) => {
 
   const handleDelete = async (messageId) => {
     try {
-      await axios.delete(`http://localhost:8080/ticketup/organizator-messages/delete/${messageId}`, {
+      await axios.delete(`http://46.101.166.170:8080/ticketup/organizator-messages/delete/${messageId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
