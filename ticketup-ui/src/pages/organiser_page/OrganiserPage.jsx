@@ -112,7 +112,7 @@ const OrganizerPage = () => {
       }
     }
   };
-
+  
   const pageComponents = {
     2: <EventList events={events} token={token} setEvents={setEvents} fetchEvents={fetchEvents} isActive={2} selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} setActiveItem={setActiveItem} />,
     3: <EventList events={events} token={token} setEvents={setEvents} fetchEvents={fetchEvents} isActive={3} />,
@@ -121,7 +121,7 @@ const OrganizerPage = () => {
     8: <ParticipantList token={token} selectedEvent={selectedEvent} />,
     9: <EditOrganizator setActiveItem={setActiveItem} />,
     10: <EventPreview event1={selectedEvent}  setActiveItem={setActiveItem}/>  ,
-    6: <SecurityPage />,
+    6: <SecurityPage  token={token} />,
   
   };
 
