@@ -85,7 +85,7 @@ public class SecurityOfficerController {
     }
 
    
-    @GetMapping("/ticket/{id}")
+    @GetMapping("ticket/{id}")
     public ResponseEntity<Map<String, Object>> getTicketInfo(@PathVariable UUID id) {
     Optional<Ticket> ticketOptional = securityOfficerService.getTicket(id);
     Optional<Event> eventOptional = securityOfficerService.getEvent(id);   
