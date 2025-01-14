@@ -73,7 +73,7 @@ function Login() {
     <div className="bg-gray-100 h-screen flex items-center justify-center text-black  bg-[url('/src/assets/images/login_bg.png')]">
       <div className="w-[40vw] h-[75vh] bg-white/90 shadow-lg rounded-2xl flex flex-col items-center justify-center">
         <h2 className="text-4xl font-semibold text-black mt-3">TicketUp! Boost Your Event</h2>
-        <p className="text-black font-normal text-lg mt-4 mb-2">Sadece Organizatör Girişine açıktır.</p>
+        <p className="text-black font-normal text-lg mt-4 mb-2">Sadece Organizatör Girişine açıktır</p>
         <form onSubmit={handleLogin} className="flex flex-col w-[28vw] z-10">
           <input
             type="text"
