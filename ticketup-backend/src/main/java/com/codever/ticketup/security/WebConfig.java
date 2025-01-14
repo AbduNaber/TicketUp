@@ -13,7 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://46.101.166.170:5173")       // Frontend URL'si
                 .allowedMethods("GET", "POST", "PUT", "DELETE"); // İzin verilen HTTP metotları
 
-        registry.addMapping("/ticketup/tickets/list/**") // Match the specific API path
+        registry.addMapping("/ticketup/security-officers/ticket/**") // Match the specific API path
                 .allowedOrigins("*")                    // Open to all origins
                 .allowedMethods("GET")                  // Allow GET requests only
                 .allowedHeaders("*")                    // Allow all headers

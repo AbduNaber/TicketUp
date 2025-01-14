@@ -1,7 +1,11 @@
 package com.codever.ticketup.service;
 
+import com.codever.ticketup.model.Event;
+import com.codever.ticketup.model.Participant;
 import com.codever.ticketup.model.SecurityOfficer;
 import com.codever.ticketup.repository.SecurityOfficerRepository;
+
+import com.codever.ticketup.model.Ticket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +17,16 @@ import java.util.UUID;
 public class SecurityOfficerService {
 
     private final SecurityOfficerRepository securityOfficerRepository;
+    private final TicketService ticketService;
+    private final EventService eventService;
+    private final ParticipantService participantService;
 
     @Autowired
-    public SecurityOfficerService(SecurityOfficerRepository securityOfficerRepository) {
+    public SecurityOfficerService(SecurityOfficerRepository securityOfficerRepository, TicketService ticketService, EventService eventService, ParticipantService participantService) {
         this.securityOfficerRepository = securityOfficerRepository;
+        this.ticketService = ticketService;
+        this.eventService = eventService;
+        this.participantService = participantService;
     }
 
     // Find all Security Officers
@@ -48,5 +58,16 @@ public class SecurityOfficerService {
     // Check if a Security Officer exists by ID
     public boolean existsById(UUID id) {
         return securityOfficerRepository.existsById(id);
+    }
+
+    public Optional<Ticket> getTicket(UUID ticketId) {
+        return Optional.of(ticketService.getTicketById(ticketId));
+    }
+
+    public Optional<Event> getEvent(UUID eventId) {
+        return Optional.of(eventService.getEventById(eventId));
+    }
+    public Optional<Participant> getParticipant(UUID participantId) {
+        return Optional.of(participantService.getPartipantById(participantId));
     }
 }

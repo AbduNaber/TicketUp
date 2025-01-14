@@ -1,12 +1,19 @@
 package com.codever.ticketup.controller;
 
+import com.codever.ticketup.model.Participant;
 import com.codever.ticketup.service.SecurityOfficerService;
+import com.codever.ticketup.model.Event;
 import com.codever.ticketup.model.SecurityOfficer;
+import com.codever.ticketup.model.Ticket;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -76,4 +83,33 @@ public class SecurityOfficerController {
             return ResponseEntity.notFound().build();
         }
     }
+
+   
+    @GetMapping("/ticket/{id}")
+    public ResponseEntity<Map<String, Object>> getTicketInfo(@PathVariable UUID id) {
+    Optional<Ticket> ticketOptional = securityOfficerService.getTicket(id);
+    Optional<Event> eventOptional = securityOfficerService.getEvent(id);   
+    Optional<Participant> participantOptional = securityOfficerService.getParticipant(id);
+    if (ticketOptional.isPresent()) {
+        Ticket ticket = ticketOptional.get();
+        Event event = eventOptional.get();
+        Participant participant = participantOptional.get();
+        Map<String, Object> response = new HashMap<>();
+        response.put("ticketId", ticket.getId());
+        response.put("eventDate", event.getStartDate());
+        response.put("eventTime", event.getStartTime());
+        response.put("eventName", event.getName());
+        response.put("eventLocation", event.getLocation());
+        response.put("participantName", participant.getName());
+        response.put("participantSurname", participant.getSurname());
+        response.put("participantEmail", participant.getEmail());
+        response.put("participantPhone", participant.getPhone());
+        return ResponseEntity.ok(response);
+    } else {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+}
+
+
+    
 }
