@@ -85,13 +85,15 @@ public class SecurityOfficerController {
     }
 
    
-    @GetMapping("ticket/{id}")
+    @GetMapping("/ticket/{id}")
     public ResponseEntity<Map<String, Object>> getTicketInfo(@PathVariable UUID id) {
     Optional<Ticket> ticketOptional = securityOfficerService.getTicket(id);
-    Optional<Event> eventOptional = securityOfficerService.getEvent(id);   
-    Optional<Participant> participantOptional = securityOfficerService.getParticipant(id);
+    Ticket ticket = ticketOptional.get();
+    Optional<Event> eventOptional = securityOfficerService.getEvent(ticket.getEventId());
+
+    Optional<Participant> participantOptional = securityOfficerService.getParticipant(ticket.getParticipantId());
     if (ticketOptional.isPresent()) {
-        Ticket ticket = ticketOptional.get();
+
         Event event = eventOptional.get();
         Participant participant = participantOptional.get();
         Map<String, Object> response = new HashMap<>();
