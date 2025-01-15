@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { jwtDecode } from "jwt-decode";
 
 const OrganiserMessage = ({ token, selectedEvent }) => {
   const [messages, setMessages] = useState([]);
@@ -11,16 +12,39 @@ const OrganiserMessage = ({ token, selectedEvent }) => {
   const [messageToDelete, setMessageToDelete] = useState(null);
 
   useEffect(() => {
-    // Fetch messages only if selectedEvent is available
    
       fetchMessages();
-  
-  });
+    
+  }, []);
 
-  const handleView = (message) => {
+  const handleView = async (message) => {
     setSelectedMessage(message);
     setPopupVisible(true);
+  
+    if (!message.isRead) {
+      try {
+        await axios.put(
+          `http://localhost:8080/ticketup/organizator-messages/mark-read/${message.id}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        // Update the message in the local state
+        setMessages((prevMessages) =>
+          prevMessages.map((msg) =>
+            msg.id === message.id ? { ...msg, isRead: true } : msg
+          )
+        );
+      } catch (error) {
+        console.error("Error marking message as read:", error.response?.data || error.message);
+      }
+    }
   };
+  
 
   const closePopup = () => {
     setPopupVisible(false);
@@ -51,9 +75,11 @@ const OrganiserMessage = ({ token, selectedEvent }) => {
   };
 
   const fetchMessages = async () => {
+    const token = sessionStorage.getItem("token");
+    const parsedToken = jwtDecode(token);
     try {
       const response = await axios.get(
-        `http://localhost:8080/ticketup/organizator-messages/list`,
+        `http://localhost:8080/ticketup/organizator-messages/list/${parsedToken.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -61,7 +87,14 @@ const OrganiserMessage = ({ token, selectedEvent }) => {
         }
       );
 
-      setMessages(response.data);
+      const fetchedMessages = response.data;
+      const hasUnreadMessages = fetchedMessages .some((message) => !message.read);
+
+    if (hasUnreadMessages) {
+      toast.info("Okunmamış Mesajların Mecvut.");
+      console.log(fetchedMessages );
+    }
+      setMessages(fetchedMessages);
     } catch (error) {
       console.error("Error fetching messages:", error.response?.data || error.message);
       if (error.response?.status === 401) {
@@ -125,53 +158,55 @@ const OrganiserMessage = ({ token, selectedEvent }) => {
       <div className="flex-1 overflow-y-auto bg-white border border-gray-300 rounded">
         {messages.map((message, index) => (
           <div
-            key={index}
-            className="grid grid-cols-[40px_2fr_2fr_1fr] gap-2 items-center py-3 border-b border-gray-200 text-sm hover:bg-gray-50 transition"
-          >
-            <span className="flex justify-center items-center ml-2">
-              <img
-                onClick={() => handleToggle(message)}
-                src={
-                  message.isSelected
-                    ? "/src/assets/icons/selected-checkbox.svg"
-                    : "/src/assets/icons/checkbox.svg"
-                }
-                alt="Checkbox"
-                className="w-5 h-4 cursor-pointer"
-              />
-            </span>
-            <span className="truncate">{message.name} {message.surname}</span>
-            <span className="truncate">{message.email}</span>
-            <div className="flex gap-1">
-              <button
-                className="bg-gray-50 border border-blue-700 text-blue-700 rounded text-xs px-2 py-1 hover:bg-blue-700 hover:text-white"
-                onClick={() => handleView(message)}
-              >
-                View
-              </button>
-              <button
-                className="bg-gray-50 border border-red-600 text-red-600 rounded text-xs px-2 py-1 hover:bg-red-600 hover:text-white"
-                onClick={() => openDeleteModal(message.id)}
-              >
-                Delete
-              </button>
+          key={index}
+          className={`grid grid-cols-[40px_2fr_2fr_1fr] gap-2 items-center py-3 border-b border-gray-200 text-sm hover:bg-gray-50 transition ${
+            !message.read ? "font-bold bg-gray-100" : ""
+          }`}
+        >
+          <span className="flex justify-center items-center ml-2">
+            <img
+              onClick={() => handleToggle(message)}
+              src={
+                message.isSelected
+                  ? "/src/assets/icons/selected-checkbox.svg"
+                  : "/src/assets/icons/checkbox.svg"
+              }
+              alt="Checkbox"
+              className="w-5 h-4 cursor-pointer"
+            />
+          </span>
+          <span className="truncate">{message.name} {message.surname}</span>
+          <span className="truncate">{message.email}</span>
+          <div className="flex gap-1">
+            <button
+              className="bg-gray-50 border border-blue-700 text-blue-700 rounded text-xs px-2 py-1 hover:bg-blue-700 hover:text-white"
+              onClick={() => handleView(message)}
+            >
+              Görüntüle
+            </button>
+            <button
+              className="bg-gray-50 border border-red-600 text-red-600 rounded text-xs px-2 py-1 hover:bg-red-600 hover:text-white"
+              onClick={() => openDeleteModal(message.id)}
+            >
+              Sil
+            </button>
               {isModalOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
                   <div className="bg-white rounded-lg p-6 w-1/3">
-                    <h2 className="text-lg font-bold mb-4">Confirm Delete</h2>
-                    <p className="mb-6">Are you sure you want to delete this message?</p>
+                    <h2 className="text-lg font-bold mb-4">Onaylama Ekranı</h2>
+                    <p className="mb-6">Mesajı silmek istediğine emin misin? ( Geri alınamaz )</p>
                     <div className="flex justify-end">
                       <button
                         className="bg-gray-200 text-gray-800 px-4 py-2 rounded mr-2"
                         onClick={closeModal}
                       >
-                        Cancel
+                        İptal et
                       </button>
                       <button
                         className="bg-red-600 text-white px-4 py-2 rounded"
                         onClick={() => handleDelete(messageToDelete)}
                       >
-                        Delete
+                        Sil
                       </button>
                     </div>
                   </div>
@@ -212,7 +247,7 @@ const OrganiserMessage = ({ token, selectedEvent }) => {
                 </div>
               </div>
             ) : (
-              <p className="text-gray-600 text-center">Loading message details...</p>
+              <p className="text-gray-600 text-center">Mesaj detayları Yükleniyor...</p>
             )}
           </div>
         </div>

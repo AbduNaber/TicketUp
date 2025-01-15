@@ -18,8 +18,11 @@ const containerStyle = {
 };
 
 const Event = () => {
+
+
   const { id } = useParams();
   const [event, setEvent] = useState(null);
+ 
   const [organizator, setOrganizator] = useState(null);
   const [message, setMessage] = useState("");
   const [name, setName] = useState('');
@@ -29,6 +32,7 @@ const [email, setEmail] = useState('');
   const navigate = useNavigate();
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+
 
   const handlePopupOpen = () => {
     setIsPopupOpen(true);
@@ -152,16 +156,18 @@ const [email, setEmail] = useState('');
 
 
 
-  const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent default form submission behavior
-    console.log('Form submitted:', { name, surname, email, message, organizator });
+  const handleSubmit = async (formEvent) => {
+    formEvent.preventDefault(); // Prevent default form submission behavior
+  
     const payload = {
-      name: name, // Set from the name input field
-      surname: surname, // Set from the surname input field
-      email: email, // Set from the email input field
-      massage: message, // Set from the message textarea
-      organizatorId: organizator.id, // Set from the organizator object
+      name, // Assuming state or props handle this
+      surname,
+      email,
+      massage: message,
+      organizatorId: event?.organizatorId,
     };
+  
+    console.log('Payload:', payload);
   
     try {
       const response = await fetch('http://localhost:8080/ticketup/organizator-messages', {
@@ -176,9 +182,9 @@ const [email, setEmail] = useState('');
         const result = await response.json();
         console.log('Message successfully sent:', result);
         toast.success('Mesaj başarıyla gönderildi!');
-        handlePopupClose(); // Close the popup after success
+        handlePopupClose(); // Close popup if applicable
       } else {
-        if (response.status === 500 ) {
+        if (response.status === 500) {
           console.error('Server error:', response.statusText);
           toast.error('Aynı mesajı tekrar gönderemezsiniz. Lütfen farklı mesaj yazınız.');
         }
@@ -189,30 +195,39 @@ const [email, setEmail] = useState('');
     }
   };
   
+  
   return (
       <div className="flex flex-col min-h-screen bg-white overflow-y-auto">
         {/* Top Bar */}
         <TopBar></TopBar>
 
-        {/* Content */}
-        <div className="flex-grow mx-[6vw] mt-[7.5vh] mb-[30vh] flex flex-col items-center">
-          <div className="w-full h-[50vh] mb-4 overflow-hidden">
-            <img src={event?.imgUrl} alt="Event" className="w-full h-full object-cover" />
-          </div>
-          <div className="flex justify-between items-center w-full">
-            <h2 className="text-2xl font-bold">{event?.name || "Etkinlik Adı Yükleniyor..."}</h2>
-            <GradientButton text="Katılım Formu" onClick={handleGoToForm} />
-          </div>
-          <div className="w-full mt-4">
-            <h1 className="text-xl text-gray-700 mb-3">Etkinlik Açıklaması</h1>
-            <p className="text-gray-600 mb-3">
-              {event?.description || "Etkinlik Açıklaması Yükleniyor..."}
-            </p>
-          </div>
+       
+          <div className="flex-grow mx-[6vw] mt-[7.5vh] mb-[30vh] flex flex-col items-center">
+            <div className="w-full h-[50vh] mb-4 overflow-hidden">
+              <img src={event?.imgUrl} alt="Event" className="w-full h-full object-cover" />
+            </div>
+            <div className="flex justify-between items-center w-full">
+              <h2 className="text-2xl font-bold">{event?.name || "Etkinlik Adı Yükleniyor..."}</h2>
+              
+              {event?.eventStatus === "PASİF" ? (
+                <div>
+            <p className="text-red-600 font-bold">Bu etkinlik kapanmıştır</p>
+            <p className="text-red-600 font-bold">Hata olduğunu düşünüyorsanız lütfen Organizator ile iletişime geçin</p>
+                </div>
+              ) : (
+                <GradientButton text="Katılım Formu" onClick={handleGoToForm}></GradientButton>
+              )}
+            </div>
+            <div className="w-full mt-4">
+              <h1 className="text-xl text-gray-700 mb-3">Etkinlik Açıklaması</h1>
+              <p className="text-gray-600 mb-3">
+                {event?.description || "Etkinlik Açıklaması Yükleniyor..."}
+              </p>
+            </div>
 
 
-          <div className="flex w-full justify-between mt-6">
-            {/* Left Section */}
+            <div className="flex w-full justify-between mt-6">
+              {/* Left Section */}
             <div className="w-[48%] flex flex-col ">
               {/* Start Date*/}
               <div className="flex gap-8">

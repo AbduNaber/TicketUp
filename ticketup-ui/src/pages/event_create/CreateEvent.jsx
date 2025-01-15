@@ -14,8 +14,8 @@ import { useNavigate } from 'react-router-dom';
 const CreateEvent = () => {
 
   const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
-  const [coordinates, setCoordinates] = useState({ lat: 37.7749, lng: -122.4194 }); // Default coordinates
-  const [inputValue, setInputValue] = useState(`${coordinates.lat}, ${coordinates.lng}`);
+  const [coordinates, setCoordinates] = useState({ lat: 40.808, lng:29.358}); // Default coordinates
+  
   const [description, setDescription] = useState("");
   const [eventTitle, setEventTitle] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -30,15 +30,16 @@ const CreateEvent = () => {
   const parsedToken = token ? jwtDecode(token) : null;
   const [apiLoaded, setApiLoaded] = useState(false);
   const navigate = useNavigate();
-    
+  const [address, setAddress] = useState("");  
     
   const handleMapClick = (event) => {
   const lat = event.latLng.lat();
   const lng = event.latLng.lng();
   setCoordinates({ lat, lng });
-  setInputValue(`${lat}, ${lng}`);
+  setAddress(`${lat}, ${lng}`); // Update input field with coordinates
   };
 
+  
 
 
 
@@ -155,6 +156,34 @@ const CreateEvent = () => {
     }
   }, []);
 
+
+
+  const handleAddressChange = async (e) => {
+    const input = e.target.value;
+    setAddress(input);
+
+    if (input.trim().length < 3) return; // Only trigger for meaningful input
+    console.log("Geocoding for:", input);
+    try {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+          input
+        )}&key=${apiKey}`
+      );
+      console.log("Geocoding response:", response.data);
+      if (response.data.status === "OK") {
+        const location = response.data.results[0].geometry.location;
+        setCoordinates({
+          lat: location.lat,
+          lng: location.lng,
+        });
+      }
+    } catch (error) {
+      console.error("Error with geocoding:", error);
+    }
+  };
+
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -199,13 +228,13 @@ const CreateEvent = () => {
                     defaultValue=""
                   >
                     <option value="" disabled>Etkinlik Türünü Seçiniz</option>
-                    <option value="conference">Konferans</option>
-                    <option value="seminar">Seminer</option>
-                    <option value="panel">Panel</option>
-                    <option value="fair">Fuar</option>
-                    <option value="workshop">Atolye Çalışması</option>
-                    <option value="summit">Summit</option>
-                    <option value="diger">Diğer</option>
+                    <option value="Konferans">Konferans</option>
+                    <option value="Seminer">Seminer</option>
+                    <option value="Panel">Panel</option>
+                    <option value="Fuar">Fuar</option>
+                    <option value="Atolye Çalışması">Atolye Çalışması</option>
+                    <option value="Summit">Summit</option>
+                    <option value="Diğer">Diğer</option>
                   </select>
     </div> 
                
@@ -288,22 +317,39 @@ const CreateEvent = () => {
       <label className="block text-sm font-medium text-gray-700">
         {"Mapteki Konumu Seçiniz. (Haritada tam konumu belirleyip tıklayın)"} {1 && <span className="text-red-500">*</span>}
       </label>
+      <div className="space-y-4">
+      {/* Address Input */}
+      <div className="flex items-center gap-2">
+        <input
+          type="text"
+          value={address}
+          onChange={handleAddressChange}
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          placeholder="Hızlı Konum (Kesin Konum için haritadan teyit et )"
+        />
+      </div>
+
+      {/* Map Display */}
       <div className="h-64 rounded-lg overflow-hidden border border-gray-300">
-                      {apiLoaded ? (
-                        <GoogleMap
-                          mapContainerStyle={{ width: "100%", height: "100%" }}
-                          center={coordinates}
-                          zoom={12}
-                          onClick={handleMapClick}
-                        >
-                          <MarkerF position={coordinates} />
-                        </GoogleMap>
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                          <p className="text-gray-500">harita yükleniyor...</p>
-                        </div>
-                      )}
-                    </div>
+        {apiLoaded ? (
+          <GoogleMap
+            mapContainerStyle={{ width: "100%", height: "100%" }}
+            center={coordinates}
+            zoom={12}
+            onClick={handleMapClick}
+          >
+            <MarkerF position={coordinates} />
+          </GoogleMap>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-100">
+            <p className="text-gray-500">Loading map...</p>
+          </div>
+        )}
+      </div>
+
+     
+      
+    </div>
     </div>
 
                 </div>

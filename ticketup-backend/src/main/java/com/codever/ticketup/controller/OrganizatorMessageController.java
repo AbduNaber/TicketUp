@@ -55,4 +55,10 @@ public class OrganizatorMessageController {
         service.deleteMessage(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/mark-read/{messageId}")
+    public ResponseEntity<OrganizatorMessage> markMessageAsRead(@PathVariable UUID messageId) {
+        OrganizatorMessage updatedMessage = service.markMessageAsRead(messageId);
+        return ResponseEntity.ok(updatedMessage);
+    }
 }
