@@ -13,4 +13,6 @@ public interface SecurityOfficerRepository extends JpaRepository<SecurityOfficer
 
         Optional<List<SecurityOfficer>> findByOrganizatorId(UUID organizatorId);
         Optional<SecurityOfficer> findByEmail(String email);
+        List<SecurityOfficer> findByEventId(UUID eventId);
+
 }

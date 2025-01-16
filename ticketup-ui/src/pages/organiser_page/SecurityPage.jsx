@@ -3,7 +3,6 @@ import { CheckCircle, AlertCircle, Search, X } from 'lucide-react';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 
-
 const SecurityPage = ({ token }) => {
     const [officers, setOfficers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -43,8 +42,27 @@ const SecurityPage = ({ token }) => {
             setIsLoading(false);
         }
     };
-    
-    
+
+    const [events, setEvents] = useState([]);
+
+    useEffect(() => {
+        fetchEvents();
+    }, []);
+
+    const fetchEvents = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/ticketup/events/list', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setEvents(response.data);
+        } catch (error) {
+            console.error('Error fetching events:', error);
+        }
+    };
+
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -56,7 +74,7 @@ const SecurityPage = ({ token }) => {
             email: formData.get('email')?.trim(),
             status: 'Aktif',
             organizatorId: parsedToken.id,
-            password: Math.floor(100000 + Math.random() * 900000).toString()
+            password: Math.floor(100000 + Math.random() * 900000).toString(),
         };
 
         if (!officer.name || !officer.surname || !officer.email) {
@@ -75,16 +93,17 @@ const SecurityPage = ({ token }) => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            setOfficers(prev => [...prev, response.data]);
+            setOfficers((prev) => [...prev, response.data]);
             setSuccessMessage('Güvenlik görevlisi başarıyla eklendi!');
             e.target.reset();
             setIsModalOpen(false);
             setTimeout(() => setSuccessMessage(''), 3000);
         } catch (error) {
-            console.error("Error adding officer:", error.response?.data || error.message);
+            console.error('Error adding officer:', error.response?.data || error.message);
             setFormError(error.response?.data?.message || 'Bir hata oluştu. Lütfen tekrar deneyin.');
         }
     };
+
 
     const toggleOfficerStatus = async (id) => {
         const officer = officers.find(officer => officer.id === id);
@@ -170,6 +189,34 @@ const SecurityPage = ({ token }) => {
             setTimeout(() => setFormError(''), 3000);
         }
     };
+
+    const assignEventToOfficer = async (officerId, eventId) => {
+        if (!eventId) {
+            alert('Lütfen bir etkinlik seçin.');
+            return;
+        }
+
+        try {
+            const response = await axios.put(
+                `http://localhost:8080/ticketup/security-officers/${officerId}/assign-event/${eventId}`,
+                {}, // Boş bir body gönderiyoruz
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            setSuccessMessage('Görevli etkinliğe başarıyla atandı!');
+            setTimeout(() => setSuccessMessage(''), 3000);
+            fetchOfficers(); // Görevli listesini güncelle
+        } catch (error) {
+            console.error('Error assigning event:', error.response?.data || error.message);
+            setFormError('Görevli ataması sırasında bir hata oluştu.');
+            setTimeout(() => setFormError(''), 3000);
+        }
+    };
+
+
     return (
         <div className="container mx-auto mt-8 p-4">
             <div className="relative">
@@ -226,6 +273,13 @@ const SecurityPage = ({ token }) => {
                     <p className="text-sm text-gray-600">
                         Şifre: <span>{officer.password}</span>
                     </p>
+                    {officer.event ? (
+                        <p className="text-sm text-gray-600">
+                            Etkinlik: <span>{officer.event.name}</span>
+                        </p>
+                    ) : (
+                        <p className="text-sm text-gray-600">Etkinlik: Atanmamış</p>
+                    )}
                 </div>
                 <div className="flex gap-2 flex-col">
                     <button
@@ -251,6 +305,24 @@ const SecurityPage = ({ token }) => {
                         Şifre Oluştur
                     </button>
                 </div>
+            </div>
+            {/* Etkinlik Atama Dropdown */}
+            <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700">Etkinlik Ata:</label>
+                <select
+                    onChange={(e) => assignEventToOfficer(officer.id, e.target.value)}
+                    defaultValue=""
+                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                >
+                    <option value="" disabled>
+                        Etkinlik Seç
+                    </option>
+                    {events.map((event) => (
+                        <option key={event.id} value={event.id}>
+                            {event.name}
+                        </option>
+                    ))}
+                </select>
             </div>
         </div>
     ))}
@@ -306,7 +378,7 @@ const SecurityPage = ({ token }) => {
                                     required
                                 />
                             </div>
-                            
+
                             <button
                                 type="submit"
                                 className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200"
