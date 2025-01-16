@@ -1,5 +1,7 @@
 package com.codever.ticketup.controller;
 
+import com.codever.ticketup.model.Event;
+import com.codever.ticketup.service.EventService;
 import com.codever.ticketup.service.SecurityOfficerService;
 import com.codever.ticketup.model.SecurityOfficer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +17,12 @@ import java.util.UUID;
 public class SecurityOfficerController {
 
     private final SecurityOfficerService securityOfficerService;
+    private final EventService eventService;
 
     @Autowired
-    public SecurityOfficerController(SecurityOfficerService securityOfficerService) {
+    public SecurityOfficerController(SecurityOfficerService securityOfficerService, EventService eventService) {
         this.securityOfficerService = securityOfficerService;
+        this.eventService = eventService;
     }
 
     // Get all Security Officers
@@ -76,4 +80,24 @@ public class SecurityOfficerController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PutMapping("/{officerId}/assign-event/{eventId}")
+    public ResponseEntity<SecurityOfficer> assignEventToOfficer(
+            @PathVariable UUID officerId,
+            @PathVariable UUID eventId) {
+        Optional<SecurityOfficer> officer = securityOfficerService.findById(officerId);
+        Optional<Event> event = eventService.getEventRepository().findById(eventId);
+
+        if (officer.isPresent() && event.isPresent()) {
+            SecurityOfficer updatedOfficer = officer.get();
+            updatedOfficer.setEvent(event.get()); // Event nesnesini atayın
+            securityOfficerService.save(updatedOfficer);
+            return ResponseEntity.ok(updatedOfficer);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+
 }

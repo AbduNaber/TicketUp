@@ -35,6 +35,10 @@ public class SecurityOfficer {
     @Column(name = "password")
     private String password;
 
+    @ManyToOne
+    @JoinColumn(name = "event_id") // Event'in id'sine bağlanır
+    private Event event;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 

@@ -49,4 +49,9 @@ public class SecurityOfficerService {
     public boolean existsById(UUID id) {
         return securityOfficerRepository.existsById(id);
     }
+
+    public List<SecurityOfficer> findByEventId(UUID eventId) {
+        return securityOfficerRepository.findByEventId(eventId);
+    }
+
 }
