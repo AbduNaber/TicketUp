@@ -41,9 +41,8 @@ const ContactUs = () => {
 
       {/* Placeholder Image with Text */}
       <div className="relative w-full h-[400px]">
-        <img
-          src="https://via.placeholder.com/1920x400"
-          alt="Placeholder"
+        <imgS
+          src="/src/assets/images/contact_us.png"
           className="w-full h-full object-cover"
         />
         <div className="absolute bottom-4 left-4 text-black text-4xl font-bold">

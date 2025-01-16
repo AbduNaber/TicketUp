@@ -35,6 +35,7 @@ function App() {
         <Route path="/why-us" element={<WhyUs />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/organizer" element={<OrganizerPage/>} />
+        <Route path="/main" element = {<MainPage/>} />
       </Routes>
     </Router>
   );
