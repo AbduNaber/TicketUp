@@ -79,6 +79,7 @@ const Ticket = () => {
       
        const formData = new FormData();
        formData.append("email", participant.email);
+       formData.append("id" , id);
        formData.append("file", pdfBlob);
 
        axios.post("http://46.101.166.170:8080/ticketup/tickets/sendEmail", formData, {

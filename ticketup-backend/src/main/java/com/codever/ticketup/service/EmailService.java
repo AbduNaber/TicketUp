@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 
 @Service
@@ -18,12 +19,13 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    public void sendEmailWithAttachment(String toEmail, String subject, String body, File attachment) throws MessagingException, IOException {
+    public void sendEmailWithAttachment(String toEmail, UUID id, String subject, String body, File attachment) throws MessagingException, IOException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 
         helper.setTo(toEmail);
         helper.setSubject(subject);
+        helper.setText("Your ticked id: " + id.toString() + "\n" + body, true);
         helper.setText(body, true);
         helper.addAttachment(attachment.getName(), attachment);
 

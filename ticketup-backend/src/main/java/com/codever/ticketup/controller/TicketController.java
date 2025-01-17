@@ -56,14 +56,14 @@ public class TicketController {
     }
 
     @PostMapping(path = "/sendEmail")
-    public String sendTicketEmail(@RequestParam("email") String email, @RequestParam("file") MultipartFile file) {
+    public String sendTicketEmail(@RequestParam("email") String email,@RequestParam("id") UUID id, @RequestParam("file") MultipartFile file) {
         System.out.println("Email: " + email);
         System.out.println("File: " + file.getOriginalFilename());
 
         try{
             File tempFile = convertMultipartFileToFile(file);
 
-            emailService.sendEmailWithAttachment(email, "Your Ticket", "Please Find Your Ticket Attached", tempFile);
+            emailService.sendEmailWithAttachment(email,id, "Your Ticket", "Please Find Your Ticket Attached", tempFile);
             tempFile.delete();
 
             return "Email sent successfully";
