@@ -23,17 +23,16 @@ const TopBar = () => {
       <div className="flex justify-between items-center px-5 py-2 h-[10vh] text-white">
         {/* Logo */}
         <div className="flex-1">
-          <a href="https://www.example.com">
-            <img
+        <img
               src="/src/assets/icons/ticketup_logo_wh.png"
               alt="Logo"
               className="w-[200px]"
+              onClick={() => navigate("/home")}
             />
-          </a>
         </div>
         {/* Navigation Links */}
         <div className="flex justify-center items-center">
-          <Link to="#" className="text-white text-sm mx-6 hover:underline">
+          <Link to="/home" className="text-white text-sm mx-6 hover:underline">
             Ana Sayfa
           </Link>
           <Link to="/why-us" className="text-white text-sm mx-6 hover:underline">
