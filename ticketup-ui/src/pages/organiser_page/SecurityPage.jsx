@@ -26,9 +26,9 @@ const SecurityPage = ({ token }) => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-    
+
             const data = response.data;
-    
+
             // Normalize the response to always be an array
             const officersArray = Array.isArray(data) ? data : [data];
             setOfficers(officersArray);
@@ -51,16 +51,21 @@ const SecurityPage = ({ token }) => {
 
     const fetchEvents = async () => {
         try {
-            const response = await axios.get('http://46.101.166.170:8080/ticketup/events/list', {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const organizerId = jwtDecode(token).id; // Token'dan organizator ID alınıyor
+            const response = await axios.get(
+                `http://46.101.166.170:8080/ticketup/events/list-organizer-events/${organizerId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
             setEvents(response.data);
         } catch (error) {
             console.error('Error fetching events:', error);
         }
     };
+
 
 
 
@@ -112,7 +117,7 @@ const SecurityPage = ({ token }) => {
         const updatedStatus = officer.status === 'Aktif' ? 'Pasif' : 'Aktif';
 
         try {
-            await axios.put(`${API_BASE}/${id}`, 
+            await axios.put(`${API_BASE}/${id}`,
                 { ...officer, status: updatedStatus },
                 {
                     headers: {
@@ -122,7 +127,7 @@ const SecurityPage = ({ token }) => {
                 }
             );
 
-            setOfficers(prev => prev.map(officer => 
+            setOfficers(prev => prev.map(officer =>
                 officer.id === id ? { ...officer, status: updatedStatus } : officer
             ));
             setSuccessMessage('Durum başarıyla güncellendi');
@@ -150,7 +155,7 @@ const SecurityPage = ({ token }) => {
         }
     };
     console.log('Officers state:', officers);
-    const filteredOfficers = officers.filter(officer => 
+    const filteredOfficers = officers.filter(officer =>
         officer.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         officer.surname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         officer.email?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -159,22 +164,22 @@ const SecurityPage = ({ token }) => {
 
 
     const generateNewPassword = async (id) => {
-        
+
         const newPassword = Math.floor(100000 + Math.random() * 900000).toString();
-    
-       
+
+
         const officer = officers.find(officer => officer.id === id);
         if (!officer) return;
 
         officer.password = newPassword;
-        
+
 
         try {
             await axios.put(
                 `${API_BASE}/${id}`,
-                { 
+                {
                     ...officer,
-                    },
+                },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -262,71 +267,71 @@ const SecurityPage = ({ token }) => {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    {filteredOfficers.map((officer) => (
-        <div key={officer.id} className="border rounded-lg p-4 hover:bg-gray-50">
-            <div className="flex justify-between items-start">
-                <div>
-                    <h3 className="font-semibold">
-                        {officer.name} {officer.surname}
-                    </h3>
-                    <p className="text-sm text-gray-600">{officer.email}</p>
-                    <p className="text-sm text-gray-600">
-                        Şifre: <span>{officer.password}</span>
-                    </p>
-                    {officer.event ? (
-                        <p className="text-sm text-gray-600">
-                            Etkinlik: <span>{officer.event.name}</span>
-                        </p>
-                    ) : (
-                        <p className="text-sm text-gray-600">Etkinlik: Atanmamış</p>
-                    )}
-                </div>
-                <div className="flex gap-2 flex-col">
-                    <button
-                        onClick={() => toggleOfficerStatus(officer.id)}
-                        className={`px-3 py-1 rounded-full text-sm ${
-                            officer.status === 'Aktif'
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-red-100 text-red-800'
-                        }`}
-                    >
-                        {officer.status}
-                    </button>
-                    <button
-                        onClick={() => deleteOfficer(officer.id)}
-                        className="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                    >
-                        Sil
-                    </button>
-                    <button
-                        onClick={() => generateNewPassword(officer.id)}
-                        className="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 "
-                    >
-                        Şifre Oluştur
-                    </button>
-                </div>
-            </div>
-            {/* Etkinlik Atama Dropdown */}
-            <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-700">Etkinlik Ata:</label>
-                <select
-                    onChange={(e) => assignEventToOfficer(officer.id, e.target.value)}
-                    defaultValue=""
-                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                >
-                    <option value="" disabled>
-                        Etkinlik Seç
-                    </option>
-                    {events.map((event) => (
-                        <option key={event.id} value={event.id}>
-                            {event.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-        </div>
-    ))}
-</div>
+                        {filteredOfficers.map((officer) => (
+                            <div key={officer.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <h3 className="font-semibold">
+                                            {officer.name} {officer.surname}
+                                        </h3>
+                                        <p className="text-sm text-gray-600">{officer.email}</p>
+                                        <p className="text-sm text-gray-600">
+                                            Şifre: <span>{officer.password}</span>
+                                        </p>
+                                        {officer.event ? (
+                                            <p className="text-sm text-gray-600">
+                                                Etkinlik: <span>{officer.event.name}</span>
+                                            </p>
+                                        ) : (
+                                            <p className="text-sm text-gray-600">Etkinlik: Atanmamış</p>
+                                        )}
+                                    </div>
+                                    <div className="flex gap-2 flex-col">
+                                        <button
+                                            onClick={() => toggleOfficerStatus(officer.id)}
+                                            className={`px-3 py-1 rounded-full text-sm ${
+                                                officer.status === 'Aktif'
+                                                    ? 'bg-green-100 text-green-800'
+                                                    : 'bg-red-100 text-red-800'
+                                            }`}
+                                        >
+                                            {officer.status}
+                                        </button>
+                                        <button
+                                            onClick={() => deleteOfficer(officer.id)}
+                                            className="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                                        >
+                                            Sil
+                                        </button>
+                                        <button
+                                            onClick={() => generateNewPassword(officer.id)}
+                                            className="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 "
+                                        >
+                                            Şifre Oluştur
+                                        </button>
+                                    </div>
+                                </div>
+                                {/* Etkinlik Atama Dropdown */}
+                                <div className="mt-4">
+                                    <label className="block text-sm font-medium text-gray-700">Etkinlik Ata:</label>
+                                    <select
+                                        onChange={(e) => assignEventToOfficer(officer.id, e.target.value)}
+                                        defaultValue=""
+                                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                                    >
+                                        <option value="" disabled>
+                                            Etkinlik Seç
+                                        </option>
+                                        {events.map((event) => (
+                                            <option key={event.id} value={event.id}>
+                                                {event.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 )}
             </div>
 
@@ -335,7 +340,7 @@ const SecurityPage = ({ token }) => {
                     <div className="bg-white rounded-lg shadow-lg p-6 w-96">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-lg font-semibold">Yeni Görevli Ekle</h2>
-                            <button 
+                            <button
                                 onClick={() => {
                                     setIsModalOpen(false);
                                     setFormError('');

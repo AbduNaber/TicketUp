@@ -5,12 +5,11 @@ import com.codever.ticketup.service.EventService;
 import com.codever.ticketup.service.SecurityOfficerService;
 import com.codever.ticketup.model.SecurityOfficer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("ticketup/security-officers")
@@ -32,15 +31,32 @@ public class SecurityOfficerController {
         return ResponseEntity.ok(officers);
     }
     @GetMapping("login")
-    public Boolean login(@RequestParam("email") String email, @RequestParam("password") String password) {
+    public ResponseEntity<Map<String, Object>> login(
+            @RequestParam("email") String email,
+            @RequestParam("password") String password) {
 
         Optional<SecurityOfficer> user = securityOfficerService.findByEmail(email);
 
+        if (user.isPresent() && password.equals(user.get().getPassword())) {
+            SecurityOfficer officer = user.get();
 
-        return user.filter(securityOfficer -> password.equals(securityOfficer.getPassword())).isPresent();
+            // Yanıt verisini bir Map içinde döndür
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("officerId", officer.getId());
+            response.put("eventId", officer.getEvent() != null ? officer.getEvent().getId() : null);
 
+            return ResponseEntity.ok(response);
+        } else {
+            // Hatalı giriş durumunda yanıt
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", "Invalid email or password");
 
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
     }
+
 
     // Get Security Officer by ID
     @GetMapping("list-organizer-officers/{id}")
@@ -98,6 +114,14 @@ public class SecurityOfficerController {
         }
     }
 
+    @GetMapping("/assigned-event/{officerId}")
+    public ResponseEntity<Event> getAssignedEvent(@PathVariable UUID officerId) {
+        Optional<SecurityOfficer> officer = securityOfficerService.findById(officerId);
+        if (officer.isPresent() && officer.get().getEvent() != null) {
+            return ResponseEntity.ok(officer.get().getEvent());
+        }
+        return ResponseEntity.notFound().build();
+    }
 
 
 }
