@@ -183,11 +183,7 @@ const EventList = ({ events, token, setEvents, fetchEvents ,isActive, selectedEv
     >
       Görüntüle
     </button>
-    <button
-      className="bg-gray-50 border border-cyan-600 text-cyan-600 rounded text-xs px-3 py-1 hover:bg-cyan-600 hover:text-white"
-    >
-      Düzenle
-    </button>
+    
   </>
 ) : (
   <button
