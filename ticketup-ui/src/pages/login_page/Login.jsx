@@ -17,7 +17,7 @@ function Login() {
     e.preventDefault();
     try {
       if (!validateEmail(username)) {
-        toast.error('Invalid email address!');
+        toast.error('Hatalı e-posta adresi girdiniz. Lütfen kontrol edin.');
         return;
       }
       const response = await axios.post('http://46.101.166.170:8080/ticketup/organizators/login', {
@@ -35,9 +35,11 @@ function Login() {
       navigate(`/organizer`);
     } catch (error) {
       if (error.response) {
-        toast.error(error.response.data); // Backend'den gelen hata mesajı
+        if(error.response.data == "Invalid email or password"){
+          toast.error("E-posta veya şifre hatalı. Lütfen kontrol edin.");
+        } // Backend'den gelen hata mesajı
     } else {
-        toast.error("An unexpected error occurred. Please try again.");
+        toast.error("Beklenmeyen bir hata oluştur. Daha sonra Tekrar deneyin. Devem ederse lütfen bize ulaşın. info.ticketup@gmail.com");
     }
     }
   };
@@ -70,7 +72,7 @@ function Login() {
   }, [location.search]);
 
   return (
-    <div className="bg-gray-100 h-screen flex items-center justify-center text-black  bg-[url('/src/assets/images/login_bg.png')]">
+    <div className="bg-cover bg-center h-screen flex items-center justify-center text-white" style={{ backgroundImage: "url('/src/assets/images/login_bg.png')" }}>
       <div className="w-[40vw] h-[75vh] bg-white/90 shadow-lg rounded-2xl flex flex-col items-center justify-center">
         <h2 className="text-4xl font-semibold text-black mt-3">TicketUp! Boost Your Event</h2>
         <p className="text-black font-normal text-lg mt-4 mb-2">Sadece Organizatör Girişine açıktır</p>

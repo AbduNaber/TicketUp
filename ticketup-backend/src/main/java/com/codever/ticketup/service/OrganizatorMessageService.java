@@ -29,7 +29,7 @@ public class OrganizatorMessageService {
         if (messages.isEmpty()) {
             throw new IllegalArgumentException("Message not found with ID: " + id);
         }
-        return repository.findByOrganizatorId(id);
+        return messages;
     }
 
 
@@ -57,6 +57,12 @@ public class OrganizatorMessageService {
                 message.getEmail(),
                 message.getMassage()
         );
+    }
+
+    public OrganizatorMessage markMessageAsRead(UUID id) {
+        OrganizatorMessage message = getMessageById(id);
+        message.setRead(true);
+        return repository.save(message);
     }
 
 }

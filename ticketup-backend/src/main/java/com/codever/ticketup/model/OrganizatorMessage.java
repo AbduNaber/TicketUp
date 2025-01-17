@@ -36,4 +36,7 @@ public class OrganizatorMessage {
 
     @Column(name = "organizator_id", columnDefinition = "UUID")
     private UUID organizatorId;
+
+    @Column(name = "isRead")
+    private boolean isRead=false;
 }

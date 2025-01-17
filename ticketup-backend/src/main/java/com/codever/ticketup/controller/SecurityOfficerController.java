@@ -1,19 +1,14 @@
 package com.codever.ticketup.controller;
 
-import com.codever.ticketup.model.Participant;
-import com.codever.ticketup.service.SecurityOfficerService;
 import com.codever.ticketup.model.Event;
+import com.codever.ticketup.service.EventService;
+import com.codever.ticketup.service.SecurityOfficerService;
 import com.codever.ticketup.model.SecurityOfficer;
-import com.codever.ticketup.model.Ticket;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,10 +17,12 @@ import java.util.UUID;
 public class SecurityOfficerController {
 
     private final SecurityOfficerService securityOfficerService;
+    private final EventService eventService;
 
     @Autowired
-    public SecurityOfficerController(SecurityOfficerService securityOfficerService) {
+    public SecurityOfficerController(SecurityOfficerService securityOfficerService, EventService eventService) {
         this.securityOfficerService = securityOfficerService;
+        this.eventService = eventService;
     }
 
     // Get all Security Officers
@@ -84,34 +81,23 @@ public class SecurityOfficerController {
         }
     }
 
-   
-    @GetMapping("/ticket/{id}")
-    public ResponseEntity<Map<String, Object>> getTicketInfo(@PathVariable UUID id) {
-    Optional<Ticket> ticketOptional = securityOfficerService.getTicket(id);
-    Ticket ticket = ticketOptional.get();
-    Optional<Event> eventOptional = securityOfficerService.getEvent(ticket.getEventId());
+    @PutMapping("/{officerId}/assign-event/{eventId}")
+    public ResponseEntity<SecurityOfficer> assignEventToOfficer(
+            @PathVariable UUID officerId,
+            @PathVariable UUID eventId) {
+        Optional<SecurityOfficer> officer = securityOfficerService.findById(officerId);
+        Optional<Event> event = eventService.getEventRepository().findById(eventId);
 
-    Optional<Participant> participantOptional = securityOfficerService.getParticipant(ticket.getParticipantId());
-    if (ticketOptional.isPresent()) {
-
-        Event event = eventOptional.get();
-        Participant participant = participantOptional.get();
-        Map<String, Object> response = new HashMap<>();
-        response.put("ticketId", ticket.getId());
-        response.put("eventDate", event.getStartDate());
-        response.put("eventTime", event.getStartTime());
-        response.put("eventName", event.getName());
-        response.put("eventLocation", event.getLocation());
-        response.put("participantName", participant.getName());
-        response.put("participantSurname", participant.getSurname());
-        response.put("participantEmail", participant.getEmail());
-        response.put("participantPhone", participant.getPhone());
-        return ResponseEntity.ok(response);
-    } else {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        if (officer.isPresent() && event.isPresent()) {
+            SecurityOfficer updatedOfficer = officer.get();
+            updatedOfficer.setEvent(event.get()); // Event nesnesini atayın
+            securityOfficerService.save(updatedOfficer);
+            return ResponseEntity.ok(updatedOfficer);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
-}
 
 
-    
+
 }
