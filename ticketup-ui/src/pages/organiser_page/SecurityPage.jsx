@@ -51,11 +51,15 @@ const SecurityPage = ({ token }) => {
 
     const fetchEvents = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/ticketup/events/list', {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const organizerId = jwtDecode(token).id; // Token'dan organizator ID alınıyor
+            const response = await axios.get(
+                `http://localhost:8080/ticketup/events/list-organizer-events/${organizerId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
             setEvents(response.data);
         } catch (error) {
             console.error('Error fetching events:', error);
