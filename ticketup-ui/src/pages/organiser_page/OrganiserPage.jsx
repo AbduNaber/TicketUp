@@ -31,7 +31,6 @@ const OrganizerPage = () => {
     { id: 4, label: "Etkinlik Oluştur", icon: <PlusCircle className="w-5 h-5" /> },
     { id: 5, label: "Organizator Mesajları", icon: <Mail className="w-5 h-5" />},
     { id: 6, label: "Güvenlik İşlemleri", icon: <Settings className="w-5 h-5" /> },
-    { id: 7, label: "TicketUp'a Ulaş", icon: <MessageCircle className="w-5 h-5" /> }
   ];
 
   const handleEventCreated = () => {
