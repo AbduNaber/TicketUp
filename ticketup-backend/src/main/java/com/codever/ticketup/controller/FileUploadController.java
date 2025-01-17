@@ -22,6 +22,7 @@ public class FileUploadController {
     private static final String UPLOAD_PROFILE_DIR = "/home/ticketup/TicketUp/ticketup-ui/public/db_pp_images/";
 
 
+
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
