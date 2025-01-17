@@ -162,7 +162,7 @@ const Ticket = () => {
       {/* QR Code Section */}
       <div className="relative flex justify-center items-center mt-8 mx-auto w-full">
         <QRCodeCanvas
-          value="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+          value={id}
           size={200}
           bgColor="#ffffff"
           fgColor="#000000"
