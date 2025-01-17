@@ -20,6 +20,7 @@ const Home = () => {
                 <div className="flex gap-4 mt-4">
                 <GradientButton text={"Keşfet"} onClick={() => window.location.href = "http://46.101.166.170:5173/event/089289ec-b6fe-428d-a886-e1efd4da2356"}></GradientButton>
                     <GradientButton text={"Kayıt Ol"} onClick={() => navigate("/register")}></GradientButton>
+                    <GradientButton text={"Giriş Yap"} onClick={() => navigate("/login")}></GradientButton>
                 </div>
             </div>
             <div className="flex w-full h-[50vh] p-8 mt-12">
