@@ -19,12 +19,13 @@ import EventPreview  from './pages/event_create/EventPreview';
 import UpdateTicket from './pages/ticket_page/UpdateTicket';
 import ForgotPassword from './pages/forgot_password/ForgotPassword';
 import ResetPassword from './pages/forgot_password/ResetPassword';
+import Home from './pages/home_page/Home';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/" element={<Navigate to="/home" />} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -43,6 +44,7 @@ function App() {
         <Route path="/update-ticket" element={<UpdateTicket></UpdateTicket>}></Route>
         <Route path="/forgot-password"  element={<ForgotPassword></ForgotPassword>}></Route>
         <Route path="/reset-password/:token" element={<ResetPassword></ResetPassword>}></Route>
+        <Route path="/home" element={<Home></Home>}></Route>
       </Routes>
     </Router>
   );
