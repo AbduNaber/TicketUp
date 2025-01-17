@@ -24,7 +24,7 @@ const OrganiserMessage = ({ token, selectedEvent }) => {
     if (!message.isRead) {
       try {
         await axios.put(
-          `http://localhost:8080/ticketup/organizator-messages/mark-read/${message.id}`,
+          `http://46.101.166.170:8080/ticketup/organizator-messages/mark-read/${message.id}`,
           {},
           {
             headers: {
@@ -79,7 +79,7 @@ const OrganiserMessage = ({ token, selectedEvent }) => {
     const parsedToken = jwtDecode(token);
     try {
       const response = await axios.get(
-        `http://localhost:8080/ticketup/organizator-messages/list/${parsedToken.id}`,
+        `http://46.101.166.170:8080/ticketup/organizator-messages/list/${parsedToken.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -105,7 +105,7 @@ const OrganiserMessage = ({ token, selectedEvent }) => {
 
   const handleDelete = async (messageId) => {
     try {
-      await axios.delete(`http://localhost:8080/ticketup/organizator-messages/delete/${messageId}`, {
+      await axios.delete(`http://46.101.166.170:8080/ticketup/organizator-messages/delete/${messageId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

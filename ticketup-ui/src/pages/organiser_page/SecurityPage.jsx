@@ -11,7 +11,7 @@ const SecurityPage = ({ token }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    const API_BASE = 'http://localhost:8080/ticketup/security-officers';
+    const API_BASE = 'http://46.101.166.170:8080/ticketup/security-officers';
     const parsedToken = jwtDecode(token);
 
     useEffect(() => {
@@ -51,7 +51,7 @@ const SecurityPage = ({ token }) => {
 
     const fetchEvents = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/ticketup/events/list', {
+            const response = await axios.get('http://46.101.166.170:8080/ticketup/events/list', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -198,7 +198,7 @@ const SecurityPage = ({ token }) => {
 
         try {
             const response = await axios.put(
-                `http://localhost:8080/ticketup/security-officers/${officerId}/assign-event/${eventId}`,
+                `http://46.101.166.170:8080/ticketup/security-officers/${officerId}/assign-event/${eventId}`,
                 {}, // Boş bir body gönderiyoruz
                 {
                     headers: {

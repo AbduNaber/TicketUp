@@ -36,7 +36,7 @@ const UpdateTicket = () => {
     const fetchTicket = async () => {
       try{
         const ticketResponse = await axios.get(
-          `http://localhost:8080/ticketup/tickets/list/${ticketID}`
+          `http://46.101.166.170:8080/ticketup/tickets/list/${ticketID}`
         );
         setTicket(ticketResponse.data);
       }catch(error){
@@ -52,12 +52,12 @@ const UpdateTicket = () => {
       const fetchParticipantAndEvent = async () => {
         try{
           const participantResponse = await axios.get(
-            `http://localhost:8080/ticketup/participants/list/${ticket.participantId}`
+            `http://46.101.166.170:8080/ticketup/participants/list/${ticket.participantId}`
           );
           setParticipant(participantResponse.data);
 
           const eventResponse = await axios.get(
-            `http://localhost:8080/ticketup/events/list/${ticket.eventId}`
+            `http://46.101.166.170:8080/ticketup/events/list/${ticket.eventId}`
           );
           setEvent(eventResponse.data);
         }catch(error){
@@ -104,7 +104,7 @@ const UpdateTicket = () => {
     try {
       
       await axios.put(
-        `http://localhost:8080/ticketup/participants/update/${participant.id}`, {
+        `http://46.101.166.170:8080/ticketup/participants/update/${participant.id}`, {
           eventId: event.id,
           name: formData.name,
           surname: formData.surname,

@@ -44,7 +44,7 @@ const EventPreview = () => {
     }
 
     try{
-      await axios.post("http://localhost:8080/ticketup/events/create", event, {
+      await axios.post("http://46.101.166.170:8080/ticketup/events/create", event, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
