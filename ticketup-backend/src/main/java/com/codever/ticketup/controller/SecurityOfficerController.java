@@ -1,6 +1,8 @@
 package com.codever.ticketup.controller;
 
 import com.codever.ticketup.model.Event;
+import com.codever.ticketup.model.Participant;
+import com.codever.ticketup.model.Ticket;
 import com.codever.ticketup.service.EventService;
 import com.codever.ticketup.service.SecurityOfficerService;
 import com.codever.ticketup.model.SecurityOfficer;
@@ -122,6 +124,5 @@ public class SecurityOfficerController {
         }
         return ResponseEntity.notFound().build();
     }
-
 
 }
