@@ -59,6 +59,7 @@ public class SecurityOfficerController {
         }
     }
 
+
     // Get Security Officer by ID
     @GetMapping("list-organizer-officers/{id}")
     public ResponseEntity<List<SecurityOfficer>> getSecurityOfficerById(@PathVariable UUID id) {
@@ -123,32 +124,5 @@ public class SecurityOfficerController {
         }
         return ResponseEntity.notFound().build();
     }
-
-    @GetMapping("/ticket/{id}")
-    public ResponseEntity<Map<String, Object>> getTicketInfo(@PathVariable UUID id) {
-        Optional<Ticket> ticketOptional = securityOfficerService.getTicket(id);
-        Ticket ticket = ticketOptional.get();
-        Optional<Event> eventOptional = securityOfficerService.getEvent(ticket.getEventId());
-        Optional<Participant> participantOptional = securityOfficerService.getParticipant(ticket.getParticipantId());
-        if (ticketOptional.isPresent()) {
-            Event event = eventOptional.get();
-            Participant participant = participantOptional.get();
-            Map<String, Object> response = new HashMap<>();
-            response.put("ticketId", ticket.getId());
-            response.put("eventDate", event.getStartDate());
-            response.put("eventTime", event.getStartTime());
-            response.put("eventName", event.getName());
-            response.put("eventLocation", event.getLocation());
-            response.put("participantName", participant.getName());
-            response.put("participantSurname", participant.getSurname());
-            response.put("participantEmail", participant.getEmail());
-            response.put("participantPhone", participant.getPhone());
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-    }
-
-
 
 }

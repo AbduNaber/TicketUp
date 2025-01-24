@@ -31,7 +31,7 @@ const EditOrganizator = ({setActiveItem}) => {
   useEffect(() => {
     const fetchOrganizerData = async () => {
       try{
-        const response = await axios.get(`http://localhost:8080/ticketup/organizators/list/${parsedToken.id}`, {
+        const response = await axios.get(`http://46.101.166.170:8080/ticketup/organizators/list/${parsedToken.id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -101,7 +101,7 @@ const EditOrganizator = ({setActiveItem}) => {
         formDataToUpload.append("file", temporaryFile);
 
         const response = await axios.post(
-          "http://localhost:8080/ticketup/files/upload-pp",
+          "http://46.101.166.170:8080/ticketup/files/upload-pp",
           formDataToUpload,
           {
             headers: {
@@ -122,7 +122,7 @@ const EditOrganizator = ({setActiveItem}) => {
       
 
        await axios.put(
-         `http://localhost:8080/ticketup/organizators/update/${parsedToken.id}`, {
+         `http://46.101.166.170:8080/ticketup/organizators/update/${parsedToken.id}`, {
            name: otherData.firstName,
            surname: otherData.lastName,
            organizationName: otherData.companyName,

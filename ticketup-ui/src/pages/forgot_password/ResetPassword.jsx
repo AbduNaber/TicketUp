@@ -34,7 +34,7 @@ function ResetPassword() {
     try {
 
 
-        const response = await axios.post(`http://localhost:8080/ticketup/auth/reset-password`, {
+        const response = await axios.post(`http://46.101.166.170:8080/ticketup/auth/reset-password`, {
             token: token,
             newPassword: password,
           });

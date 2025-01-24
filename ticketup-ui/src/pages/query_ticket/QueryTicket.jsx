@@ -22,7 +22,7 @@ const TicketQuery = () => {
       };
 
       // API isteği
-      const response = await axios.post("http://localhost:8080/ticketup/tickets/query", payload);
+      const response = await axios.post("http://46.101.166.170:8080/ticketup/tickets/query", payload);
 
       // Başarılı, bilet sayfasına yönlendir
       navigate(`/ticket/${response.data.id}`);

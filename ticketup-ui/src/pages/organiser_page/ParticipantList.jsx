@@ -54,7 +54,7 @@ const ParticipantList = ({  token, selectedEvent }) => {
         }
     try {
         const response = await axios.get(
-            `http://localhost:8080/ticketup/participants/event/${selectedEvent.id}`,
+            `http://46.101.166.170:8080/ticketup/participants/event/${selectedEvent.id}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -74,7 +74,7 @@ const ParticipantList = ({  token, selectedEvent }) => {
 };
   const handleDelete = async (participantId) => {
     try {
-      await axios.delete(`http://localhost:8080/ticketup/participants/delete/${participantId}`, {
+      await axios.delete(`http://46.101.166.170:8080/ticketup/participants/delete/${participantId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

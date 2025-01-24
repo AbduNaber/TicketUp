@@ -21,7 +21,7 @@ function ForgotPassword() {
       }
 
       const response = await axios.post(
-        `http://localhost:8080/ticketup/auth/forgot-password`,
+        `http://46.101.166.170:8080/ticketup/auth/forgot-password`,
         null,
         {
           params: {email}
