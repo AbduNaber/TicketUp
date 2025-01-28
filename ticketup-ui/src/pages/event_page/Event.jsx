@@ -6,6 +6,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import TopBar from "../../components/TopBar";
 import { ToastContainer, toast } from "react-toastify";
+import { getEventById } from "@/service/eventService";
+import { getOrganizerById, sendMessageToOrganizer } from "@/service/organizerService";
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
 if (!apiKey) {
@@ -91,13 +93,10 @@ const [email, setEmail] = useState('');
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await axios.get(
-            `http://localhost:8080/ticketup/events/list/${id}`
-        );
-        setEvent(response.data);
-        
+        const fetchedEvent = await getEventById(id);
+        setEvent(fetchedEvent);
       } catch (error) {
-        console.error("Error fetching event:", error.response?.data || error.message);
+        console.error(error.message);
         alert("Event Bigleri yüklenemedi.");
       }
     };
@@ -106,23 +105,19 @@ const [email, setEmail] = useState('');
   }, [id]);
 
   useEffect(() => {
-    const fetchOrganizator = async () => {
-      try{
-        const organizatorResonse = await axios.get(
-          `http://localhost:8080/ticketup/organizators/list/${event?.organizatorId}`
-        );
-        setOrganizator(organizatorResonse.data);
-        console.log(organizator);
-      }catch(error){
-        console.error("Error fetching organizator: ", error.response?.data || error.message);
-        alert("Organizatör Bilgileri Yüklenemedi.");
-      }
-    };
-
-    if(event?.organizatorId){
-      fetchOrganizator();
+    if(event?.organizatorId) {
+      const fetchOrganizerDetails = async () => {
+        try{
+          const fetchedOrganizer = await getOrganizerById(event.organizatorId);
+          setOrganizator(fetchedOrganizer);
+        }catch(error) {
+          console.error(error.message);
+          toast.error("Organizatör bilgileri yüklenemedi.");
+        }
+      };
+      fetchOrganizerDetails();
     }
-  }, [event])
+  }, [event]);
 
   const formatDate = (dateString) => {
     if (!dateString) return "Geçersiz Tarih";
@@ -167,31 +162,15 @@ const [email, setEmail] = useState('');
       organizatorId: event?.organizatorId,
     };
   
-    console.log('Payload:', payload);
+    
   
     try {
-      const response = await fetch('http://localhost:8080/ticketup/organizator-messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-  
-      if (response.ok) {
-        const result = await response.json();
-        console.log('Message successfully sent:', result);
-        toast.success('Mesaj başarıyla gönderildi!');
-        handlePopupClose(); // Close popup if applicable
-      } else {
-        if (response.status === 500) {
-          console.error('Server error:', response.statusText);
-          toast.error('Aynı mesajı tekrar gönderemezsiniz. Lütfen farklı mesaj yazınız.');
-        }
-      }
-    } catch (error) {
-      console.error('Network error:', error);
-      toast.error('Bir ağ hatası oluştu. Lütfen tekrar deneyin.');
+      await sendMessageToOrganizer(payload);
+      toast.success("Mesaj Başarıyla Gönderildi.");
+      handlePopupClose();
+    }catch(error) {
+      console.error(error.message);
+      toast.error("Mesaj Gönderilemedi!");
     }
   };
   

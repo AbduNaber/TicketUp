@@ -1,8 +1,8 @@
 import Footer from "../../components/Footer";
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import TopBar from "@/components/TopBar";
+import { queryTicket } from "@/service/ticketService";
 
 const TicketQuery = () => {
   const [ticketId, setTicketId] = useState("");
@@ -11,24 +11,13 @@ const TicketQuery = () => {
 
   const handleQuery = async () => {
     try {
-      // Giriş türünü belirle (e-posta mı telefon mu)
-      const isEmail = contactInfo.includes("@");
+      const ticket = await queryTicket(ticketId, contactInfo);
 
-      // Kullanıcıdan alınan değerler
-      const payload = {
-        ticketId,
-        participantEmail: isEmail ? contactInfo : null, // E-posta adresi varsa gönder
-        participantPhone: !isEmail ? contactInfo : null, // Telefon numarası varsa gönder
-      };
-
-      // API isteği
-      const response = await axios.post("http://localhost:8080/ticketup/tickets/query", payload);
-
-      // Başarılı, bilet sayfasına yönlendir
-      navigate(`/ticket/${response.data.id}`);
+      
+      navigate(`/ticket/${ticket.id}`);
     } catch (error) {
       // Hata durumunda kullanıcıya mesaj göster
-      alert(error.response?.data || "Bilet bulunamadı veya bilgiler eşleşmiyor.");
+      alert(error.message);
     }
   };
 

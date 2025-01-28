@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
-import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.css';
+import { resetPassword } from '@/service/authService';
 
 function ResetPassword() {
   const [password, setPassword] = useState('');
@@ -28,26 +28,14 @@ function ResetPassword() {
         return;
       }
 
-
-    
-    
     try {
 
-
-        const response = await axios.post(`http://localhost:8080/ticketup/auth/reset-password`, {
-            token: token,
-            newPassword: password,
-          });
-
-        toast.success(response.data);
+        const message = await resetPassword(token, password);
+        toast.success(message);
         navigate("/login?reset=true");
       
     } catch (error) {
-      if (error.response) {
-        toast.error(error.response.data); // Backend'den gelen hata mesajı
-    } else {
-        toast.error("An unexpected error occurred. Please try again.");
-    }
+      toast.error(error.message);
     }
   };
 

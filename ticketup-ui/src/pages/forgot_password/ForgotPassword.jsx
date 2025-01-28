@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
-import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.css';
+import { forgotPassword } from '@/service/authService';
 
 function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -16,31 +16,14 @@ function ForgotPassword() {
     e.preventDefault();
     try {
       if(!validateEmail(email)){
-        toast.error("Invalid email adress");
+        toast.error("Geçersiz e-posta adresi");
         return;
       }
 
-      const response = await axios.post(
-        `http://localhost:8080/ticketup/auth/forgot-password`,
-        null,
-        {
-          params: {email}
-        }
-      );
-
-      if(response.status === 200){
-        
-        navigate("/login?forget=true");
-      }
-      else{
-        toast.error("Bir hata oluştu. Lütfen tekrar deneyin.");
-      }
-    } catch (error) {
-      if (error.response) {
-        toast.error(error.response.data); // Backend'den gelen hata mesajı
-    } else {
-        toast.error("Bir hata oluştu. Lütfen tekrar deneyin");
-    }
+      await forgotPassword(email);
+      navigate("/login?forget=true");
+    }catch(error){
+      toast.error(error.message);
     }
   };
 

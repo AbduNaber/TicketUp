@@ -8,7 +8,6 @@ import Ticket from './pages/ticket_page/Ticket';
 import TicketEdit from './pages/edit_ticket/EditTicket';
 import EventForm from './pages/event_form/EventForm';
 
-import Auth from './pages/auth_page/Auth';
 import OrganizerPage from './pages/organiser_page/OrganiserPage';
 import "./index.css";
 import VerifyEmail from './pages/verify_email/VerifyEmail';

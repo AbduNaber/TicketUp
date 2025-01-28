@@ -5,6 +5,9 @@ import Footer from "../../components/Footer";
 import TopBar from "../../components/TopBar"
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { getTicketById } from "@/service/ticketService";
+import { getParticipantById, updateParticipant } from "@/service/participantService";
+import { getEventById } from "@/service/eventService";
 
 const UpdateTicket = () => {
   const location = useLocation();
@@ -35,12 +38,11 @@ const UpdateTicket = () => {
   useEffect(() => {
     const fetchTicket = async () => {
       try{
-        const ticketResponse = await axios.get(
-          `http://localhost:8080/ticketup/tickets/list/${ticketID}`
-        );
-        setTicket(ticketResponse.data);
+        const ticketData = await getTicketById(ticketID);
+        setTicket(ticketData);
       }catch(error){
-        console.error("Error fetching ticket:", error);
+        console.error(error.message);
+        toast.error(error.message);
       }
     };
 
@@ -51,17 +53,15 @@ const UpdateTicket = () => {
     if(ticket) {
       const fetchParticipantAndEvent = async () => {
         try{
-          const participantResponse = await axios.get(
-            `http://localhost:8080/ticketup/participants/list/${ticket.participantId}`
-          );
-          setParticipant(participantResponse.data);
+          const participantData = await getParticipantById(ticket.participantId);
+          setParticipant(participantData);
 
-          const eventResponse = await axios.get(
-            `http://localhost:8080/ticketup/events/list/${ticket.eventId}`
-          );
-          setEvent(eventResponse.data);
+
+          const eventData = await getEventById(ticket.eventId);
+          setEvent(eventData);
         }catch(error){
-          console.error("Error fetching participant or event:",error);
+          console.error(error.message);
+          toast.error(error.message);
         }
       };
 
@@ -103,8 +103,7 @@ const UpdateTicket = () => {
 
     try {
       
-      await axios.put(
-        `http://localhost:8080/ticketup/participants/update/${participant.id}`, {
+      await updateParticipant(participant.id, {
           eventId: event.id,
           name: formData.name,
           surname: formData.surname,
@@ -112,24 +111,12 @@ const UpdateTicket = () => {
           phone: formData.phoneNumber,
           description: formData.description,
           firstTime: formData.terms,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          }
-        }
-      )
+      });
     
-
       navigate(`/ticket/${ticketID}`);
     } catch (error) {
-      if(error.response){
-              toast.error(error.response.data || "Bir hata oluştu");
-              console.error(error);
-            }else{
-              toast.error("Beklenmedik Bir hata oluştu");
-              console.error(error);
-            }    
+      toast.error(error.message);
+      console.error(error.message);   
     }
   };
 
