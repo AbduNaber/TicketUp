@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
-import axios from 'axios';
+import { loginOrganizer } from '@/service/authService';
 import 'react-toastify/dist/ReactToastify.css';
 
 function Login() {
@@ -20,26 +20,18 @@ function Login() {
         toast.error('Hatalı e-posta adresi girdiniz. Lütfen kontrol edin.');
         return;
       }
-      const response = await axios.post('http://localhost:8080/ticketup/organizators/login', {
-        email: username,
-        password: password
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      const token = response.data;
+      
+      const token = await loginOrganizer(username, password);
       sessionStorage.setItem('token', token); 
        
       navigate(`/organizer`);
     } catch (error) {
       if (error.response) {
-        if(error.response.data == "Invalid email or password"){
+        if(error === "Invalid email or password"){
           toast.error("E-posta veya şifre hatalı. Lütfen kontrol edin.");
         } // Backend'den gelen hata mesajı
     } else {
-        toast.error("Beklenmeyen bir hata oluştur. Daha sonra Tekrar deneyin. Devem ederse lütfen bize ulaşın. info.ticketup@gmail.com");
+        toast.error(error.message || "Beklenmeyen bir hata oluştur. Daha sonra Tekrar deneyin. Devem ederse lütfen bize ulaşın. info.ticketup@gmail.com");
     }
     }
   };

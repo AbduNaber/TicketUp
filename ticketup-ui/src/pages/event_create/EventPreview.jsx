@@ -4,6 +4,7 @@ import GradientButton from "../../components/GradientButton";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { createEvent } from "@/service/eventService";
 
 const EventPreview = () => {
   const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
@@ -44,18 +45,13 @@ const EventPreview = () => {
     }
 
     try{
-      await axios.post("http://localhost:8080/ticketup/events/create", event, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await createEvent(event, token);
 
       toast.success("Etkinlik Başarıyla Oluşturuldu.");
       navigate("/organizer");
     }catch(error){
       console.error("Etkinlik Oluşturulurken Bir hata oluştu", error);
-      toast.error("Etkinlik Oluşturulamadı, Lütfen tekrar deneyin.")
+      toast.error(error.message);
     }
   };
 

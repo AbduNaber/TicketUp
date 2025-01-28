@@ -1,6 +1,9 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { verifyEmail } from "@/service/authService";
+
+
 
 const VerifyEmail = () => {
   const navigate = useNavigate(); // useNavigate'i dışarı alın
@@ -9,21 +12,14 @@ const VerifyEmail = () => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
 
-    console.log("Token is: ", token);
-
     if (token) {
-      axios
-        .get(`http://localhost:8080/ticketup/auth/verify-email`, {
-          params: {
-            token: token, // Token'i query parametre olarak gönderiyoruz
-          },
-        })
-        .then((response) => {
-          alert(response.data); // Başarılı mesajını göster
-          navigate("/login"); // Login sayfasına yönlendir
+      verifyEmail(token)
+        .then((message) => {
+          alert(message);
+          navigate("/login");
         })
         .catch((error) => {
-          alert(error.response?.data || "An error occurred");
+          alert(error.message || "Beklenmeyen bir hata oluştu");
         });
     }
   }, [navigate]); // Navigate bağımlılık listesine eklenir

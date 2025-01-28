@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
+import { registerOrganizer } from '@/service/authService';
 const Register = () => {
 
   const [formData, setFormData] = useState({
@@ -48,28 +49,34 @@ const Register = () => {
       delete formErrors.organizationName;
     }
   
-    if (name === 'password') {
-      if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(value)) {
-        formErrors.password = 'Şifre en az 8 karakter olmalı, 1 büyük harf, 1 küçük harf, 1 rakam içermelidir';
-      } else {
-        delete formErrors.password;
+    if (name === 'password' || name === 'confirmPassword') {
+      const passwordRegex = /^(?=.*[a-zçğıöşü])(?=.*[A-ZÇĞİÖŞÜ])(?=.*\d)[a-zA-ZçÇğĞıİöÖşŞüÜ\d]{8,}$/;
+    
+      // Şifre kontrolü
+      if (name === 'password') {
+        if (!passwordRegex.test(value)) {
+          formErrors.password = 'Şifre en az 8 karakter olmalı, 1 büyük harf, 1 küçük harf, 1 rakam içermelidir';
+        } else {
+          delete formErrors.password;
+        }
+    
+        // ConfirmPassword alanını şifreyle karşılaştır
+        if (formData.confirmPassword && formData.confirmPassword !== value) {
+          formErrors.confirmPassword = 'Şifreler uyuşmuyor';
+        } else {
+          delete formErrors.confirmPassword;
+        }
       }
-  
-      
-      if (formData.confirmPassword && formData.confirmPassword !== value) {
-        formErrors.confirmPassword = 'Şifreler uyuşmuyor';
-      } else if (formData.confirmPassword) {
-        delete formErrors.confirmPassword;
-      }
-    }
-  
-    if (name === 'confirmPassword') {
-      if (value !== formData.password) {
-        formErrors.confirmPassword = 'Şifreler uyuşmuyor';
-      } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(formData.password)) {
-        formErrors.confirmPassword = 'Şifre geçersiz olduğu için şifreler doğrulanamaz';
-      } else {
-        delete formErrors.confirmPassword;
+    
+      // ConfirmPassword kontrolü
+      if (name === 'confirmPassword') {
+        if (value !== formData.password) {
+          formErrors.confirmPassword = 'Şifreler uyuşmuyor';
+        } else if (!passwordRegex.test(formData.password)) {
+          formErrors.confirmPassword = 'Şifre geçersiz olduğu için şifreler doğrulanamaz';
+        } else {
+          delete formErrors.confirmPassword;
+        }
       }
     }
   
@@ -86,30 +93,12 @@ const Register = () => {
     if (Object.keys(errors).length > 0) return;
   
     try {
-      const requestBody = {
-        name: formData.name,
-        surname: formData.surname,
-        email: formData.mailAddress,
-        organizationName: formData.organizationName,
-        passwordHash: formData.password,
-      };
-      await axios.post('http://localhost:8080/ticketup/organizators/register', requestBody);
+      await registerOrganizer(formData);
       toast.success('Kayıt başarılı. Giriş yapabilirsiniz.');
       navigate('/login?registered=true');
     } catch (error) {
-      if (error.response?.status === 409) {
-        const errorMessage = error.response.data?.error ;
-        toast.error(errorMessage);
-        return;
-      }
-      
-
-  
-      const errorMessage =
-        error.response?.data?.error || 
-        'Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.';
-  
-      toast.error(errorMessage);
+      toast.error(error.message);
+      console.log(error.message);
     }
   };
 

@@ -5,6 +5,8 @@ import Footer from "../../components/Footer";
 import TopBar from "../../components/TopBar"
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { createParticipant } from "@/service/participantService";
+import { createTicket } from "@/service/ticketService";
 
 const EventForm = () => {
   const location = useLocation();
@@ -51,7 +53,7 @@ const EventForm = () => {
     }
 
     try {
-      const requestBody = {
+      const participantRequest = {
         eventId: eventID,
         name: formData.name,
         surname: formData.surname,
@@ -61,24 +63,16 @@ const EventForm = () => {
         isFirstTime: formData.terms,
       };
 
-      const participantResponse = await axios.post("http://localhost:8080/ticketup/participants/create", requestBody, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const participantId = await createParticipant(participantRequest);
 
       const ticketRequest = {
         eventId: eventID,
-        participantId: participantResponse.data,
+        participantId: participantId,
       };
 
-      const ticketResponse = await axios.post("http://localhost:8080/ticketup/tickets/create", ticketRequest, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      const ticketId = await createTicket(ticketRequest);
 
-      navigate(`/ticket/${ticketResponse.data}`);
+      navigate(`/ticket/${ticketId}`);
     } catch (error) {
       if(error.response){
         toast.error(error.response.data || "Bir hata oluştu");

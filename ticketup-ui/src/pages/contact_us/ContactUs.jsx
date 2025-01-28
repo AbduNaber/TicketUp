@@ -4,6 +4,7 @@ import GradientButton from "../../components/GradientButton";
 import TopBar from "../../components/TopBar";
 import axios from "axios";
 import { GoogleMap,MarkerF, useJsApiLoader } from "@react-google-maps/api";
+import { sendContactEmail } from "@/service/emailService";
 
 const ContactUs = () => {
   const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
@@ -35,15 +36,11 @@ const ContactUs = () => {
     };
 
     try{
-      const response = await axios.post(
-        "http://localhost:8080/ticketup/contact/send-mail",
-        contactData
-      );
-
-      alert(response.data);
+      const responseMessage = await sendContactEmail(contactData);
+      alert(responseMessage);
     }catch(error){
-      console.error("Error sending mail", error);
-      alert("Mesaj Gönderilemedi");
+      console.error("Error sending mail: ", error.message);
+      alert(error.message);
     }
   };
 

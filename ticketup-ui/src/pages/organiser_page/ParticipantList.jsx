@@ -1,6 +1,7 @@
 import React, { useState , useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { deleteParticipantById, fetchParticipantsByEventId } from "@/service/participantService";
 const ParticipantList = ({  token, selectedEvent }) => {
   
     const [participants, setParticipants] = useState([]);
@@ -18,6 +19,7 @@ const ParticipantList = ({  token, selectedEvent }) => {
             console.warn("Selected event is not defined or missing an ID");
         }
     }, [selectedEvent]);
+
     const handleView = (participant) => {
         setSelectedParticipant(participant);
         setPopupVisible(true);
@@ -47,46 +49,34 @@ const ParticipantList = ({  token, selectedEvent }) => {
       return newSelectedState;
     });
   };
-    const fetchParticipants = async () => {
-        if (!selectedEvent || !selectedEvent.id) {
-            console.error("selectedEvent is undefined or missing an id");
-            return;
-        }
-    try {
-        const response = await axios.get(
-            `http://localhost:8080/ticketup/participants/event/${selectedEvent.id}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        );
-        
-        setParticipants(response.data);
-        console.log(response.data);
-    } catch (error) {
-        console.error("Error fetching participants:", error.response?.data || error.message);
-        if (error.response?.status === 401) {
-            console.error("Unauthorized. Redirecting to login.");
-            window.location.href = "/login";
-        }
+  const fetchParticipants = async () => {
+    if (!selectedEvent || !selectedEvent.id) {
+      console.error("selectedEvent is undefined or missing an id");
+      return;
     }
-};
+
+    try {
+      const participants = await fetchParticipantsByEventId(selectedEvent.id, token);
+      setParticipants(participants);
+    }catch(error) {
+      console.error(error.message);
+      if(error.message === "Unauthorized") {
+        window.location.href = "/login";
+      }else {
+        toast.error(error.message);
+      }
+    }
+  };
+
   const handleDelete = async (participantId) => {
     try {
-      await axios.delete(`http://localhost:8080/ticketup/participants/delete/${participantId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await deleteParticipantById(participantId);
+      toast.success("Katılımcı Başarıyla Silindi.");
       setIsModalOpen(false);
-      toast.success("Participant deleted successfully.");
       fetchParticipants();
-    } catch (error) {
-      console.error("Error deleting participant:", error.response?.data || error.message);
-      if (error.response?.status === 401) {
-        window.location.href = "/login";
-      }
+    }catch(error) {
+      console.error(error.message);
+      toast.error(error.message);
     }
   };
   const formatDate = (dateString) => {

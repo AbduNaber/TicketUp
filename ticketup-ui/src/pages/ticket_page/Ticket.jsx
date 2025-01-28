@@ -9,6 +9,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import TopBar from "../../components/TopBar";
 import { toast } from "react-toastify";
+import { deleteTicketById, getTicketById } from "@/service/ticketService";
+import { deleteParticipantById, getParticipantById } from "@/service/participantService";
+import { getEventById } from "@/service/eventService";
+import { sendEmailWithTicket } from "@/service/emailService";
+
 
 const Ticket = () => {
   const {id} = useParams();
@@ -19,13 +24,12 @@ const Ticket = () => {
 
   useEffect(() => {
     const fetchTicket = async () => {
-      try {
-        const ticketResponse = await axios.get(
-          `http://localhost:8080/ticketup/tickets/list/${id}`
-        );
-        setTicket(ticketResponse.data); // ticket state güncellenir
-      } catch (error) {
-        console.error("Error fetching ticket:", error);
+      try{
+        const ticketData = await getTicketById(id);
+        setTicket(ticketData);
+      }catch(error) {
+        console.error(error.message);
+        toast.error(error.message);
       }
     };
   
@@ -35,18 +39,15 @@ const Ticket = () => {
   useEffect(() => {
     if (ticket) {
       const fetchParticipantAndEvent = async () => {
-        try {
-          const participantResponse = await axios.get(
-            `http://localhost:8080/ticketup/participants/list/${ticket.participantId}`
-          );
-          setParticipant(participantResponse.data);
-  
-          const eventResponse = await axios.get(
-            `http://localhost:8080/ticketup/events/list/${ticket.eventId}`
-          );
-          setEvent(eventResponse.data);
-        } catch (error) {
-          console.error("Error fetching participant or event:", error);
+        try{
+          const participantData = await getParticipantById(ticket.participantId);
+          setParticipant(participantData);
+
+          const eventData = await getEventById(ticket.eventId);
+          setEvent(eventData);
+        }catch(error){
+          console.error(error.message);
+          toast.error(error.message);
         }
       };
   
@@ -74,26 +75,10 @@ const Ticket = () => {
 
       const pdfBlob = new Blob([pdf.output("blob")], {type: "application/pdf"});
 
-
-      console.log("Participant Email is: ", participant.email);
+      sendEmailWithTicket(participant.email, pdfBlob)
+        .then(() => toast.success("Biletiniz e-mail adresinize gönderilmiştir."))
+        .catch((error) => toast.error(error.message));
       
-       const formData = new FormData();
-       formData.append("email", participant.email);
-       formData.append("file", pdfBlob);
-
-       axios.post("http://localhost:8080/ticketup/tickets/sendEmail", formData, {
-         headers: {
-           "Content-Type": "multipart/form-data",
-         },
-       })
-       .then((response) => {
-         console.log("Email Sent Succesfully:", response.data);
-       })
-       .catch((error => {
-         console.error("Error Sending Email:", error.response?.data || error.message); 
-      }));
-
-      // Butonları geri görünür yapma
       buttons.forEach(button => (button.style.visibility = "visible"));
     });
   };
@@ -126,17 +111,14 @@ const Ticket = () => {
     const userConfirmed = window.confirm("Biletinizi silmek istediğinize emin misiniz.");
     if(userConfirmed){
       try{
-        await axios.delete(`http://localhost:8080/ticketup/participants/delete/${participant.id}`);
-        console.log("Participant deleted");
-
-        await axios.delete(`http://localhost:8080/ticketup/tickets/delete/${id}`);
-        console.log("Ticket deleted");
+        await deleteParticipantById(participant.id);
+        await deleteTicketById(id);
 
         toast.success("Bilet Silindi");
         navigate("/why-us");
       }catch(error){
-        console.error("Hata oluştu:", error.response?.data || error.message);
-        toast.error("Bilet Silinirken Bir Hata Oluştu");
+        console.error(error.message);
+        toast.error(error.message);
       }
     }
   }

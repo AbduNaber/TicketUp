@@ -9,6 +9,8 @@ import axios from "axios";
 import sanitizeHtml from "sanitize-html";
 import { toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom';
+import { uploadEventPhoto } from '@/service/uploadFile';
+import { getOrganizerById } from '@/service/organizerService';
 
 
 const CreateEvent = () => {
@@ -66,27 +68,15 @@ const CreateEvent = () => {
     const file = e.target.files[0];
     if(!file) return;
 
-    const formData = new FormData();
-    formData.append("file", file);
-
     const token = sessionStorage.getItem("token");
 
-    try{
-      const response = await fetch("http://localhost:8080/ticketup/files/upload", {
-        method: "POST", 
-        body: formData,
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-
-      if(!response.ok) throw new Error("Dosya Yüklenemedi");
-
-      const data = await response.json();
+    try {
+      const data = await uploadEventPhoto(file, token);
       setUploadedImageURl(data.url);
-      console.log("Yüklenen dosya URL si: ", data.url);
-    } catch(error){
-      console.error("Dosya Yükleme Hatası: ", error);
+      toast.success("Dosya Başarıyla Yüklendi");
+    }catch(error){
+      console.error("Dosya yükleme hatası:", error);
+      toast.error("Dosya yüklenemedi");
     }
   };
 
@@ -106,14 +96,7 @@ const CreateEvent = () => {
     }
 
     try{
-      const organizer =  await axios.get(
-        `http://localhost:8080/ticketup/organizators/list/${parsedToken.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const organizer = await getOrganizerById(parsedToken.id);
 
       const sanitizedDescription = sanitizeHtml(description, {
         allowedTags: [],
@@ -123,9 +106,9 @@ const CreateEvent = () => {
       const requestBody = {
         name: eventTitle,
         organizatorId: parsedToken.id,
-        organizatorName: organizer.data.name,
-        organizatorCompany: organizer.data.organizationName,
-        organizatorPicture: organizer.data.profilePicture,
+        organizatorName: organizer.name,
+        organizatorCompany: organizer.organizationName,
+        organizatorPicture: organizer.profilePicture,
         location: eventLocation,
         description: sanitizedDescription,
         startDate: startDate,
