@@ -1,6 +1,5 @@
 import axios from "axios";
-
-const BASE_URL = "http://localhost:8080/ticketup";
+import { BASE_URL } from "./base_url";
 
 export const createParticipant = async (participantData) => {
     try{

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -7,9 +7,10 @@ import { Label } from "@/components/ui/label";
 import { Pencil, Upload, Save } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { jwtDecode } from "jwt-decode";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { getOrganizerById, updateOrganizer } from "@/service/organizerService";
+import { uploadProfilePicture } from "@/service/uploadFile";
 
 const EditOrganizator = ({setActiveItem}) => {
   const [editableField, setEditableField] = useState(null);
@@ -31,13 +32,7 @@ const EditOrganizator = ({setActiveItem}) => {
   useEffect(() => {
     const fetchOrganizerData = async () => {
       try{
-        const response = await axios.get(`http://localhost:8080/ticketup/organizators/list/${parsedToken.id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-
-        const organizator = response.data;
+        const organizator = await getOrganizerById(parsedToken.id);
 
         setFormData({
           organizatorName: `${organizator.name || ""} ${organizator.surname || ""}`,
@@ -93,53 +88,24 @@ const EditOrganizator = ({setActiveItem}) => {
 
   const handleSaveChanges = async () => {
     try{
-      const {temporaryFile, password,  ...otherData} = formData;
       let uploadedUrl = formData.profilePic;
 
-      if(temporaryFile){
-        const formDataToUpload = new FormData();
-        formDataToUpload.append("file", temporaryFile);
-
-        const response = await axios.post(
-          "http://localhost:8080/ticketup/files/upload-pp",
-          formDataToUpload,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${token},`
-            },
-          }
-        );
-
-        const data = response.data;
-        uploadedUrl = data.url;
+      if(formData.temporaryFile) {
+        uploadedUrl = await uploadProfilePicture(formData.temporaryFile, token);
       }
 
       
 
-      console.log(otherData.password || "pasword is null");
-      const passwordToSend = password ? password: null;
-      
+      const organizatorData = {
+        name: formData.firstName,
+        surname: formData.lastName,
+        organizationName: formData.companyName,
+        email: formData.email,
+        passwordHash: formData.password || null,
+        profilePicture: uploadedUrl,
+      };
 
-       await axios.put(
-         `http://localhost:8080/ticketup/organizators/update/${parsedToken.id}`, {
-           name: otherData.firstName,
-           surname: otherData.lastName,
-           organizationName: otherData.companyName,
-           email: otherData.email,
-           passwordHash: passwordToSend,
-           profilePicture: uploadedUrl,
-         },
-         {
-           headers: {
-             Authorization: `Bearer ${token}`,
-             "Content-Type": "application/json",
-          }
-        }
-      )
-
-
-
+      await updateOrganizer(parsedToken.id, organizatorData, token);
       toast.success("Değişiklikler Başarıyla Kaydedildi.");
     }catch(error){
       console.error("Kaydetme Sırasında Bir Hata Oluştu:",error);

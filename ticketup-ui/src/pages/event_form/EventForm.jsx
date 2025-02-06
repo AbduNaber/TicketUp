@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
 import Footer from "../../components/Footer";
 import TopBar from "../../components/TopBar"
 import { ToastContainer, toast } from "react-toastify";
@@ -74,13 +73,8 @@ const EventForm = () => {
 
       navigate(`/ticket/${ticketId}`);
     } catch (error) {
-      if(error.response){
-        toast.error(error.response.data || "Bir hata oluştu");
-        console.error(error);
-      }else{
-        toast.error("Beklenmedik Bir hata oluştu");
-        console.error(error);
-      }    
+      toast.error(error.message || "Bir hata oluştu");
+      console.error(error);   
     }
   };
 

@@ -23,3 +23,12 @@ export const sendMessageToOrganizer = async (messagePayload) => {
         throw new Error(error.response?.data || "Mesaj gönderilemedi.");
     }
 }
+
+export const updateOrganizer = async (id, organizerData, token) => {
+    return axios.put(`${BASE_URL}/organizators/update/${id}`, organizerData, {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+    });
+}
