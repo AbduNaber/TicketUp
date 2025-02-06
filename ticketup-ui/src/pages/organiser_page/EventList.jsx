@@ -1,7 +1,6 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState } from "react";
 import { toast } from "react-toastify";
+import { deleteEvent } from "@/service/eventService";
 
 const EventList = ({ events, token, setEvents, fetchEvents ,isActive, selectedEvent , setSelectedEvent, setActiveItem}) => {
     
@@ -63,20 +62,12 @@ const EventList = ({ events, token, setEvents, fetchEvents ,isActive, selectedEv
         });
       };
     
-      const handleDelete = async (eventId) => {
-        
-    
+      const handleDelete = async () => {
         try {
-          await axios.delete(`http://localhost:8080/ticketup/events/delete/${eventId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          
-          setIsModalOpen(false);
+          await deleteEvent(eventToDelete, token);
           toast.success("Event deleted successfully.");
-            fetchEvents();
-          
+          setIsModalOpen(false);
+          fetchEvents();
         } catch (error) {
           console.error("Error deleting event:", error.response?.data || error.message);
           if (error.response?.status === 401) {
@@ -107,17 +98,9 @@ const EventList = ({ events, token, setEvents, fetchEvents ,isActive, selectedEv
 
       const activateEvent = async (eventId) => {
         try {
-          await axios.post(
-            `http://localhost:8080/ticketup/events/activate/${eventId}`,
-            {},
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          fetchEvents();
+          await activateEvent(eventId, token);
           toast.success("Etkinlik başarıyla aktive edildi.");
+          fetchEvents();
         } catch (error) {
           console.error("Error activating event:", error.response?.data || error.message);
           if (error.response?.status === 401) {

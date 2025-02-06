@@ -1,6 +1,5 @@
 import axios from "axios";
-
-const BASE_URL = "http://localhost:8080/ticketup";
+import { BASE_URL } from "./base_url";
 
 export const getEventById = async (eventId) => {
     try{
@@ -24,4 +23,29 @@ export const createEvent = async (event, token) => {
     }catch(error) {
         throw new Error(error.response?.data || "Etkinlik oluşturulamadı.");
     }
+};
+
+export const deleteEvent = async (eventId, token) => {
+    try{
+        await axios.delete(`${BASE_URL}/events/delete/${eventId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        console.log("event deleted")
+    }catch(error) {
+        throw new Error(error.response?.data || "Etkinlik silinemedi")
+    }
+};
+
+export const activateEvent = async (eventId, token) => {
+    await axios.post(
+         `${BASE_URL}/events/activate/${eventId}`,
+         {},
+         {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+         }
+    );
 };

@@ -1,6 +1,6 @@
 import axios from "axios";
+import { BASE_URL } from "./base_url";
 
-const BASE_URL = 'http://localhost:8080/ticketup';
 
 export const loginOrganizer = async (email, password) => {
     try {

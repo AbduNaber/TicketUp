@@ -5,7 +5,6 @@ import Login from './pages/login_page/Login';
 import Register from './pages/register_page/Register';
 import Event from './pages/event_page/Event';
 import Ticket from './pages/ticket_page/Ticket';
-import TicketEdit from './pages/edit_ticket/EditTicket';
 import EventForm from './pages/event_form/EventForm';
 
 import OrganizerPage from './pages/organiser_page/OrganiserPage';
@@ -30,7 +29,6 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/event/:id" element={<Event />} />
         <Route path="/ticket/:id" element={<Ticket />} />
-        <Route path="/ticket/edit" element={<TicketEdit />} />
         <Route path="/form" element={<EventForm />} />
         
         {/* <Route path="/auth" element={<Auth />} /> */}
