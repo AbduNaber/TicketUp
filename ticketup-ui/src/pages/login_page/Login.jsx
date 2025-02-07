@@ -5,6 +5,15 @@ import { loginOrganizer } from '@/service/authService';
 import 'react-toastify/dist/ReactToastify.css';
 
 function Login() {
+  useEffect(() => {
+    const message = sessionStorage.getItem('toastMessage');
+    if(message) {
+      toast.error(message, {autoClose: 2000});
+      sessionStorage.removeItem('toastMessage');
+    }
+  })
+
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);

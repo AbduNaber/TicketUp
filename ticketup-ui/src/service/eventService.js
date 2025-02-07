@@ -38,7 +38,7 @@ export const deleteEvent = async (eventId, token) => {
     }
 };
 
-export const activateEvent = async (eventId, token) => {
+export const reactivateEvent = async (eventId, token) => {
     await axios.post(
          `${BASE_URL}/events/activate/${eventId}`,
          {},

@@ -8,7 +8,9 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -64,5 +66,10 @@ public class Event {
 
     @Column(name = "event_status")
     private String eventStatus = "AKTİF";
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "event_id")
+    private List<Participant> participants = new ArrayList<>();
+
 
 }

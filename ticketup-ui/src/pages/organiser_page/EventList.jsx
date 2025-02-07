@@ -1,113 +1,100 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { deleteEvent } from "@/service/eventService";
+import { deleteEvent, reactivateEvent } from "@/service/eventService";
 
-const EventList = ({ events, token, setEvents, fetchEvents ,isActive, selectedEvent , setSelectedEvent, setActiveItem}) => {
+const EventList = ({ events, fetchOrganizer ,token, setEvents ,isActive, selectedEvent , setSelectedEvent, setActiveItem}) => {
     
-    const filteredEvents = isActive === 2 
-    ? events.filter((event) => event.eventStatus === "AKTİF") 
-    : events.filter((event) => event.eventStatus === "PASİF");
-    
-
-    const [popupVisible, setPopupVisible] = useState(false);
+  const filteredEvents = isActive === 2 
+  ? events.filter((event) => event.eventStatus === "AKTİF") 
+  : events.filter((event) => event.eventStatus === "PASİF");
     
 
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [isAllSelected, setIsAllSelected] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState(null);
+  const handleView = (event) => {
+    setSelectedEvent(event);  
+    setPopupVisible(true);
+  };
 
-    const [isAllSelected, setIsAllSelected] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [eventToDelete, setEventToDelete] = useState(null);
-    const handleView = (event) => {
-      setSelectedEvent(event);
-      
-      setPopupVisible(true);
-    };
   const closePopup = () => {
-      setPopupVisible(false);
+    setPopupVisible(false);
       
-    };
+  };
   
-    const goToEventPage = () => {
-      if (selectedEvent) {
-        window.location.href = `/event/${selectedEvent.id}`;
-      }
-    };
+  const goToEventPage = () => {
+    if (selectedEvent) {
+      window.location.href = `/event/${selectedEvent.id}`;
+    }
+  };
   
-    const goToParticipantList = () => {
-      if (selectedEvent) {
-       
-        setActiveItem(8);
-      }
-    };
+  const goToParticipantList = () => {
+    if (selectedEvent) {
+      setActiveItem(8);
+    }
+  };
   
-    const handleToggle = (clickedEvent) => {
-        setEvents((prevEvents) =>
-          prevEvents.map((event) =>
-            event === clickedEvent
-              ? { ...event, isselected: !event.isselected }
-              : event
-          )
-        );
-      };
     
-      const handleToggleAll = () => {
-        setIsAllSelected((prev) => {
-          const newSelectedState = !prev;
-          setEvents((prevEvents) =>
-            prevEvents.map((event) => ({
-              ...event,
-              isselected: newSelectedState,
-            }))
-          );
-          return newSelectedState;
-        });
-      };
+  const handleToggleAll = () => {
+    setIsAllSelected((prev) => {
+      const newSelectedState = !prev;
+      setEvents((prevEvents) =>
+        prevEvents.map((event) => ({
+          ...event,
+          isselected: newSelectedState,
+        }))
+      );
+      return newSelectedState;
+    });
+  };
     
-      const handleDelete = async () => {
-        try {
-          await deleteEvent(eventToDelete, token);
-          toast.success("Event deleted successfully.");
-          setIsModalOpen(false);
-          fetchEvents();
-        } catch (error) {
-          console.error("Error deleting event:", error.response?.data || error.message);
-          if (error.response?.status === 401) {
-            window.location.href = "/login";
-          }
-        }
-      };
+  const handleDelete = async () => {
+    try {
+      await deleteEvent(eventToDelete, token);
+      toast.success("Event deleted successfully.");
+      setIsModalOpen(false);
+      fetchOrganizer();
+    } catch (error) {
+      console.error("Error deleting event:", error.response?.data || error.message);
+      if (error.response?.status === 401) {
+        window.location.href = "/login";
+      }
+    }
+  };
 
-      const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        const day = date.getDate().toString().padStart(2, "0");
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
-        const year = date.getFullYear();
-        return `${day}/${month}/${year}`;
-      };
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
      
 
 
-      const openDeleteModal = (eventId) => {
-        setEventToDelete(eventId);
-        setIsModalOpen(true);
-      };
+  const openDeleteModal = (eventId) => {
+    setEventToDelete(eventId);
+    setIsModalOpen(true);
+  };
     
-      const closeModal = () => {
-        setIsModalOpen(false);
-        setEventToDelete(null);
-      };
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEventToDelete(null);
+  };
 
-      const activateEvent = async (eventId) => {
-        try {
-          await activateEvent(eventId, token);
-          toast.success("Etkinlik başarıyla aktive edildi.");
-          fetchEvents();
-        } catch (error) {
-          console.error("Error activating event:", error.response?.data || error.message);
-          if (error.response?.status === 401) {
-            window.location.href = "/login";
-          }
-        }
-      };
+  const activateEvent = async (eventId) => {
+    try {
+      await reactivateEvent(eventId, token);
+      toast.success("Etkinlik başarıyla aktive edildi.");
+      fetchOrganizer();
+    } catch (error) {
+      console.error("Error activating event:", error.response?.data || error.message);
+      if (error.response?.status === 401) {
+        window.location.href = "/login";
+      }
+    }
+  };
       
   return (
     <div className="p-5 flex-1 flex flex-col overflow-hidden">

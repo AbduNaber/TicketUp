@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -51,4 +53,8 @@ public class Organizator {
 
     @Column(name = "profile_picture")
     private String profilePicture = "";
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "organizator_id")
+    private List<Event> events = new ArrayList<>();
 }
