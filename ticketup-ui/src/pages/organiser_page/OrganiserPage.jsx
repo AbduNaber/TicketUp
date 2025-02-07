@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { ToastContainer } from "react-toastify";
+import { useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import EventList from "./EventList";
 import CreateEvent from '../event_create/CreateEvent';
@@ -8,11 +8,12 @@ import ParticipantList from "./ParticipantList";
 import EditOrganizator from "./EditOrganizator";
 import OrganizerMessage from "./OrganiserMessage";
 import SecurityPage from "./SecurityPage";
-import { CalendarX, Calendar , Users, PlusCircle, FileText, Settings, MessageCircle, LogOut, ChevronDown, Menu , Mail} from "lucide-react";
-import axios from "axios";
+import { CalendarX, Calendar , PlusCircle, Settings, MessageCircle, LogOut, ChevronDown, Menu , Mail} from "lucide-react";
 import EventPreview from "../event_create/EventPreview";
+import { getOrganizerById } from "@/service/organizerService";
 
 const OrganizerPage = () => {
+  const [organizer, setOrganizer] = useState(null);
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [forceUpdate, setForceUpdate] = useState(false);
@@ -36,7 +37,7 @@ const OrganizerPage = () => {
 
   const handleEventCreated = () => {
     setActiveItem(2);
-    fetchEvents();
+    setEvents(organizer.events)
   };
 
   const toggleDropdown = () => {
@@ -57,8 +58,7 @@ const OrganizerPage = () => {
       window.location.href = "/login";
       return;
     }
-
-    fetchEvents();
+    fetchOrganizer();
   }, [token]);
 
   const handleMenuClick = (item) => {
@@ -93,29 +93,19 @@ const OrganizerPage = () => {
     window.location.href = "/login?loggedOut=true";
   };
 
-  const fetchEvents = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/ticketup/events/list-organizer-events/${parsedToken.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setEvents(response.data);
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error fetching events:", error.response?.data || error.message);
-      if (error.response?.status === 401) {
-        window.location.href = "/login";
-      }
+  const fetchOrganizer = async () => {
+    try{
+      const response = await getOrganizerById(parsedToken.id);
+      setOrganizer(response);
+      setEvents(response.events)
+    }catch(error){
+      toast.error(error.message);
     }
-  };
+  }
   
   const pageComponents = {
-    2: <EventList events={events} token={token} setEvents={setEvents} fetchEvents={fetchEvents} isActive={2} selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} setActiveItem={setActiveItem} />,
-    3: <EventList events={events} token={token} setEvents={setEvents} fetchEvents={fetchEvents} isActive={3} />,
+    2: <EventList events={events} fetchOrganizer={fetchOrganizer} token={token} setEvents={setEvents}  isActive={2} selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} setActiveItem={setActiveItem} />,
+    3: <EventList events={events} fetchOrganizer={fetchOrganizer} token={token} setEvents={setEvents}  isActive={3} />,
     4: <CreateEvent onEventCreated={handleEventCreated}  setActiveItem={setActiveItem} />,
     5: <OrganizerMessage token={token} />,
     8: <ParticipantList token={token} selectedEvent={selectedEvent} />,
@@ -191,7 +181,7 @@ const OrganizerPage = () => {
               >
                 <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
                   <span className="text-sm font-medium text-blue-600">
-                    {parsedToken?.name?.[0] || 'O'}
+                    {organizer?.name[0] || 'O'}
                   </span>
                 </div>
                 <span className="text-sm font-medium hidden sm:block">Organizatör</span>

@@ -1,8 +1,7 @@
-import React, { useState , useEffect } from "react";
-import axios from "axios";
+import { useState , useEffect } from "react";
 import { toast } from "react-toastify";
-import { deleteParticipantById, fetchParticipantsByEventId } from "@/service/participantService";
-const ParticipantList = ({  token, selectedEvent }) => {
+import { deleteParticipantById } from "@/service/participantService";
+const ParticipantList = ({ selectedEvent }) => {
   
     const [participants, setParticipants] = useState([]);
     const [popupVisible, setPopupVisible] = useState(false);
@@ -14,7 +13,7 @@ const ParticipantList = ({  token, selectedEvent }) => {
     useEffect(() => {
         // Check if selectedEvent and selectedEvent.id are available before fetching participants
         if (selectedEvent && selectedEvent.id) {
-            fetchParticipants();
+            setParticipants(selectedEvent.participants);
         } else {
             console.warn("Selected event is not defined or missing an ID");
         }
@@ -49,31 +48,14 @@ const ParticipantList = ({  token, selectedEvent }) => {
       return newSelectedState;
     });
   };
-  const fetchParticipants = async () => {
-    if (!selectedEvent || !selectedEvent.id) {
-      console.error("selectedEvent is undefined or missing an id");
-      return;
-    }
-
-    try {
-      const participants = await fetchParticipantsByEventId(selectedEvent.id, token);
-      setParticipants(participants);
-    }catch(error) {
-      console.error(error.message);
-      if(error.message === "Unauthorized") {
-        window.location.href = "/login";
-      }else {
-        toast.error(error.message);
-      }
-    }
-  };
+  
 
   const handleDelete = async (participantId) => {
     try {
       await deleteParticipantById(participantId);
       toast.success("Katılımcı Başarıyla Silindi.");
       setIsModalOpen(false);
-      fetchParticipants();
+      setParticipants(selectedEvent.participants)
     }catch(error) {
       console.error(error.message);
       toast.error(error.message);
