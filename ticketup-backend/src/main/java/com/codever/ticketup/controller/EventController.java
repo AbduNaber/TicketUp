@@ -1,9 +1,11 @@
 package com.codever.ticketup.controller;
 
 
+import com.codever.ticketup.dto.event.EventDto;
 import com.codever.ticketup.model.Event;
 import com.codever.ticketup.service.EventService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +31,17 @@ public class EventController {
     @GetMapping(path = "/list-organizer-events/{id}")
     public List<Event> getEventsByOrganizerId(@PathVariable UUID id) {
         return eventService.getEventsByOrganizerId(id);
+    }
+
+    @GetMapping(path = "/get-information/{id}")
+    public ResponseEntity<EventDto> getEventWithOrganizatorInfo(@PathVariable UUID id) {
+        try {
+            EventDto eventDto = eventService.getEventWithOrganizerInfo(id);
+            return ResponseEntity.ok(eventDto);
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(404).build();
+        }
     }
 
     @PutMapping(path = "/update")

@@ -18,6 +18,7 @@ import UpdateTicket from './pages/ticket_page/UpdateTicket';
 import ForgotPassword from './pages/forgot_password/ForgotPassword';
 import ResetPassword from './pages/forgot_password/ResetPassword';
 import Home from './pages/home_page/Home';
+import NotFoundPage from './404NotFound';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
         <Route path="/forgot-password"  element={<ForgotPassword></ForgotPassword>}></Route>
         <Route path="/reset-password/:token" element={<ResetPassword></ResetPassword>}></Route>
         <Route path="/home" element={<Home></Home>}></Route>
+        <Route path="/404" element={<NotFoundPage></NotFoundPage>}></Route>
       </Routes>
     </Router>
   );
