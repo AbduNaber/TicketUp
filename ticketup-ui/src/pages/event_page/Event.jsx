@@ -2,12 +2,11 @@ import GradientButton from "../../components/GradientButton";
 import Footer from "../../components/Footer";
 import { GoogleMap, LoadScript, MarkerF } from "@react-google-maps/api";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import TopBar from "../../components/TopBar";
 import { ToastContainer, toast } from "react-toastify";
-import { getEventById } from "@/service/eventService";
-import { getOrganizerById, sendMessageToOrganizer } from "@/service/organizerService";
+import { getEventInformation } from "@/service/eventService";
+import { sendMessageToOrganizer } from "@/service/organizerService";
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
 if (!apiKey) {
@@ -24,12 +23,10 @@ const Event = () => {
 
   const { id } = useParams();
   const [event, setEvent] = useState(null);
- 
-  const [organizator, setOrganizator] = useState(null);
   const [message, setMessage] = useState("");
   const [name, setName] = useState('');
-const [surname, setSurname] = useState('');
-const [email, setEmail] = useState('');
+  const [surname, setSurname] = useState('');
+  const [email, setEmail] = useState('');
 
   const navigate = useNavigate();
 
@@ -93,31 +90,19 @@ const [email, setEmail] = useState('');
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const fetchedEvent = await getEventById(id);
+        const fetchedEvent = await getEventInformation(id);
         setEvent(fetchedEvent);
       } catch (error) {
-        console.error(error.message);
-        alert("Event Bigleri yüklenemedi.");
+        if(error.status === 404){
+          navigate("/404")
+        }else{
+          alert("Error: " + error.status + ", " + error.message)
+        }
       }
     };
 
     fetchEvent();
   }, [id]);
-
-  useEffect(() => {
-    if(event?.organizatorId) {
-      const fetchOrganizerDetails = async () => {
-        try{
-          const fetchedOrganizer = await getOrganizerById(event.organizatorId);
-          setOrganizator(fetchedOrganizer);
-        }catch(error) {
-          console.error(error.message);
-          toast.error("Organizatör bilgileri yüklenemedi.");
-        }
-      };
-      fetchOrganizerDetails();
-    }
-  }, [event]);
 
   const formatDate = (dateString) => {
     if (!dateString) return "Geçersiz Tarih";
@@ -151,6 +136,7 @@ const [email, setEmail] = useState('');
 
 
 
+  //TODO: Do it without organizator id and delete organizator id from eventDto later
   const handleSubmit = async (formEvent) => {
     formEvent.preventDefault(); // Prevent default form submission behavior
   
@@ -254,18 +240,18 @@ const [email, setEmail] = useState('');
               <h3 className="text-lg font-bold text-gray-800 mt-6">Organizatör</h3>
               <div className="flex items-center gap-6 p-4 border border-gray-300 rounded-lg shadow-sm w-fit">
                 <img
-                    src={organizator?.profilePicture || "/src/assets/icons/profile_icon.svg"}
+                    src={event?.organizatorProfilePicture || "/src/assets/icons/profile_icon.svg"}
                     alt="Organizer Icon"
                     className="w-16 h-16 rounded-full border border-gray-300 shadow-sm"
                 />
                 <div className="flex flex-col">
                   <p className="font-bold text-gray-800">
-                  {organizator
-                    ? `${organizator.name.toLocaleUpperCase('tr-TR')} ${organizator.surname.toLocaleUpperCase('tr-TR')}`
+                  {event
+                    ? `${event.organizatorName.toLocaleUpperCase('tr-TR')} ${event.organizatorSurname.toLocaleUpperCase('tr-TR')}`
                     : "Organizatör Bilgisi Yükleniyor..."}
                   </p>
                   <p className="text-gray-600">
-                    {organizator?.organizationName || "Organizatör Bilgisi Yükleniyor..."}
+                    {event?.organizatorCompany || "Organizatör Bilgisi Yükleniyor..."}
                   </p>
                   <button
                       //href="#"
@@ -320,12 +306,12 @@ const [email, setEmail] = useState('');
           Organizatör'e email göndermek için:
         </p>
         <p className="text-gray-700 text-center break-words">
-  {organizator?.email ? (
+  {event?.organizatorEmail ? (
     <a
-      href={`mailto:${organizator.email}`}
+      href={`mailto:${event.organizatorEmail}`}
       className="text-blue-600 underline hover:text-blue-800"
     >
-      {organizator.email}
+      {event.organizatorEmail}
     </a>
   ) : (
     "Email bilgisi mevcut değil."

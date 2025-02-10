@@ -10,6 +10,27 @@ export const getEventById = async (eventId) => {
     }
 };
 
+export const getEventInformation = async (eventId) => {
+    try{
+        const response = await axios.get(`${BASE_URL}/events/get-information/${eventId}`);
+        return response.data;
+    }catch(error){
+        if(error.response) {
+            if(error.response.status === 404){
+                throw {message: "Etkinlik Bulunamadı", status: 404};
+            }else{
+                throw {
+                    message: error.response.data || "Etkinlik Yüklenirken Beklenmedik Bir Hata Oluştu",
+                    status: error.response.status
+                };
+            }
+        }else if(error.code === 'ERR_NETWORK' || error.message.includes('Network Error') || error.code === 'ECONNREFUSED') {
+            throw {message: "Sunucuya Bağlanılamadı.", status: 503};
+        }else {
+            throw {message: "Bilinmeyen Bir Hata Oluştu", status: 500};
+        }
+    }
+}
 
 export const createEvent = async (event, token) => {
     try {
