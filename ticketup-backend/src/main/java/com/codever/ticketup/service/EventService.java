@@ -1,11 +1,13 @@
 package com.codever.ticketup.service;
 
+import com.codever.ticketup.dto.event.EventDto;
 import com.codever.ticketup.model.Event;
 import com.codever.ticketup.repository.EventRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +32,19 @@ public class EventService {
     public Event getEventById(UUID id) {
         return eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event with id " + id + " not found"));
+    }
+
+    public EventDto getEventWithOrganizerInfo(UUID id) {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Event with id " + id + " not found"));
+        EventDto eventDto = new EventDto();
+        BeanUtils.copyProperties(event, eventDto);
+        eventDto.setOrganizatorName(event.getOrganizator().getName());
+        eventDto.setOrganizatorSurname(event.getOrganizator().getSurname());
+        eventDto.setOrganizatorEmail(event.getOrganizator().getEmail());
+        eventDto.setOrganizatorCompany(event.getOrganizator().getOrganizationName());
+        eventDto.setOrganizatorProfilePicture(event.getOrganizator().getProfilePicture());
+        return eventDto;
     }
 
     public Event updateEvent(Event event) {

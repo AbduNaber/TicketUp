@@ -1,5 +1,6 @@
 package com.codever.ticketup.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,7 +29,7 @@ public class Event {
     @Column(name = "name", length = 50)
     private String name;
 
-    @Column(name = "organizator_id", columnDefinition = "UUID")
+    @Column(name = "organizator_id", columnDefinition = "UUID", insertable = false, updatable = false)
     private UUID organizatorId;
 
     @Column(name = "location")
@@ -66,6 +67,11 @@ public class Event {
 
     @Column(name = "event_status")
     private String eventStatus = "AKTİF";
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "organizator_id")
+    @JsonIgnore
+    private Organizator organizator;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "event_id")
