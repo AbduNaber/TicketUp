@@ -1,5 +1,6 @@
 package com.codever.ticketup.controller;
 
+import com.codever.ticketup.dto.participant.ParticipantDtoIU;
 import com.codever.ticketup.model.Participant;
 import com.codever.ticketup.service.ParticipantService;
 import lombok.AllArgsConstructor;
@@ -45,9 +46,9 @@ public class ParticipantController {
     }
 
     @PostMapping(path = "/create")
-    public ResponseEntity<?> createParticipant(@RequestBody Participant participant) {
+    public ResponseEntity<?> createParticipant(@RequestBody ParticipantDtoIU participantDtoIU) {
         try{
-            UUID participantID = participantService.add(participant);
+            UUID participantID = participantService.add(participantDtoIU);
             return ResponseEntity.ok(participantID);
         }catch (IllegalArgumentException e){
             return ResponseEntity

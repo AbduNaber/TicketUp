@@ -1,11 +1,13 @@
 package com.codever.ticketup.service;
 
 
+import com.codever.ticketup.dto.participant.ParticipantDtoIU;
 import com.codever.ticketup.model.Participant;
 import com.codever.ticketup.repository.ParticipantRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -64,7 +66,11 @@ public class ParticipantService {
      public void deleteParticipant(UUID id) {
         participantRepository.deleteById(id);
      }
-     public UUID add(Participant participant) {
+
+     public UUID add(ParticipantDtoIU participantDtoIU) {
+        Participant participant = new Participant();
+        BeanUtils.copyProperties(participantDtoIU, participant);
+
          Participant emailParticipant = participantRepository.findByEventIdAndEmail(participant.getEventId(), participant.getEmail());
          if (emailParticipant != null) {
              System.out.println("Participant already exists with email: " + participant.getEmail());
