@@ -1,6 +1,7 @@
 package com.codever.ticketup.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.mail.Part;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,8 +30,13 @@ public class Event {
     @Column(name = "name", length = 50)
     private String name;
 
-    @Column(name = "organizator_id", columnDefinition = "UUID", insertable = false, updatable = false)
+    @Column(name = "organizator_id", columnDefinition = "UUID")
     private UUID organizatorId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organizator_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JsonIgnore
+    private Organizator organizator;
 
     @Column(name = "location")
     private String location;
@@ -68,14 +74,28 @@ public class Event {
     @Column(name = "event_status")
     private String eventStatus = "AKTİF";
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "organizator_id")
-    @JsonIgnore
-    private Organizator organizator;
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "event_id")
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Participant> participants = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", organizatorId=" + organizatorId +
+                ", location='" + location + '\'' +
+                ", description='" + description + '\'' +
+                ", createdDate=" + createdDate +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", imgUrl='" + imgUrl + '\'' +
+                ", eventType='" + eventType + '\'' +
+                ", eventStatus='" + eventStatus + '\'' +
+                '}';
+    }
 
 }

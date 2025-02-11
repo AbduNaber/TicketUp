@@ -1,5 +1,6 @@
 package com.codever.ticketup.dto.event;
 
+import com.codever.ticketup.model.Participant;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Setter;
 
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -33,4 +35,5 @@ public class EventDto {
     private String organizatorEmail;
     private String organizatorCompany;
     private String organizatorProfilePicture;
+    private List<Participant> participants;
 }

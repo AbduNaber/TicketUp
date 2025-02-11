@@ -3,7 +3,6 @@ import { GoogleMap,MarkerF, useJsApiLoader } from "@react-google-maps/api";
 import GradientButton from "../../components/GradientButton";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { createEvent } from "@/service/eventService";
 
 const EventPreview = () => {
@@ -133,18 +132,18 @@ const EventPreview = () => {
               <h3 className="text-lg font-bold text-gray-800 mt-6">Organizatör</h3>
               <div className="flex items-center gap-6 p-4 border border-gray-300 rounded-lg shadow-sm w-fit">
                 <img
-                    src={event?.organizatorPicture || "/src/assets/icons/profile_icon.svg"}
+                    src={event?.organizator?.profilePicture || "/src/assets/icons/profile_icon.svg"}
                     alt="Organizer Icon"
                     className="w-16 h-16 rounded-full border border-gray-300 shadow-sm"
                 />
                 <div className="flex flex-col">
                   <p className="font-bold text-gray-800">
                   {event
-                    ? `${event?.organizatorName.toLocaleUpperCase('tr-TR')} `
+                    ? `${event?.organizator?.name.toLocaleUpperCase('tr-TR')} ${event?.organizator?.surname.toLocaleUpperCase('tr-TR')}`
                     : "Organizatör Bilgisi Yükleniyor..."}
                   </p>
                   <p className="text-gray-600">
-                    {event?.organizatorCompany || "Organizatör Bilgisi Yükleniyor..."}
+                    {event?.organizator?.organizationName || "Organizatör Bilgisi Yükleniyor..."}
                   </p>
                   <a
                       className="inline-block px-4 py-2 mt-2 text-sm text-white bg-blue-600 rounded-full hover:bg-blue-700"

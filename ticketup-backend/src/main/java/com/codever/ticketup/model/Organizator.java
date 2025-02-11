@@ -54,7 +54,6 @@ public class Organizator {
     @Column(name = "profile_picture")
     private String profilePicture = "";
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "organizator_id")
+    @OneToMany(mappedBy = "organizator", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Event> events = new ArrayList<>();
 }

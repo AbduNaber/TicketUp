@@ -106,9 +106,6 @@ const CreateEvent = () => {
       const requestBody = {
         name: eventTitle,
         organizatorId: parsedToken.id,
-        organizatorName: organizer.name,
-        organizatorCompany: organizer.organizationName,
-        organizatorPicture: organizer.profilePicture,
         location: eventLocation,
         description: sanitizedDescription,
         startDate: startDate,
@@ -119,6 +116,7 @@ const CreateEvent = () => {
         endTime: endTime,
         imgUrl: uploadedImageUrl,
         eventType: eventType,
+        organizator: organizer
       };
 
       navigate("/event-preview", {state: {event: requestBody}});

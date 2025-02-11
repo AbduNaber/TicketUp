@@ -1,7 +1,7 @@
 package com.codever.ticketup.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jdk.jfr.Event;
 import lombok.*;
 
 
@@ -24,6 +24,11 @@ public class Participant {
 
     @Column(name = "event_id", columnDefinition = "UUID")
     private UUID eventId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JsonIgnore
+    private Event event;
 
     @Column(name = "name")
     private String name;
