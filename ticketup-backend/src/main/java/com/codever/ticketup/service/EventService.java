@@ -1,5 +1,6 @@
 package com.codever.ticketup.service;
 
+import com.codever.ticketup.dto.event.EventDtoIU;
 import com.codever.ticketup.dto.event.EventDto;
 import com.codever.ticketup.model.Event;
 import com.codever.ticketup.repository.EventRepository;
@@ -8,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
@@ -86,7 +86,9 @@ public class EventService {
         }
     }
 
-    public Event createEvent(Event event) {
+    public Event createEvent(EventDtoIU eventDtoIU) {
+        Event event = new Event();
+        BeanUtils.copyProperties(eventDtoIU, event);
         return eventRepository.save(event);
     }
 
@@ -105,5 +107,7 @@ public class EventService {
             throw new EntityNotFoundException("Event with ID " + id + " not found.");
         }
     }
+
+
 
 }

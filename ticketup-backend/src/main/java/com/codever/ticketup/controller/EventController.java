@@ -1,6 +1,7 @@
 package com.codever.ticketup.controller;
 
 
+import com.codever.ticketup.dto.event.EventDtoIU;
 import com.codever.ticketup.dto.event.EventDto;
 import com.codever.ticketup.model.Event;
 import com.codever.ticketup.service.EventService;
@@ -50,8 +51,8 @@ public class EventController {
     }
 
     @PostMapping(path = "/create")
-    public Event createEvent(@RequestBody Event event) {
-        return eventService.createEvent(event);
+    public Event createEvent(@RequestBody EventDtoIU eventDtoIU) {
+        return eventService.createEvent(eventDtoIU);
     }
 
     @DeleteMapping(path = "/delete/{id}")
